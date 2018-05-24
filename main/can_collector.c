@@ -71,6 +71,27 @@ int sendData(const char* logName, unsigned char* data, const int len) {
     return txBytes;
 }
 
+//Inicialización de pines GPIO para la señalización con LED
+void blink_init() {
+    gpio_pad_select_gpio(BLINK_GPIO);
+    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+}
+
+//Función de parpadeo de LEDS
+void blink_twice(){
+
+    gpio_set_level(BLINK_GPIO, 1);
+    vTaskDelay(60 / portTICK_PERIOD_MS);
+
+    gpio_set_level(BLINK_GPIO, 0);
+    vTaskDelay(40 / portTICK_PERIOD_MS);
+
+    gpio_set_level(BLINK_GPIO, 1);
+    vTaskDelay(60 / portTICK_PERIOD_MS);
+
+    gpio_set_level(BLINK_GPIO, 0);
+}
+
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void uart_init() {
     const uart_config_t uart_config = {
@@ -99,30 +120,10 @@ static void uart_rx_task() {
             ESP_LOG_BUFFER_HEXDUMP("RX_TASK", data, rxBytes, ESP_LOG_INFO);
 
             esp_spp_write(bt_handle,rxBytes,data);
+            blink_twice();
         }
     }
     free(data);
-}
-
-//Inicialización de pines GPIO para la señalización con LED
-void blink_init() {
-    gpio_pad_select_gpio(BLINK_GPIO);
-    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-}
-
-//Función de parpadeo de LEDS
-void blink_rcv(){
-
-    gpio_set_level(BLINK_GPIO, 1);
-    vTaskDelay(60 / portTICK_PERIOD_MS);
-
-    gpio_set_level(BLINK_GPIO, 0);
-    vTaskDelay(40 / portTICK_PERIOD_MS);
-
-    gpio_set_level(BLINK_GPIO, 1);
-    vTaskDelay(60 / portTICK_PERIOD_MS);
-
-    gpio_set_level(BLINK_GPIO, 0);
 }
 
 //Handler de mensaje entrante por BT
@@ -130,7 +131,7 @@ void bt_data_rcv_handler(esp_spp_cb_param_t *param) {
     sendData("TX_TASK", param->data_ind.data, param->data_ind.len);
 
     esp_log_buffer_hex("",param->data_ind.data,param->data_ind.len);
-    blink_rcv();
+    blink_twice();
 }
 
 //Funciones de inicialización y manejo de eventos BT
