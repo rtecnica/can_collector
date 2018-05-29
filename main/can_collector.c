@@ -20,6 +20,8 @@
 #include "esp_bt_device.h"
 #include "esp_spp_api.h"
 
+#include "../include/elm327.h"
+
 #include "driver/gpio.h"
 
 #include "time.h"
@@ -35,8 +37,6 @@
 
 #define TXD_PIN (GPIO_NUM_1)
 #define RXD_PIN (GPIO_NUM_3)
-
-#define SPP_DATA_LEN ESP_SPP_MAX_MTU
 
 
 static const esp_spp_mode_t esp_spp_mode = ESP_SPP_MODE_CB;
