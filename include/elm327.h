@@ -7,4 +7,6 @@
 
 #endif //CAN_COLLECTOR_ELM327_H
 
-//TODO Write ELM327 messaging interface prototypes
+//TODO write AT command generic function
+
+//TODO write ODB command generic
