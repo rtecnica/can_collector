@@ -119,7 +119,7 @@ void app_main() {
 
     blink_init();
 
-    esp_log_level_set("*",ESP_LOG_NONE);
+    esp_log_level_set("*",ESP_LOG_INFO);
 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {

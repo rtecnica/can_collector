@@ -4,8 +4,8 @@
 
 //TODO Fill in Documentation
 
-#define TXD_PIN GPIO_NUM_1
-#define RXD_PIN GPIO_NUM_3
+#define TXD_PIN GPIO_NUM_4
+#define RXD_PIN GPIO_NUM_36
 
 /**
  * @brief
