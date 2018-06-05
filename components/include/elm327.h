@@ -4,6 +4,20 @@
 
 //TODO Fill in Documentation
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+#include "esp_log.h"
+
+#include "driver/uart.h"
+#include "soc/uart_struct.h"
+
+#include "esp_spp_api.h"
+
 #define TXD_PIN GPIO_NUM_4
 #define RXD_PIN GPIO_NUM_36
 
