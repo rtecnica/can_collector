@@ -18,6 +18,8 @@ void elm327_rx_task(void *pvParameters) {
 
             data[rxBytes] = 0;
             ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+
             uint32_t *tmp = (uint32_t *)pvParameters;
 
             //TODO Find a better fucking solution for this
@@ -44,7 +46,7 @@ void elm327_init(uint32_t *bt_handle) {
 }
 
 //Función de utilidad para enviar bytestream a través de UART al ELM327
-int elm327_sendData(const char* logName, unsigned char* data, const int len) {
+bool elm327_sendData(const char* logName, unsigned char* data, const int len) {
     union Data{
         const char *string;
         unsigned char *raw;
@@ -54,7 +56,28 @@ int elm327_sendData(const char* logName, unsigned char* data, const int len) {
     
     const int txBytes = uart_write_bytes(UART_NUM_1, uni.string, len);
     ESP_LOGI(logName, "Wrote %d bytes", txBytes);
-    ESP_LOG_BUFFER_HEXDUMP("TX_TASK", data, txBytes, ESP_LOG_INFO);
+    ESP_LOG_BUFFER_HEXDUMP(logName, data, txBytes, ESP_LOG_INFO);
 
-    return txBytes;
+    return txBytes == len;
+}
+
+bool elm327_query_oiltemp(void){
+
+    unsigned char msg[5] = {0x30, 0x31, 0x35, 0x43, 0x0d};
+
+    return elm327_sendData("OilTemp Query", msg, 5);
+}
+
+bool elm327_query_fueltank(void){
+
+    unsigned char msg[5] = {0x30, 0x31, 0x32, 0x46, 0x0d};
+
+    return elm327_sendData("FuelTank Query", msg, 5);
+}
+
+bool elm327_query_speed(void){
+
+    unsigned char msg[5] = {0x30, 0x31, 0x30, 0x44, 0x0d};
+
+    return elm327_sendData("Speed Query", msg, 5);
 }

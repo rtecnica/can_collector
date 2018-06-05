@@ -23,6 +23,18 @@
 
 /**
  * @brief
+ */
+ typedef struct {
+     char VIN[17];  /*!< UART baud rate*/
+     char temp;     /*!< UART baud rate*/
+     char fuel;     /*!< UART baud rate*/
+     char speed;    /*!< UART baud rate*/
+     char LONG[8];  /*!< UART baud rate*/
+     char LAT[8];   /*!< UART baud rate*/
+ } elm327_data_t;
+
+/**
+ * @brief
  *
  * @param
  *
@@ -52,4 +64,37 @@ void elm327_init(uint32_t *bt_handle);
  *
  *
  */
-int elm327_sendData(const char* logName, unsigned char* data, const int len);
+bool elm327_sendData(const char* logName, unsigned char* data, const int len);
+
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
+bool elm327_query_oiltemp(void);
+
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
+bool elm327_query_fueltank(void);
+
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
+bool elm327_query_speed(void);

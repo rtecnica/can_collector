@@ -12,7 +12,6 @@
 
 #include "esp_log.h"
 
-#include "../components/include/elm327.h"
 #include "../components/include/can_collector_utils.h"
 
 #include "time.h"
