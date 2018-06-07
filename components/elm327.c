@@ -5,11 +5,12 @@
 #include "include/elm327.h"
 #include "include/parse_utils.h"
 
-static const int RX_BUF_SIZE = 1024;
+static const int RX_BUF_SIZE = 128;
 
 struct param {
     uint32_t *out_bt_handle;
     QueueHandle_t rxQueue;
+    QueueHandle_t Outgoing_Queue;
 } vParams;
 
 //Proceso de monitoreo de interfase UART
@@ -18,11 +19,12 @@ void elm327_rx_task(void *pvParameters) {
 
     uint8_t* data;
 
-    while (1) {
-        data = (uint8_t*) malloc(RX_BUF_SIZE+1);
+    for(;;) {
+        data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
         while(data == NULL){
+            ESP_LOGI("RX_TASK","Waiting for available heap space...");
             vTaskDelay(100/portTICK_PERIOD_MS);
-            data = (uint8_t*) malloc(RX_BUF_SIZE+1);
+            data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
         }
         const int rxBytes = uart_read_bytes(UART_NUM_1, data, RX_BUF_SIZE, 1000 / portTICK_RATE_MS);
         if (rxBytes > 0) {
@@ -32,34 +34,36 @@ void elm327_rx_task(void *pvParameters) {
             ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
-            struct param *tmp = malloc(sizeof(*tmp));
+            esp_spp_write(*((( struct param *)pvParameters)->out_bt_handle),rxBytes,data);
 
-            tmp = ( struct param *)pvParameters;
-
-            esp_spp_write(*(tmp->out_bt_handle),rxBytes,data);
-
-            xQueueSend(tmp->rxQueue,(void *)(&data),10);
-            free(data); // data will be freed by recieving function
+            xQueueSend((( struct param *)pvParameters)->rxQueue,(void *)(&data),10);
+            //vPortFree(data); // data will be vPortFreed by recieving function
         }
     }
-    free(data);
+    vPortFree(data);
 }
 
 void elm327_parse_task(void *pvParameters){
 
-    void **buff = malloc(sizeof(void **));
-    struct param *tmp = malloc(sizeof(*tmp));
+    void **buff = pvPortMalloc(sizeof(void *));
+    struct param *tmp = pvPortMalloc(sizeof(*tmp));
     BaseType_t xStatus;
-            tmp = ( struct param *)pvParameters;
+    tmp = ( struct param *)pvParameters;
 
     for(;;){
         xStatus = xQueueReceive(tmp->rxQueue, buff, 10);
         uint8_t *msg = *buff;
-        if(xStatus == pdPASS)
+        if(xStatus == pdPASS) {
             ESP_LOGI("PARSE_TASK", "Message Type Recieved: %x", parse_check_msg_type(msg, 6));
+            if(parse_check_msg_type(msg,6) < 4){
+            }
+            vPortFree(*buff);
+            ESP_LOGI("HEAP_SIZE", "Available Heap Size: %i", esp_get_free_heap_size());
+        }
         //TODO parse vars
-        free((*buff));
+
     }
+    vTaskDelete(NULL);
 }
 
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART

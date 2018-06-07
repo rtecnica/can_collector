@@ -33,9 +33,9 @@ void queryTask(void *pvParameters){
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         elm327_query_speed();
         vTaskDelay(2000 / portTICK_PERIOD_MS);
-        elm327_query_GPS();
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-        ESP_LOGI("IDLE_TASK_COUNTER", "Idle task count: %i",ulIdleCycleCount);
+        //elm327_query_GPS();
+        //vTaskDelay(2000 / portTICK_PERIOD_MS);
+        ESP_LOGI("QUERY_TASK", "Idle task count: %i",ulIdleCycleCount);
         ulIdleCycleCount = 0UL;
     }
     vTaskDelete(NULL);
