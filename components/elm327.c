@@ -3,6 +3,7 @@
 //
 
 #include "include/elm327.h"
+#include "include/parse_utils.h"
 
 static const int RX_BUF_SIZE = 1024;
 
@@ -22,6 +23,8 @@ void elm327_rx_task(void *pvParameters) {
 
             uint32_t *tmp = (uint32_t *)pvParameters;
 
+            //Send through queue to data processing Task
+            ESP_LOGI("PARSE_UTILS","message type: %x",parse_check_msg_type(data));
             //TODO Find a better fucking solution for this
             esp_spp_write(*tmp,rxBytes,data);
         }
@@ -61,6 +64,16 @@ bool elm327_sendData(const char* logName, unsigned char* data, const int len) {
     return txBytes == len;
 }
 
+bool elm327_reset(void){
+    unsigned char msg[5] = {0x41, 0x54, 0x20, 0x5a, 0x0d};
+    return elm327_sendData("Reset", msg, 5);
+}
+
+bool elm327_setCAN(void){
+    unsigned char msg2[9] = {0x41, 0x54, 0x20, 0x54, 0x50, 0x20, 0x41, 0x36, 0x0d};
+    return elm327_sendData("Set Protocol", msg2, 9);
+};
+
 bool elm327_query_oiltemp(void){
 
     unsigned char msg[5] = {0x30, 0x31, 0x35, 0x43, 0x0d};
@@ -80,4 +93,9 @@ bool elm327_query_speed(void){
     unsigned char msg[5] = {0x30, 0x31, 0x30, 0x44, 0x0d};
 
     return elm327_sendData("Speed Query", msg, 5);
+}
+
+bool elm327_query_GPS(void){
+    //TODO Write this function
+    return 1;
 }

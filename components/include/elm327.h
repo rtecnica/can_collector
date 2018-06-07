@@ -75,6 +75,28 @@ bool elm327_sendData(const char* logName, unsigned char* data, const int len);
  *
  *
  */
+bool elm327_reset(void);
+
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
+
+bool elm327_setCAN(void);
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
 bool elm327_query_oiltemp(void);
 
 /**
@@ -98,3 +120,15 @@ bool elm327_query_fueltank(void);
  *
  */
 bool elm327_query_speed(void);
+
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
+bool elm327_query_GPS(void);
+

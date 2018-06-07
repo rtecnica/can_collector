@@ -9,17 +9,22 @@ void bt_data_rcv_handler(esp_spp_cb_param_t *param) {
 }
 
 void queryTask(void *pvParameters){
-    unsigned char msg[5] = {0x41, 0x54, 0x20, 0x5a, 0x0d};
-    elm327_sendData("Reset", msg, 5);
+
+    elm327_reset();
     vTaskDelay(5000/portTICK_PERIOD_MS);
-    unsigned char msg2[9] = {0x41, 0x54, 0x20, 0x54, 0x50, 0x20, 0x41, 0x36, 0x0d};
-    elm327_sendData("Set Protocol", msg2, 9);
+    elm327_setCAN();
     vTaskDelay(3000/portTICK_PERIOD_MS);
-    elm327_query_fueltank();
-    vTaskDelay(3000/portTICK_PERIOD_MS);
-    elm327_query_oiltemp();
-    vTaskDelay(3000/portTICK_PERIOD_MS);
-    elm327_query_speed();
+
+    for(;;) {
+        elm327_query_fueltank();
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        elm327_query_oiltemp();
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        elm327_query_speed();
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        elm327_query_GPS();
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+    }
     vTaskDelete(NULL);
 }
 
@@ -63,7 +68,7 @@ void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
             ESP_LOGI(APP_TAG, "ESP_SPP_SRV_OPEN_EVT");
             bt_handle = param->srv_open.handle;
 
-            xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES, NULL);
+            xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 1, NULL);
 
 
             break;
