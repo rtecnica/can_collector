@@ -1,6 +1,11 @@
 //
 // Created by Ignacio Maldonado Aylwin on 6/5/18.
 //
+
+/**
+ *  A test class. A more elaborate class description.
+ */
+
 #include "esp_bt.h"
 #include "esp_bt_main.h"
 #include "esp_gap_bt_api.h"
@@ -17,6 +22,9 @@
 #define SPP_SERVER_NAME "CAN_DATA_COLLECTOR"
 #define EXAMPLE_DEVICE_NAME "CAN_DATA_COLLECTOR"
 
+/**
+ *  A test class. A more elaborate class description.
+ */
 uint32_t bt_handle;
 
 static const esp_spp_mode_t esp_spp_mode = ESP_SPP_MODE_CB;
@@ -43,7 +51,7 @@ void bt_data_rcv_handler(esp_spp_cb_param_t *param);
  *
  *
  */
-static void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param);
+void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param);
 
 /**
  * @brief

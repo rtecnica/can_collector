@@ -2,7 +2,16 @@
 // Created by Ignacio Maldonado Aylwin on 6/5/18.
 //
 
+
+
 #include "include/can_collector_utils.h"
+
+volatile uint32_t ulIdleCycleCount = 0UL;
+
+void vApplicationIdleHook( void ) {
+    /* This hook function does nothing but increment a counter. */
+    ulIdleCycleCount++;
+}
 
 void bt_data_rcv_handler(esp_spp_cb_param_t *param) {
     elm327_sendData("TX_TASK", param->data_ind.data, param->data_ind.len);
@@ -14,16 +23,20 @@ void queryTask(void *pvParameters){
     vTaskDelay(5000/portTICK_PERIOD_MS);
     elm327_setCAN();
     vTaskDelay(3000/portTICK_PERIOD_MS);
+    elm327_query_VIN();
+    vTaskDelay(3000/portTICK_PERIOD_MS);
 
     for(;;) {
         elm327_query_fueltank();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
         elm327_query_oiltemp();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
         elm327_query_speed();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
         elm327_query_GPS();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        ESP_LOGI("IDLE_TASK_COUNTER", "Idle task count: %i",ulIdleCycleCount);
+        ulIdleCycleCount = 0UL;
     }
     vTaskDelete(NULL);
 }
@@ -68,7 +81,7 @@ void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
             ESP_LOGI(APP_TAG, "ESP_SPP_SRV_OPEN_EVT");
             bt_handle = param->srv_open.handle;
 
-            xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 1, NULL);
+            xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
 
 
             break;

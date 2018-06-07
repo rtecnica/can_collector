@@ -18,13 +18,6 @@
 #include "sys/time.h"
 
 
-volatile uint32_t ulIdleCycleCount = 0UL;
-
-void vApplicationIdleHook( void ) {
-    /* This hook function does nothing but increment a counter. */
-    ulIdleCycleCount++;
-}
-
 void app_main() {
 
     esp_log_level_set("*",ESP_LOG_INFO);

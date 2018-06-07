@@ -4,12 +4,17 @@
 
 //TODO Fill in Documentation
 
+/**
+ *  A test class. A more elaborate class description.
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 
 #include "esp_log.h"
 
@@ -25,12 +30,13 @@
  * @brief
  */
  typedef struct {
-     char VIN[17];  /*!< UART baud rate*/
-     char temp;     /*!< UART baud rate*/
-     char fuel;     /*!< UART baud rate*/
-     char speed;    /*!< UART baud rate*/
-     char LONG[8];  /*!< UART baud rate*/
-     char LAT[8];   /*!< UART baud rate*/
+     char VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
+     char temp;     /*!< Motor Oil temperature*/
+     char fuel;     /*!< Remaining Fuel in primary Tank*/
+     char speed;    /*!< Current Ground Speed*/
+     char LONG[8];  /*!< Longitud*/
+     char LAT[8];   /*!< Latitude*/
+     char TIME[4];  /*!< GPS time*/
  } elm327_data_t;
 
 /**
@@ -53,7 +59,18 @@ void elm327_rx_task(void *pvParameters);
  *
  *
  */
-void elm327_init(uint32_t *bt_handle);
+void elm327_parse_task(void *pvParameters);
+
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
+ void elm327_init(uint32_t *bt_handle);
 
 /**
  * @brief
@@ -120,6 +137,17 @@ bool elm327_query_fueltank(void);
  *
  */
 bool elm327_query_speed(void);
+
+/**
+ * @brief
+ *
+ * @param
+ *
+ * @return
+ *
+ *
+ */
+bool elm327_query_VIN(void);
 
 /**
  * @brief

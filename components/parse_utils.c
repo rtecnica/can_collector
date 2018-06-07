@@ -69,17 +69,22 @@ uint8_t parse_char_to_hex(uint8_t bite){
     }
 }
 
-int parse_check_msg_type(uint8_t *data){
-    switch (((((uint32_t)parse_char_to_hex(data[0]))<<12)+(((uint32_t)parse_char_to_hex(data[1]))<<8)+(((uint32_t)parse_char_to_hex(data[2]))<<4)+(((uint32_t)parse_char_to_hex(data[3]))))){
-        case FUELTANK_MSG:
-            return 1;
-        case OILTEMP_MSG:
-            return 2;
-        case SPEED_MSG:
-            return 3;
-        case VIN_MSG:
-            return 4;
-        default:
-            return 0;
+int parse_check_msg_type(uint8_t *data, int len){
+    if(len>4) {
+        switch (((((uint32_t) parse_char_to_hex(data[0])) << 12) + (((uint32_t) parse_char_to_hex(data[1])) << 8) +
+                 (((uint32_t) parse_char_to_hex(data[2])) << 4) + (((uint32_t) parse_char_to_hex(data[3]))))) {
+            case FUELTANK_MSG:
+                return 1;
+            case OILTEMP_MSG:
+                return 2;
+            case SPEED_MSG:
+                return 3;
+            case VIN_MSG:
+                return 4;
+            default:
+                return 0;
+        }
     }
+    else
+        return -1;
 }
