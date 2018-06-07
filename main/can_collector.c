@@ -1,6 +1,9 @@
 /*
     Copyright Verbux Soluciones Informáticas Mayo 2018
 */
+/**
+ * @file
+ */
 
 #include <stdint.h>
 #include <string.h>

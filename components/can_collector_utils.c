@@ -1,9 +1,9 @@
 //
 // Created by Ignacio Maldonado Aylwin on 6/5/18.
 //
-
-
-
+/**
+ * @file
+ */
 #include "include/can_collector_utils.h"
 
 volatile uint32_t ulIdleCycleCount = 0UL;

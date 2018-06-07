@@ -1,17 +1,13 @@
 //
 // Created by Ignacio Maldonado Aylwin on 5/29/18.
 //
-
+/**
+ * @file
+ */
 #include "include/elm327.h"
 #include "include/parse_utils.h"
 
 static const int RX_BUF_SIZE = 128;
-
-struct param {
-    uint32_t *out_bt_handle;
-    QueueHandle_t rxQueue;
-    QueueHandle_t Outgoing_Queue;
-} vParams;
 
 //Proceso de monitoreo de interfase UART
 void elm327_rx_task(void *pvParameters) {
@@ -26,7 +22,7 @@ void elm327_rx_task(void *pvParameters) {
             vTaskDelay(100/portTICK_PERIOD_MS);
             data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
         }
-        const int rxBytes = uart_read_bytes(UART_NUM_1, data, RX_BUF_SIZE, 1000 / portTICK_RATE_MS);
+        const int rxBytes = uart_read_bytes(UART_NUM_1, data, RX_BUF_SIZE, 500 / portTICK_RATE_MS);
         if (rxBytes > 0) {
 
             data[rxBytes] = 0;
@@ -38,6 +34,9 @@ void elm327_rx_task(void *pvParameters) {
 
             xQueueSend((( struct param *)pvParameters)->rxQueue,(void *)(&data),10);
             //vPortFree(data); // data will be vPortFreed by recieving function
+        }
+        else{
+            vPortFree(data);
         }
     }
     vPortFree(data);
@@ -56,9 +55,9 @@ void elm327_parse_task(void *pvParameters){
         if(xStatus == pdPASS) {
             ESP_LOGI("PARSE_TASK", "Message Type Recieved: %x", parse_check_msg_type(msg, 6));
             if(parse_check_msg_type(msg,6) < 4){
+
             }
             vPortFree(*buff);
-            ESP_LOGI("HEAP_SIZE", "Available Heap Size: %i", esp_get_free_heap_size());
         }
         //TODO parse vars
 

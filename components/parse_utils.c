@@ -1,6 +1,10 @@
 //
 // Created by Ignacio Maldonado Aylwin on 6/7/18.
 //
+
+/**
+ * @file
+ */
 #include "include/parse_utils.h"
 
 typedef enum {

@@ -1,29 +1,32 @@
 //
 // Created by Ignacio Maldonado Aylwin on 6/7/18.
 //
+
 /**
- *  A test class. A more elaborate class description.
+ * @file parse_utils.h
+ * @brief Parsing Utilities
  */
 
 #include <stdint.h>
 
 /**
- * @brief
+ * @brief Utility for converting ASCII Character into hexidecimal
  *
- * @param
+ * @param[in] ASCII byte
  *
- * @return
+ * @return Equivalent Integer Value i.e f("1A") = 26
  *
  *
  */
 uint8_t parse_char_to_hex(uint8_t bite);
 
 /**
- * @brief
+ * @brief Utility for checking type of ELM327 Message
  *
- * @param
+ * @param[in] data : Buffer Holding message
+ * @param[in] len  : Length of buffer
  *
- * @return
+ * @return 1 for Fuel tank response, 2 for Motor Oil temp response, 3 for Speed response, 4 for VIN response, 0 otherwise and -1 if the message is too short.
  *
  *
  */
@@ -32,7 +35,7 @@ int parse_check_msg_type(uint8_t *data, int len);
 /**
  * @brief
  *
- * @param
+ * @param[in]
  *
  * @return
  *

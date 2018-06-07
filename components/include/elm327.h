@@ -5,7 +5,8 @@
 //TODO Fill in Documentation
 
 /**
- *  A test class. A more elaborate class description.
+ * @file elm327.h
+ * @brief ELM327 Main lib
  */
 
 #include <stdlib.h>
@@ -27,7 +28,7 @@
 #define RXD_PIN GPIO_NUM_36
 
 /**
- * @brief
+ * @brief Main data struct for handling required information from CAN bus sensors and GPS
  */
  typedef struct {
      char VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
@@ -40,122 +41,98 @@
  } elm327_data_t;
 
 /**
- * @brief
+* @brief Data struct containing intertask messaging handles
+*/
+struct param {
+    uint32_t *out_bt_handle;       /*!< BlueTooth connection handle for debug*/
+    QueueHandle_t rxQueue;         /*!< rxTask to parseTask queue*/
+    QueueHandle_t Outgoing_Queue;  /*!< parseTask to OutgoingTask Queue*/
+} vParams;
+
+/**
+ * @brief Task for recieving data from ELM327 chip.
  *
- * @param
- *
- * @return
- *
- *
+ * @param[in] pvParameters : Pointer to intertask messaging handle struct
  */
 void elm327_rx_task(void *pvParameters);
 
 /**
- * @brief
+ * @brief Task for parsing and assembling data struct from sensor and GPS data
  *
- * @param
- *
- * @return
- *
- *
+ * @param[in] pvParameters : Pointer to intertask messaging handle struct
  */
 void elm327_parse_task(void *pvParameters);
 
 /**
- * @brief
+ * @brief Initializer for UART connection, rxTask, parseTask and messaging handle structs
  *
- * @param
- *
- * @return
- *
+ * @param[in] bt_handle : Pointer to BlueTooth connection handle
  *
  */
  void elm327_init(uint32_t *bt_handle);
 
 /**
- * @brief
+ * @brief Utility function for sendind arbitrary data to the ELM327 via the UART connection
  *
- * @param
+ * @param[in] logName : Name of log to send debug info
+ * @param[in] data : Buffer for data to send
+ * @param[in] len : Length of buffer
  *
- * @return
- *
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  */
 bool elm327_sendData(const char* logName, unsigned char* data, const int len);
 
 /**
- * @brief
+ * @brief Send reset AT command to ELM327 i.e "AT Z"
  *
- * @param
- *
- * @return
- *
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  */
 bool elm327_reset(void);
 
 /**
- * @brief
+ * @brief Set ELM327 protocol via AT command i.e "AT TP 6"
  *
- * @param
- *
- * @return
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  *
  */
-
 bool elm327_setCAN(void);
+
 /**
- * @brief
+ * @brief Request Motor Oil Temperature info from CAN bus
  *
- * @param
- *
- * @return
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  *
  */
 bool elm327_query_oiltemp(void);
 
 /**
- * @brief
+ * @brief Request Fuel Tank Level info from CAN bus
  *
- * @param
- *
- * @return
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  *
  */
 bool elm327_query_fueltank(void);
 
 /**
- * @brief
+ * @brief Request Vehicle Speed info from CAN bus
  *
- * @param
- *
- * @return
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  *
  */
 bool elm327_query_speed(void);
 
 /**
- * @brief
+ * @brief Request Unique Vehicle Identification Number info from CAN bus
  *
- * @param
- *
- * @return
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  *
  */
 bool elm327_query_VIN(void);
 
 /**
- * @brief
+ * @brief Request Time and Position from GPS
  *
- * @param
- *
- * @return
- *
+ * @returns True if sent appropiate amount of bytes, False otherwise
  *
  */
 bool elm327_query_GPS(void);
