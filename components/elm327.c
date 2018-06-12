@@ -3,11 +3,14 @@
 //
 /**
  * @file
+ *
  */
 #include "include/elm327.h"
 #include "include/parse_utils.h"
 
 static const int RX_BUF_SIZE = 128;
+
+char VIN[17];
 
 //Proceso de monitoreo de interfase UART
 void elm327_rx_task(void *pvParameters) {
@@ -48,19 +51,53 @@ void elm327_parse_task(void *pvParameters){
     struct param *tmp = pvPortMalloc(sizeof(*tmp));
     BaseType_t xStatus;
     tmp = ( struct param *)pvParameters;
+    can_msg_t msg_type;
+
+    elm327_data_t packet;
 
     for(;;){
         xStatus = xQueueReceive(tmp->rxQueue, buff, 10);
-        uint8_t *msg = *buff;
         if(xStatus == pdPASS) {
-            ESP_LOGI("PARSE_TASK", "Message Type Recieved: %x", parse_check_msg_type(msg, 6));
-            if(parse_check_msg_type(msg,6) < 4){
-
+            msg_type = parse_check_msg_type((uint8_t *)*buff,6);
+            ESP_LOGI("PARSE_TASK", "Message Type Recieved: %04x", msg_type);
+            if(parse_is_data((uint8_t *)(*buff))){
+                uint8_t var = (((uint8_t)parse_char_to_hex(((uint8_t *)(*buff))[11]))<<4) + ((uint8_t)parse_char_to_hex(((uint8_t *)(*buff))[12]));
+                switch(msg_type){
+                    case FUELTANK_MSG:
+                        packet.fuel = var;
+                        packet.fields = packet.fields | FUEL_FIELD;
+                        ESP_LOGI("FUELTANK_MSG","Fuel Level = %02x",var);
+                        break;
+                    case OILTEMP_MSG:
+                        packet.temp = var;
+                        packet.fields = packet.fields | TEMP_FIELD;
+                        ESP_LOGI("OILTEMP_MSG","Oil Temp = %02x",var);
+                        break;
+                    case SPEED_MSG:
+                        packet.speed = var;
+                        packet.fields = packet.fields | SPEED_FIELD;
+                        ESP_LOGI("SPEED_MSG","Speed = %02x",var);
+                        break;
+                    case VIN_MSG:
+                        vin_parse(VIN,*buff);
+                        packet.fields = packet.fields | VIN_FIELD;
+                        ESP_LOGI("VIN_MSG","VIN = %s",VIN);
+                        break;
+                    case UNKNOWN_MSG:
+                        break;
+                }
+            }
+            else{
+                ESP_LOGI("PARSE_TASK", "No Data!");
             }
             vPortFree(*buff);
-        }
-        //TODO parse vars
 
+            if( (packet.fields & (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD)) == (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD) ){
+                ESP_LOGI("PARSE_TASK","Packet Ready for Sending");
+                packet.fields = VIN_FIELD | MISC_FIELD;
+                // TODO Queue up packet
+            }
+        }
     }
     vTaskDelete(NULL);
 }
@@ -82,6 +119,10 @@ void elm327_init(uint32_t *bt_handle) {
     vParams.rxQueue = xQueueCreate(5, sizeof(void *));
     if(vParams.rxQueue != (NULL)){
         ESP_LOGI("RX_QUEUE", "rxQueue creation successful.");
+    }
+    vParams.OutQueue = xQueueCreate(5, sizeof(elm327_data_t));
+    if(vParams.OutQueue != (NULL)){
+        ESP_LOGI("OUT_QUEUE", "OutQueue creation successful.");
     }
 
     xTaskCreate(elm327_rx_task, "elm327_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);

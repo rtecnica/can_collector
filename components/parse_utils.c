@@ -5,37 +5,15 @@
 /**
  * @file
  */
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/portable.h"
+
 #include "include/parse_utils.h"
 
-typedef enum {
-    HEX_CHAR_0      = 0x30,
-    HEX_CHAR_1      = 0x31,
-    HEX_CHAR_2      = 0x32,
-    HEX_CHAR_3      = 0x33,
-    HEX_CHAR_4      = 0x34,
-    HEX_CHAR_5      = 0x35,
-    HEX_CHAR_6      = 0x36,
-    HEX_CHAR_7      = 0x37,
-    HEX_CHAR_8      = 0x38,
-    HEX_CHAR_9      = 0x39,
-    HEX_CHAR_A      = 0x41,
-    HEX_CHAR_B      = 0x42,
-    HEX_CHAR_C      = 0x43,
-    HEX_CHAR_D      = 0x44,
-    HEX_CHAR_E      = 0x45,
-    HEX_CHAR_F      = 0x46,
-} hex_char_t;
-
-typedef enum {
-    FUELTANK_MSG    = 0x012F,
-    OILTEMP_MSG     = 0x015C,
-    SPEED_MSG       = 0x010D,
-    VIN_MSG         = 0x0902,
-} can_msg_t;
 
 uint8_t parse_char_to_hex(uint8_t bite){
-    hex_char_t val = (hex_char_t) bite;
-    switch (val) {
+    switch ((hex_char_t)bite) {
         case HEX_CHAR_0:
             return 0x0;
         case HEX_CHAR_1:
@@ -73,22 +51,52 @@ uint8_t parse_char_to_hex(uint8_t bite){
     }
 }
 
-int parse_check_msg_type(uint8_t *data, int len){
+can_msg_t parse_check_msg_type(uint8_t *data, int len){
     if(len>4) {
         switch (((((uint32_t) parse_char_to_hex(data[0])) << 12) + (((uint32_t) parse_char_to_hex(data[1])) << 8) +
                  (((uint32_t) parse_char_to_hex(data[2])) << 4) + (((uint32_t) parse_char_to_hex(data[3]))))) {
             case FUELTANK_MSG:
-                return 1;
+                return FUELTANK_MSG;
             case OILTEMP_MSG:
-                return 2;
+                return OILTEMP_MSG;
             case SPEED_MSG:
-                return 3;
+                return SPEED_MSG;
             case VIN_MSG:
-                return 4;
+                return VIN_MSG;
             default:
-                return 0;
+                return UNKNOWN_MSG;
         }
     }
     else
         return -1;
+}
+
+void vin_parse(char *VIN_global, uint8_t *msg){
+    char *tmp = (char *)pvPortMalloc(18);
+    tmp[0] = (char)(((parse_char_to_hex((msg)[22]))<<4) + (parse_char_to_hex((msg)[23])));
+    tmp[1] = (char)(((parse_char_to_hex((msg)[25]))<<4) + (parse_char_to_hex((msg)[26])));
+    tmp[2] = (char)(((parse_char_to_hex((msg)[28]))<<4) + (parse_char_to_hex((msg)[29])));
+    tmp[3] = (char)(((parse_char_to_hex((msg)[35]))<<4) + (parse_char_to_hex((msg)[36])));
+    tmp[4] = (char)(((parse_char_to_hex((msg)[38]))<<4) + (parse_char_to_hex((msg)[39])));
+    tmp[5] = (char)(((parse_char_to_hex((msg)[41]))<<4) + (parse_char_to_hex((msg)[42])));
+    tmp[6] = (char)(((parse_char_to_hex((msg)[44]))<<4) + (parse_char_to_hex((msg)[45])));
+    tmp[7] = (char)(((parse_char_to_hex((msg)[47]))<<4) + (parse_char_to_hex((msg)[48])));
+    tmp[8] = (char)(((parse_char_to_hex((msg)[50]))<<4) + (parse_char_to_hex((msg)[51])));
+    tmp[9] = (char)(((parse_char_to_hex((msg)[53]))<<4) + (parse_char_to_hex((msg)[54])));
+    tmp[10] = (char)(((parse_char_to_hex((msg)[60]))<<4) + (parse_char_to_hex((msg)[61])));
+    tmp[11] = (char)(((parse_char_to_hex((msg)[63]))<<4) + (parse_char_to_hex((msg)[64])));
+    tmp[12] = (char)(((parse_char_to_hex((msg)[66]))<<4) + (parse_char_to_hex((msg)[67])));
+    tmp[13] = (char)(((parse_char_to_hex((msg)[69]))<<4) + (parse_char_to_hex((msg)[70])));
+    tmp[14] = (char)(((parse_char_to_hex((msg)[72]))<<4) + (parse_char_to_hex((msg)[73])));
+    tmp[15] = (char)(((parse_char_to_hex((msg)[75]))<<4) + (parse_char_to_hex((msg)[76])));
+    tmp[16] = (char)(((parse_char_to_hex((msg)[78]))<<4) + (parse_char_to_hex((msg)[79])));
+    tmp[17] = 0x0;
+    strcpy(VIN_global,tmp);
+    vPortFree(tmp);
+}
+
+bool  parse_is_data(uint8_t *data){
+    uint16_t nodata = 0x4e4f;
+    uint16_t is = (((uint16_t)(data[5]))<<(8)) + ((uint16_t)(data[6]));
+    return (is^nodata);
 }

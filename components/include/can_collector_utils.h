@@ -3,6 +3,7 @@
 //
 /**
  * @file can_collector_utils.h
+ * @class Main App Utilities
  * @brief Utility functions for testing setup, mainly initializing and handling bluetooth connectivity for debugging.
  */
 
