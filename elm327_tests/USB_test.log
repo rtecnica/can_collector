@@ -1,0 +1,111 @@
+000
+e◊}µain.c 371 
+ets Jun  8 2016 00:22:57
+
+rst:ï.....í.ªâ.x.4Óô…â.\..´ôõÕÄ('≤.“Å¿.».P–ô"ÿíòâ‹ô…“Å@‹î\Äúòäà}ä..”à}äêÖÿPŸ}.
+.ÿ
+}...∞[
+õYÄ...[0;32mI (28) boot: ESP-IDF v3.1-dev-961-ga2556229-dirty 2nd stage bootloader.[0m
+.[0;32mI (28) boot: compile time 15:54:07.[0m
+.[0;32mI (31) boot: Enabling RNG early entropy source....[0m
+.[0;32mI (48) boot: SPI Speed      : 40MHz.[0m
+.[0;32mI (60) boot: SPI Mode       : DIO.[0m
+.[0;32mI (72) boot: SPI Flash Size : 4MB.[0m
+.[0;32mI (84) boot: Partition Table:.[0m
+.[0;32mI (95) boot: ## Label            Usage          Type ST Offset   Length.[0m
+.[0;32mI (117) boot:  0 nvs              WiFi data        01 02 00009000 00006000.[0m
+.[0;32mI (139) boot:  1 phy_init         RF data          01 01 0000f000 00001000.[0m
+.[0;32mI (162) boot:  2 factory          factory app      00 00 00010000 00100000.[0m
+.[0;32mI (185) boot: End of partition table.[0m
+.[0;32mI (198) esp_image: segment 0: paddr=0x00010020 vaddr=0x3f400020 size=0x383a8 (230312) map.[0m
+.[0;32mI (305) esp_image: segment 1: paddr=0x000483d0 vaddr=0x3ffc0000 size=0x02fc0 ( 12224) load.[0m
+.[0;32mI (310) esp_image: segment 2: paddr=0x0004b398 vaddr=0x40080000 size=0x00400 (  1024) load.[0m
+.[0;32mI (325) esp_image: segment 3: paddr=0x0004b7a0 vaddr=0x40080400 size=0x04870 ( 18544) load.[0m
+.[0;32mI (360) esp_image: segment 4: paddr=0x00050018 vaddr=0x400d0018 size=0x85150 (545104) map.[0m
+.[0;32mI (569) esp_image: segment 5: paddr=0x000d5170 vaddr=0x40084c70 size=0x0b39c ( 45980) load.[0m
+.[0;32mI (589) esp_image: segment 6: paddr=0x000e0514 vaddr=0x400c0000 size=0x00000 (     0) load.[0m
+.[0;32mI (599) boot: Loaded app from partition at offset 0x10000.[0m
+.[0;32mI (607) boot: Disabling RNG early entropy source....[0m
+.[0;32mI (624) cpu_start: Pro cpu up..[0m
+.[0;32mI (635) cpu_start: Starting app cpu, entry point is 0x40080fc4.[0m
+.[0;32mI (0) cpu_start: App cpu up..[0m
+.[0;32mI (666) heap_init: Initializing. RAM available for dynamic allocation:.[0m
+.[0;32mI (687) heap_init: At 3FFAFF10 len 000000F0 (0 KiB): DRAM.[0m
+.[0;32mI (705) heap_init: At 3FFCFD08 len 000102F8 (64 KiB): DRAM.[0m
+.[0;32mI (724) heap_init: At 3FFE0440 len 00003BC0 (14 KiB): D/IRAM.[0m
+.[0;32mI (743) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM.[0m
+.[0;32mI (762) heap_init: At 4009000C len 0000FFF4 (63 KiB): IRAM.[0m
+.[0;32mI (781) cpu_start: Pro cpu start user code.[0m
+.[0;32mI (159) cpu_start: Starting scheduler on PRO CPU..[0m
+.[0;32mI (0) cpu_start: Starting scheduler on APP CPU..[0m
+.[0;32mI (200) BTDM_INIT: BT controller compile version [a4252a2]
+.[0m
+.[0;32mI (200) system_api: Base MAC address is not set, read default base MAC address from BLK0 of EFUSE.[0m
+.[0;32mI (520) phy: phy_version: 386.0, 67c798f, Mar 14 2018, 16:34:06, 0, 0.[0m
+.[0;32mI (560) CAN_DATA_COLLECTOR: ESP_SPP_INIT_EVT.[0m
+.[0;32mI (570) CAN_DATA_COLLECTOR: ESP_SPP_START_EVT.[0m
+.[0;32mI (3700) CAN_DATA_COLLECTOR: ESP_SPP_SRV_OPEN_EVT.[0m
+.[0;32mI (3700) Reset: Wrote 5 bytes.[0m
+.[0;32mI (3700) Reset: 0x3ffd32a0   41 54 20 5a 0d                                    |AT Z.|.[0m
+.[0;32mI (5500) RX_TASK: Read 21 bytes: 'AT Z
+
+
+ELM327 v1.5
+
+>'.[0m
+.[0;32mI (5500) RX_TASK_HEXDUMP: 0x3ffd1e04   41 54 20 5a 0d 0d 0d 45  4c 4d 33 32 37 20 76 31  |AT Z...ELM327 v1|.[0m
+.[0;32mI (5510) RX_TASK_HEXDUMP: 0x3ffd1e14   2e 35 0d 0d 3e                                    |.5..>|.[0m
+.[0;32mI (5540) CAN_DATA_COLLECTOR: ESP_SPP_WRITE_EVT.[0m
+.[0;32mI (8720) Set Protocol: Wrote 9 bytes.[0m
+.[0;32mI (8720) Set Protocol: 0x3ffd32a5   41 54 20 54 50 20 41 36  0d                       |AT TP A6.|.[0m
+.[0;32mI (9720) RX_TASK: Read 14 bytes: 'AT TP A6
+OK
+
+>'.[0m
+.[0;32mI (9720) RX_TASK_HEXDUMP: 0x3ffd1e04   41 54 20 54 50 20 41 36  0d 4f 4b 0d 0d 3e        |AT TP A6.OK..>|.[0m
+.[0;32mI (9730) CAN_DATA_COLLECTOR: ESP_SPP_WRITE_EVT.[0m
+.[0;32mI (11720) FuelTank Query: Wrote 5 bytes.[0m
+.[0;32mI (11720) FuelTank Query: 0x3ffd3270   30 31 32 46 0d                                    |012F.|.[0m
+.[0;32mI (12830) RX_TASK: Read 17 bytes: '012F
+41 2F 63 
+
+>'.[0m
+.[0;32mI (12830) RX_TASK_HEXDUMP: 0x3ffd1e04   30 31 32 46 0d 34 31 20  32 46 20 36 33 20 0d 0d  |012F.41 2F 63 ..|.[0m
+.[0;32mI (12840) RX_TASK_HEXDUMP: 0x3ffd1e14   3e                                                |>|.[0m
+.[0;32mI (12870) CAN_DATA_COLLECTOR: ESP_SPP_WRITE_EVT.[0m
+.[0;32mI (14720) OilTemp Query: Wrote 5 bytes.[0m
+.[0;32mI (14720) OilTemp Query: 0x3ffd3270   30 31 35 43 0d                                    |015C.|.[0m
+.[0;32mI (15830) RX_TASK: Read 17 bytes: '015C
+41 5C 42 
+
+>'.[0m
+.[0;32mI (15830) RX_TASK_HEXDUMP: 0x3ffd1e04   30 31 35 43 0d 34 31 20  35 43 20 34 32 20 0d 0d  |015C.41 5C 42 ..|.[0m
+.[0;32mI (15840) RX_TASK_HEXDUMP: 0x3ffd1e14   3e                                                |>|.[0m
+.[0;32mI (15870) CAN_DATA_COLLECTOR: ESP_SPP_WRITE_EVT.[0m
+.[0;32mI (17720) Speed Query: Wrote 5 bytes.[0m
+.[0;32mI (17720) Speed Query: 0x3ffd3270   30 31 30 44 0d                                    |010D.|.[0m
+.[0;32mI (18840) RX_TASK: Read 17 bytes: '010D
+41 0D 00 
+
+>'.[0m
+.[0;32mI (18840) RX_TASK_HEXDUMP: 0x3ffd1e04   30 31 30 44 0d 34 31 20  30 44 20 30 30 20 0d 0d  |010D.41 0D 00 ..|.[0m
+.[0;32mI (18850) RX_TASK_HEXDUMP: 0x3ffd1e14   3e                                                |>|.[0m
+.[0;32mI (18880) CAN_DATA_COLLECTOR: ESP_SPP_WRITE_EVT.[0m
+.[0;32mI (25480) CAN_DATA_COLLECTOR: ESP_SPP_DATA_IND_EVT len=6 handle=129.[0m
+.[0;32mI (25480) : 30 39 30 32 0d 0a .[0m
+.[0;32mI (25480) TX_TASK: Wrote 6 bytes.[0m
+.[0;32mI (25490) TX_TASK: 0x3ffd2b44   30 39 30 32 0d 0a                                 |0902..|.[0m
+.[0;32mI (26600) RX_TASK: Read 84 bytes: '0902
+014 
+0: 49 02 01 38 41 46 
+1: 41 52 32 32 4C 37 46 
+2: 4A 33 32 33 34 37 31 
+
+>'.[0m
+.[0;32mI (26600) RX_TASK_HEXDUMP: 0x3ffd1e04   30 39 30 32 0d 30 31 34  20 0d 30 3a 20 34 39 20  |0902.014 .0: 49 |.[0m
+.[0;32mI (26630) RX_TASK_HEXDUMP: 0x3ffd1e14   30 32 20 30 31 20 33 38  20 34 31 20 34 36 20 0d  |02 01 38 41 46 .|.[0m
+.[0;32mI (26660) RX_TASK_HEXDUMP: 0x3ffd1e24   31 3a 20 34 31 20 35 32  20 33 32 20 33 32 20 34  |1: 41 52 32 32 4|.[0m
+.[0;32mI (26690) RX_TASK_HEXDUMP: 0x3ffd1e34   43 20 33 37 20 34 36 20  0d 32 3a 20 34 41 20 33  |C 37 46 .2: 4A 3|.[0m
+.[0;32mI (26720) RX_TASK_HEXDUMP: 0x3ffd1e44   33 20 33 32 20 33 33 20  33 34 20 33 37 20 33 31  |3 32 33 34 37 31|.[0m
+.[0;32mI (26750) RX_TASK_HEXDUMP: 0x3ffd1e54   20 0d 0d 3e                                       | ..>|.[0m
+.[0;32mI (26780) CAN_DATA_COLLECTOR: ESP_SPP_WRITE_EVT.[0m
