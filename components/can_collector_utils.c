@@ -35,7 +35,8 @@ void queryTask(void *pvParameters){
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         //elm327_query_GPS();
         //vTaskDelay(2000 / portTICK_PERIOD_MS);
-        ESP_LOGI("QUERY_TASK", "Idle task count: %i",ulIdleCycleCount);
+        ESP_LOGI("##############", "Idle task count: %i",ulIdleCycleCount);
+        ESP_LOGI("##############", "Available Heap Size: %i bytes",esp_get_free_heap_size());
         ulIdleCycleCount = 0UL;
     }
     vTaskDelete(NULL);

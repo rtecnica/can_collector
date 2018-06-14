@@ -5,8 +5,8 @@
 //TODO Fill in Documentation
 
 /**
- * @file elm327.h
- * @class ELM327
+ * @file
+ *
  * @brief ELM327 Main lib
  *
  */
@@ -26,23 +26,26 @@
 
 #include "esp_spp_api.h"
 
-#define TXD_PIN GPIO_NUM_4
+#define TXD_PIN GPIO_NUM_32
 #define RXD_PIN GPIO_NUM_36
 
 /**
  * @brief Main data struct for handling required information from CAN bus sensors and GPS
  */
  typedef struct {
-     uint8_t fields;
+     uint8_t fields;/*!< Byte with bitmapped available fields*/
      char VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
-     uint8_t temp;     /*!< Motor Oil temperature*/
-     uint8_t fuel;     /*!< Remaining Fuel in primary Tank*/
-     uint8_t speed;    /*!< Current Ground Speed*/
+     uint8_t temp;  /*!< Motor Oil temperature*/
+     uint8_t fuel;  /*!< Remaining Fuel in primary Tank*/
+     uint8_t speed; /*!< Current Ground Speed*/
      char LONG[8];  /*!< Longitud*/
      char LAT[8];   /*!< Latitude*/
      char TIME[4];  /*!< GPS time*/
  } elm327_data_t;
 
+/**
+* @brief Enumeration for defining presence of new data
+*/
 typedef enum {
     MISC_FIELD      = 0b10000000,
     VIN_FIELD       = 0b01000000,
@@ -61,7 +64,8 @@ typedef enum {
 struct param {
     uint32_t *out_bt_handle;       /*!< BlueTooth connection handle for debug*/
     QueueHandle_t rxQueue;         /*!< rxTask to parseTask queue*/
-    QueueHandle_t OutQueue;  /*!< parseTask to OutgoingTask Queue*/
+    QueueHandle_t OutQueue;        /*!< parseTask to OutgoingTask Queue*/
+    QueueHandle_t storeQueue;      /*!< parseTask to OutgoingTask Queue*/
 } vParams;
 
 /**
@@ -152,3 +156,10 @@ bool elm327_query_VIN(void);
  */
 bool elm327_query_GPS(void);
 
+/**
+ * @brief Sets elm327_data_t fields to default values
+ *
+ * @returns pointer to elm327_data_t
+ *
+ */
+void elm327_new_data(elm327_data_t *data);

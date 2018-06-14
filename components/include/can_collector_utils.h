@@ -2,8 +2,8 @@
 // Created by Ignacio Maldonado Aylwin on 6/5/18.
 //
 /**
- * @file can_collector_utils.h
- * @class Main App Utilities
+ * @file
+ *
  * @brief Utility functions for testing setup, mainly initializing and handling bluetooth connectivity for debugging.
  */
 
@@ -28,6 +28,7 @@
  *  @see ESP_SPP_API_H
  */
 uint32_t bt_handle;
+
 static const esp_spp_mode_t esp_spp_mode = ESP_SPP_MODE_CB;
 static const esp_spp_sec_t sec_mask = ESP_SPP_SEC_NONE;
 static const esp_spp_role_t role_slave = ESP_SPP_ROLE_SLAVE;

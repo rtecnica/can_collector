@@ -7,19 +7,17 @@
  */
 #include "include/elm327.h"
 #include "include/parse_utils.h"
+#include "include/card_utils.h"
 
+#define MESSAGE_QUEUE_LENGTH 5
 static const int RX_BUF_SIZE = 128;
 
 char VIN[17];
 
 //Proceso de monitoreo de interfase UART
 void elm327_rx_task(void *pvParameters) {
-    esp_log_level_set("RX_TASK", ESP_LOG_INFO);
-
-    uint8_t* data;
-
     for(;;) {
-        data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        uint8_t* data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
         while(data == NULL){
             ESP_LOGI("RX_TASK","Waiting for available heap space...");
             vTaskDelay(100/portTICK_PERIOD_MS);
@@ -35,7 +33,7 @@ void elm327_rx_task(void *pvParameters) {
             //Send through queue to data processing Task
             esp_spp_write(*((( struct param *)pvParameters)->out_bt_handle),rxBytes,data);
 
-            xQueueSend((( struct param *)pvParameters)->rxQueue,(void *)(&data),10);
+            xQueueSend((( struct param *)pvParameters)->rxQueue,(void *)(&data),0);
             //vPortFree(data); // data will be vPortFreed by recieving function
         }
         else{
@@ -43,20 +41,19 @@ void elm327_rx_task(void *pvParameters) {
         }
     }
     vPortFree(data);
+    vTaskDelete(NULL);
 }
 
 void elm327_parse_task(void *pvParameters){
 
     void **buff = pvPortMalloc(sizeof(void *));
-    struct param *tmp = pvPortMalloc(sizeof(*tmp));
     BaseType_t xStatus;
-    tmp = ( struct param *)pvParameters;
     can_msg_t msg_type;
 
     elm327_data_t packet;
 
     for(;;){
-        xStatus = xQueueReceive(tmp->rxQueue, buff, 10);
+        xStatus = xQueueReceive(((struct param *)pvParameters)->rxQueue, buff, 100/portTICK_PERIOD_MS);
         if(xStatus == pdPASS) {
             msg_type = parse_check_msg_type((uint8_t *)*buff,6);
             ESP_LOGI("PARSE_TASK", "Message Type Recieved: %04x", msg_type);
@@ -90,12 +87,24 @@ void elm327_parse_task(void *pvParameters){
             else{
                 ESP_LOGI("PARSE_TASK", "No Data!");
             }
+
             vPortFree(*buff);
 
-            if( (packet.fields & (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD)) == (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD) ){
+            if((packet.fields & (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD)) == (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD) ){
                 ESP_LOGI("PARSE_TASK","Packet Ready for Sending");
+
+                if(xQueueSend(((struct param *)pvParameters)->OutQueue,&packet,0) == pdPASS){
+                    ESP_LOGI("PARSE_TASK","Packet sent to Outgoing Queue");
+                }
+                else{
+                    if(xQueueSend(((struct param *)pvParameters)->storeQueue,&packet,0) == pdPASS){
+                        ESP_LOGI("PARSE_TASK","Packet sent to Storage Queue");
+                    }
+                    else{
+                        ESP_LOGI("PARSE_TASK","Storage Queue Full!");
+                    }
+                }
                 packet.fields = VIN_FIELD | MISC_FIELD;
-                // TODO Queue up packet
             }
         }
     }
@@ -116,13 +125,20 @@ void elm327_init(uint32_t *bt_handle) {
     uart_driver_install(UART_NUM_1, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
 
     vParams.out_bt_handle = bt_handle;
-    vParams.rxQueue = xQueueCreate(5, sizeof(void *));
+
+    vParams.rxQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(void *));
     if(vParams.rxQueue != (NULL)){
-        ESP_LOGI("RX_QUEUE", "rxQueue creation successful.");
+        ESP_LOGI("RX_QUEUE", "rxQueue creation successful");
     }
-    vParams.OutQueue = xQueueCreate(5, sizeof(elm327_data_t));
+
+    vParams.OutQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
     if(vParams.OutQueue != (NULL)){
-        ESP_LOGI("OUT_QUEUE", "OutQueue creation successful.");
+        ESP_LOGI("OUT_QUEUE", "OutQueue creation successful");
+    }
+
+    vParams.storeQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
+    if(vParams.storeQueue != (NULL)){
+        ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
     xTaskCreate(elm327_rx_task, "elm327_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);
@@ -187,3 +203,14 @@ bool elm327_query_GPS(void){
     return 1;
 }
 
+void elm327_new_data(elm327_data_t *data){
+
+    strcpy(data->VIN, "AAAAAAAAAAAAAAAAA");
+    strcpy(data->LAT, "00000000");
+    strcpy(data->LONG, "00000000");
+    strcpy(data->TIME, "0000");
+    data->temp = 0x46;
+    data->fuel = 0x46;
+    data->speed = 0x46;
+    data->fields = ALL_FIELDS;
+}

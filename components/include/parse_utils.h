@@ -3,8 +3,8 @@
 //
 
 /**
- * @file parse_utils.h
- * @class Parsing Utilities
+ * @file
+ *
  * @brief Parsing Utilities
  */
 
