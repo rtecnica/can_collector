@@ -32,29 +32,29 @@
 /**
  * @brief Main data struct for handling required information from CAN bus sensors and GPS
  */
- typedef struct {
-     uint8_t fields;/*!< Byte with bitmapped available fields*/
-     char VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
-     uint8_t temp;  /*!< Motor Oil temperature*/
-     uint8_t fuel;  /*!< Remaining Fuel in primary Tank*/
-     uint8_t speed; /*!< Current Ground Speed*/
-     char LONG[8];  /*!< Longitud*/
-     char LAT[8];   /*!< Latitude*/
-     char TIME[4];  /*!< GPS time*/
- } elm327_data_t;
+typedef struct {
+    uint8_t temp;  /*!< Motor Oil temperature*/
+    uint8_t fuel;  /*!< Remaining Fuel in primary Tank*/
+    uint8_t speed; /*!< Current Ground Speed*/
+    uint8_t LONG[8];  /*!< Longitud*/
+    uint8_t LAT[8];   /*!< Latitude*/
+    uint8_t TIME[4];  /*!< GPS time*/
+    uint8_t VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
+    uint8_t fields;/*!< Byte with bitmapped available fields*/
+} elm327_data_t;
 
 /**
 * @brief Enumeration for defining presence of new data
 */
 typedef enum {
-    MISC_FIELD      = 0b10000000,
-    VIN_FIELD       = 0b01000000,
-    TEMP_FIELD      = 0b00100000,
-    FUEL_FIELD      = 0b00010000,
-    SPEED_FIELD     = 0b00001000,
-    LONG_FIELD      = 0b00000100,
-    LAT_FIELD       = 0b00000010,
-    TIME_FIELD      = 0b00000001,
+    TEMP_FIELD      = 0b10000000,
+    FUEL_FIELD      = 0b01000000,
+    SPEED_FIELD     = 0b00100000,
+    LONG_FIELD      = 0b00010000,
+    LAT_FIELD       = 0b00001000,
+    TIME_FIELD      = 0b00000100,
+    VIN_FIELD       = 0b00000010,
+    MISC_FIELD      = 0b00000001,
     ALL_FIELDS      = 0b11111111,
 } data_fields_t;
 

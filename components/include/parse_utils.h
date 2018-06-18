@@ -71,7 +71,7 @@ can_msg_t parse_check_msg_type(uint8_t *data, int len);
  *
  *
  */
-void vin_parse(char *VIN_global, uint8_t *msg);
+void vin_parse(uint8_t *VIN_global, uint8_t *msg);
 
 /**
  * @brief

@@ -12,12 +12,13 @@
 #define MESSAGE_QUEUE_LENGTH 5
 static const int RX_BUF_SIZE = 128;
 
-char VIN[17];
+uint8_t VIN[17];
 
 //Proceso de monitoreo de interfase UART
 void elm327_rx_task(void *pvParameters) {
+    uint8_t* data;
     for(;;) {
-        uint8_t* data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
         while(data == NULL){
             ESP_LOGI("RX_TASK","Waiting for available heap space...");
             vTaskDelay(100/portTICK_PERIOD_MS);
@@ -205,10 +206,10 @@ bool elm327_query_GPS(void){
 
 void elm327_new_data(elm327_data_t *data){
 
-    strcpy(data->VIN, "AAAAAAAAAAAAAAAAA");
-    strcpy(data->LAT, "00000000");
-    strcpy(data->LONG, "00000000");
-    strcpy(data->TIME, "0000");
+    memcpy(data->VIN, "AAAAAAAAAAAAAAAAA",17);
+    memcpy(data->LAT, "00000000", 8);
+    memcpy(data->LONG, "00000000", 8);
+    memcpy(data->TIME, "0000", 8);
     data->temp = 0x46;
     data->fuel = 0x46;
     data->speed = 0x46;

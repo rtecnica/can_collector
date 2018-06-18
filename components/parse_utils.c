@@ -71,31 +71,30 @@ can_msg_t parse_check_msg_type(uint8_t *data, int len){
         return -1;
 }
 
-void vin_parse(char *VIN_global, uint8_t *msg){
-    char *tmp = (char *)pvPortMalloc(18);
-    tmp[0] = (char)(((parse_char_to_hex((msg)[22]))<<4) + (parse_char_to_hex((msg)[23])));
-    tmp[1] = (char)(((parse_char_to_hex((msg)[25]))<<4) + (parse_char_to_hex((msg)[26])));
-    tmp[2] = (char)(((parse_char_to_hex((msg)[28]))<<4) + (parse_char_to_hex((msg)[29])));
-    tmp[3] = (char)(((parse_char_to_hex((msg)[35]))<<4) + (parse_char_to_hex((msg)[36])));
-    tmp[4] = (char)(((parse_char_to_hex((msg)[38]))<<4) + (parse_char_to_hex((msg)[39])));
-    tmp[5] = (char)(((parse_char_to_hex((msg)[41]))<<4) + (parse_char_to_hex((msg)[42])));
-    tmp[6] = (char)(((parse_char_to_hex((msg)[44]))<<4) + (parse_char_to_hex((msg)[45])));
-    tmp[7] = (char)(((parse_char_to_hex((msg)[47]))<<4) + (parse_char_to_hex((msg)[48])));
-    tmp[8] = (char)(((parse_char_to_hex((msg)[50]))<<4) + (parse_char_to_hex((msg)[51])));
-    tmp[9] = (char)(((parse_char_to_hex((msg)[53]))<<4) + (parse_char_to_hex((msg)[54])));
-    tmp[10] = (char)(((parse_char_to_hex((msg)[60]))<<4) + (parse_char_to_hex((msg)[61])));
-    tmp[11] = (char)(((parse_char_to_hex((msg)[63]))<<4) + (parse_char_to_hex((msg)[64])));
-    tmp[12] = (char)(((parse_char_to_hex((msg)[66]))<<4) + (parse_char_to_hex((msg)[67])));
-    tmp[13] = (char)(((parse_char_to_hex((msg)[69]))<<4) + (parse_char_to_hex((msg)[70])));
-    tmp[14] = (char)(((parse_char_to_hex((msg)[72]))<<4) + (parse_char_to_hex((msg)[73])));
-    tmp[15] = (char)(((parse_char_to_hex((msg)[75]))<<4) + (parse_char_to_hex((msg)[76])));
-    tmp[16] = (char)(((parse_char_to_hex((msg)[78]))<<4) + (parse_char_to_hex((msg)[79])));
-    tmp[17] = 0x0;
-    strcpy(VIN_global,tmp);
+void vin_parse(uint8_t *VIN_global, uint8_t *msg){
+    uint8_t *tmp = (uint8_t *)pvPortMalloc(17);
+    tmp[0] = (((parse_char_to_hex((msg)[22]))<<4) + (parse_char_to_hex((msg)[23])));
+    tmp[1] = (((parse_char_to_hex((msg)[25]))<<4) + (parse_char_to_hex((msg)[26])));
+    tmp[2] = (((parse_char_to_hex((msg)[28]))<<4) + (parse_char_to_hex((msg)[29])));
+    tmp[3] = (((parse_char_to_hex((msg)[35]))<<4) + (parse_char_to_hex((msg)[36])));
+    tmp[4] = (((parse_char_to_hex((msg)[38]))<<4) + (parse_char_to_hex((msg)[39])));
+    tmp[5] = (((parse_char_to_hex((msg)[41]))<<4) + (parse_char_to_hex((msg)[42])));
+    tmp[6] = (((parse_char_to_hex((msg)[44]))<<4) + (parse_char_to_hex((msg)[45])));
+    tmp[7] = (((parse_char_to_hex((msg)[47]))<<4) + (parse_char_to_hex((msg)[48])));
+    tmp[8] = (((parse_char_to_hex((msg)[50]))<<4) + (parse_char_to_hex((msg)[51])));
+    tmp[9] = (((parse_char_to_hex((msg)[53]))<<4) + (parse_char_to_hex((msg)[54])));
+    tmp[10] = (((parse_char_to_hex((msg)[60]))<<4) + (parse_char_to_hex((msg)[61])));
+    tmp[11] = (((parse_char_to_hex((msg)[63]))<<4) + (parse_char_to_hex((msg)[64])));
+    tmp[12] = (((parse_char_to_hex((msg)[66]))<<4) + (parse_char_to_hex((msg)[67])));
+    tmp[13] = (((parse_char_to_hex((msg)[69]))<<4) + (parse_char_to_hex((msg)[70])));
+    tmp[14] = (((parse_char_to_hex((msg)[72]))<<4) + (parse_char_to_hex((msg)[73])));
+    tmp[15] = (((parse_char_to_hex((msg)[75]))<<4) + (parse_char_to_hex((msg)[76])));
+    tmp[16] = (((parse_char_to_hex((msg)[78]))<<4) + (parse_char_to_hex((msg)[79])));
+    memcpy(VIN_global,tmp, 17);
     vPortFree(tmp);
 }
 
-bool  parse_is_data(uint8_t *data){
+bool parse_is_data(uint8_t *data){
     uint16_t nodata = 0x4e4f;
     uint16_t is = (((uint16_t)(data[5]))<<(8)) + ((uint16_t)(data[6]));
     return (is^nodata);
