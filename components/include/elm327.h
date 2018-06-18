@@ -83,6 +83,13 @@ void elm327_rx_task(void *pvParameters);
 void elm327_parse_task(void *pvParameters);
 
 /**
+ * @brief
+ *
+ * @param
+ */
+void elm327_card_task(void *pvParameters);
+
+/**
  * @brief Initializer for UART connection, rxTask, parseTask and messaging handle structs
  *
  * @param[in] bt_handle : Pointer to BlueTooth connection handle
@@ -162,4 +169,3 @@ bool elm327_query_GPS(void);
  * @returns pointer to elm327_data_t
  *
  */
-void elm327_new_data(elm327_data_t *data);

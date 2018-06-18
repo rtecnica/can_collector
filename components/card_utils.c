@@ -2,14 +2,17 @@
 // Created by Ignacio Maldonado Aylwin on 6/14/18.
 //
 
-
-#include <stdio.h>
 #include <string.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
 #include "esp_err.h"
 #include "esp_log.h"
 #include "include/card_utils.h"
+
+#define MSG_SIZE sizeof(elm327_data_t)
+#define STACK_FILENAME "log"
+
+volatile int fStack_depth = 0;
 
 void card_init(void) {
     ESP_LOGI("SD_TASK", "Initializing SD card");
@@ -59,4 +62,41 @@ void card_init(void) {
         }
     }
     sdmmc_card_print_info(stdout, card);
+
+    FILE* stack_file = fopen(STACK_FILENAME,"w+");
+    char f = '#';
+    fwrite(&f,1,1,stack_file);
+
+    fclose(stack_file);
+}
+
+void fStackFindTop(FILE* file){
+    fseek(file,-1,SEEK_END);
+    char f = fgetc(file);
+    while(f == 0x0){
+        fseek(file,-2,SEEK_CUR);
+        f = fgetc(file);
+    }
+}
+
+void fStack_pop(FILE* file, elm327_data_t *data){
+    if(fStack_depth > 0) {
+        uint8_t *empty = (uint8_t *) calloc(MSG_SIZE, 1);
+
+        fseek(file, -MSG_SIZE, SEEK_CUR);
+        fread(data, MSG_SIZE, 1, file);
+        fseek(file, -MSG_SIZE, SEEK_CUR);
+        fwrite(empty, MSG_SIZE, 1, file);
+
+        fStackFindTop(file);
+        fStack_depth--;
+    }
+    else{
+
+    }
+}
+
+void fStack_push(FILE* file, elm327_data_t *data){
+    fwrite(data,MSG_SIZE,1,file);
+    fStack_depth++;
 }

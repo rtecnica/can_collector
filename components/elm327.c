@@ -5,7 +5,7 @@
  * @file
  *
  */
-#include "include/elm327.h"
+//#include "include/elm327.h"
 #include "include/parse_utils.h"
 #include "include/card_utils.h"
 
@@ -110,6 +110,10 @@ void elm327_parse_task(void *pvParameters){
         }
     }
     vTaskDelete(NULL);
+}
+
+void elm327_card_task(void *pvParameters){
+
 }
 
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
