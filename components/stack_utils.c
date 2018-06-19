@@ -18,6 +18,8 @@
 
 #define MSG_SIZE sizeof(elm327_data_t)
 
+volatile int fStack_depth = 0;
+
 void stack_init(void) {
     ESP_LOGI("SD_TASK", "Initializing SD card");
     ESP_LOGI("SD_TASK", "Using SDMMC peripheral");
@@ -67,8 +69,10 @@ void stack_init(void) {
     }
     sdmmc_card_print_info(stdout, card);
 
+
     FILE* stack_file = fopen(STACK_FILENAME,"w+");
     char f = '#';
+
     fwrite(&f,1,1,stack_file);
 
     fclose(stack_file);

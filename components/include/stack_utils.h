@@ -16,9 +16,7 @@
 #include "stdio.h"
 #include "elm327.h"
 
-#define STACK_FILENAME "stckfile"
-
-volatile int fStack_depth = 0;
+#define STACK_FILENAME "/sdcard/stack"
 
 void stack_init(void);
 

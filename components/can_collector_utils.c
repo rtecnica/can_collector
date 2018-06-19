@@ -49,6 +49,8 @@ void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
             esp_bt_dev_set_device_name(EXAMPLE_DEVICE_NAME);
             esp_bt_gap_set_scan_mode(ESP_BT_SCAN_MODE_CONNECTABLE_DISCOVERABLE);
             esp_spp_start_srv(sec_mask,role_slave, 0, SPP_SERVER_NAME);
+
+            //xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
             break;
         case ESP_SPP_DISCOVERY_COMP_EVT:
             ESP_LOGI(APP_TAG, "ESP_SPP_DISCOVERY_COMP_EVT");
@@ -82,7 +84,7 @@ void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
             ESP_LOGI(APP_TAG, "ESP_SPP_SRV_OPEN_EVT");
             bt_handle = param->srv_open.handle;
 
-            xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
+            //xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
 
 
             break;
@@ -130,4 +132,6 @@ void bt_init(void){
         ESP_LOGE(APP_TAG, "%s spp init failed: %s\n", __func__, esp_err_to_name(ret));
         return;
     }
+    //vTaskDelay(10000/portTICK_PERIOD_MS);
+    //xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
 }

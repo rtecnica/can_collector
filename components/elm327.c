@@ -32,7 +32,7 @@ void elm327_rx_task(void *pvParameters) {
             ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
-            esp_spp_write(*(((struct param *)pvParameters)->out_bt_handle),rxBytes,data);
+            //esp_spp_write(*(((struct param *)pvParameters)->out_bt_handle),rxBytes,data);
 
             xQueueSend(((struct param *)pvParameters)->rxQueue,(void *)(&data),0);
             //vPortFree(data); // data will be vPortFreed by recieving function
@@ -113,25 +113,31 @@ void elm327_parse_task(void *pvParameters){
 }
 
 void elm327_card_task(void *pvParameters){
+
     stack_init();
 
     elm327_data_t message;
 
+    int stackdepth = 0;
+
     for(;;) {
-        if (uxQueueMessagesWaiting(((struct param *) pvParameters)->OutQueue) == MESSAGE_QUEUE_LENGTH) {
+        if (uxQueueMessagesWaiting(((struct param *) pvParameters)->OutQueue) < MESSAGE_QUEUE_LENGTH && stackdepth > 0) {
 
             fStack_pop(&message);
-            xQueueSend(((struct param *) pvParameters)->OutQueue, &message, 0);
+            stackdepth--;
+            ESP_LOGI("SD_TASK", "Message popped from stack");
+            xQueueSend(((struct param *) pvParameters)->OutQueue, &message, 100/portTICK_PERIOD_MS);
 
         }
 
-        if (xQueueReceive(((struct param *) pvParameters)->storeQueue, &message, 0) == pdPASS) {
+        if (xQueueReceive(((struct param *) pvParameters)->storeQueue, &message, 100/portTICK_PERIOD_MS) == pdPASS) {
 
             fStack_push(&message);
-            ESP_LOGI("SD_TASK", "Message pushed to stack. Stack Depth: %i", fStack_depth);
+            stackdepth++;
+            ESP_LOGI("SD_TASK", "Message pushed to stack. Stack Depth: %i",stackdepth);
         }
     }
-
+    vTaskDelete(NULL);
 }
 
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
@@ -166,6 +172,8 @@ void elm327_init(uint32_t *bt_handle) {
 
     xTaskCreate(elm327_rx_task, "elm327_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);
     xTaskCreate(elm327_parse_task, "elm327_parse_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate(elm327_card_task, "elm327_card_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
+
 }
 
 //Función de utilidad para enviar bytestream a través de UART al ELM327

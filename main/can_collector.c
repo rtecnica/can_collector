@@ -31,4 +31,6 @@ void app_main() {
 
     elm327_init(&bt_handle);
 
+    xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
+
 }
