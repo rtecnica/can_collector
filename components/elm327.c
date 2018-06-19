@@ -7,7 +7,7 @@
  */
 //#include "include/elm327.h"
 #include "include/parse_utils.h"
-#include "include/card_utils.h"
+#include "include/stack_utils.h"
 
 #define MESSAGE_QUEUE_LENGTH 5
 static const int RX_BUF_SIZE = 128;
@@ -32,9 +32,9 @@ void elm327_rx_task(void *pvParameters) {
             ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
-            esp_spp_write(*((( struct param *)pvParameters)->out_bt_handle),rxBytes,data);
+            esp_spp_write(*(((struct param *)pvParameters)->out_bt_handle),rxBytes,data);
 
-            xQueueSend((( struct param *)pvParameters)->rxQueue,(void *)(&data),0);
+            xQueueSend(((struct param *)pvParameters)->rxQueue,(void *)(&data),0);
             //vPortFree(data); // data will be vPortFreed by recieving function
         }
         else{
@@ -113,6 +113,24 @@ void elm327_parse_task(void *pvParameters){
 }
 
 void elm327_card_task(void *pvParameters){
+    stack_init();
+
+    elm327_data_t message;
+
+    for(;;) {
+        if (uxQueueMessagesWaiting(((struct param *) pvParameters)->OutQueue) == MESSAGE_QUEUE_LENGTH) {
+
+            fStack_pop(&message);
+            xQueueSend(((struct param *) pvParameters)->OutQueue, &message, 0);
+
+        }
+
+        if (xQueueReceive(((struct param *) pvParameters)->storeQueue, &message, 0) == pdPASS) {
+
+            fStack_push(&message);
+            ESP_LOGI("SD_TASK", "Message pushed to stack. Stack Depth: %i", fStack_depth);
+        }
+    }
 
 }
 

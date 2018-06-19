@@ -2,19 +2,23 @@
 // Created by Ignacio Maldonado Aylwin on 6/14/18.
 //
 
+/**
+ * @file
+ *
+ * @brief
+ *
+ */
+
 #include <string.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
 #include "esp_err.h"
 #include "esp_log.h"
-#include "include/card_utils.h"
+#include "include/stack_utils.h"
 
 #define MSG_SIZE sizeof(elm327_data_t)
-#define STACK_FILENAME "log"
 
-volatile int fStack_depth = 0;
-
-void card_init(void) {
+void stack_init(void) {
     ESP_LOGI("SD_TASK", "Initializing SD card");
     ESP_LOGI("SD_TASK", "Using SDMMC peripheral");
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
@@ -79,24 +83,38 @@ void fStackFindTop(FILE* file){
     }
 }
 
-void fStack_pop(FILE* file, elm327_data_t *data){
+void fStack_pop(elm327_data_t *data){
+
+    FILE *stack_file = fopen(STACK_FILENAME, "r+");
+
     if(fStack_depth > 0) {
+
         uint8_t *empty = (uint8_t *) calloc(MSG_SIZE, 1);
 
-        fseek(file, -MSG_SIZE, SEEK_CUR);
-        fread(data, MSG_SIZE, 1, file);
-        fseek(file, -MSG_SIZE, SEEK_CUR);
-        fwrite(empty, MSG_SIZE, 1, file);
+        fStackFindTop(stack_file);
+        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
+        fread(data, MSG_SIZE, 1, stack_file);
+        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
+        fwrite(empty, MSG_SIZE, 1, stack_file);
+        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
 
-        fStackFindTop(file);
         fStack_depth--;
     }
     else{
-
+        ESP_LOGE("SD_TASK","File Stack Empty!!");
     }
+
+    fclose(stack_file);
+
 }
 
-void fStack_push(FILE* file, elm327_data_t *data){
-    fwrite(data,MSG_SIZE,1,file);
+void fStack_push(elm327_data_t *data){
+
+    FILE *stack_file = fopen(STACK_FILENAME, "r+");
+
+    fStackFindTop(stack_file);
+    fwrite(data,MSG_SIZE,1,stack_file);
     fStack_depth++;
+
+    fclose(stack_file);
 }
