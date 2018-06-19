@@ -6,6 +6,8 @@
  */
 #include "include/can_collector_utils.h"
 
+#define MESSAGE_QUEUE_LENGTH 5
+static const int RX_BUF_SIZE = 128;
 volatile uint32_t ulIdleCycleCount = 0UL;
 
 void vApplicationIdleHook( void ) {
@@ -13,11 +15,7 @@ void vApplicationIdleHook( void ) {
     ulIdleCycleCount++;
 }
 
-void bt_data_rcv_handler(esp_spp_cb_param_t *param) {
-    elm327_sendData("TX_TASK", param->data_ind.data, param->data_ind.len);
-}
-
-void queryTask(void *pvParameters){
+void collector_queryTask(void *pvParameters){
 
     elm327_reset();
     vTaskDelay(5000/portTICK_PERIOD_MS);
@@ -42,92 +40,163 @@ void queryTask(void *pvParameters){
     vTaskDelete(NULL);
 }
 
-void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
-    switch (event) {
-        case ESP_SPP_INIT_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_INIT_EVT");
-            esp_bt_dev_set_device_name(EXAMPLE_DEVICE_NAME);
-            esp_bt_gap_set_scan_mode(ESP_BT_SCAN_MODE_CONNECTABLE_DISCOVERABLE);
-            esp_spp_start_srv(sec_mask,role_slave, 0, SPP_SERVER_NAME);
-            break;
-        case ESP_SPP_DISCOVERY_COMP_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_DISCOVERY_COMP_EVT");
-            break;
-        case ESP_SPP_OPEN_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_OPEN_EVT");
-            bt_handle = param->open.handle;
-            break;
-        case ESP_SPP_CLOSE_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_CLOSE_EVT");
-            break;
-        case ESP_SPP_START_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_START_EVT");
-            break;
-        case ESP_SPP_CL_INIT_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_CL_INIT_EVT");
-            break;
-        case ESP_SPP_DATA_IND_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_DATA_IND_EVT len=%d handle=%d", param->data_ind.len, param->data_ind.handle);
-            esp_log_buffer_hex("",param->data_ind.data,param->data_ind.len);
-            bt_data_rcv_handler(param);
 
-            break;
-        case ESP_SPP_CONG_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_CONG_EVT");
-            break;
-        case ESP_SPP_WRITE_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_WRITE_EVT");
-            break;
-        case ESP_SPP_SRV_OPEN_EVT:
-            ESP_LOGI(APP_TAG, "ESP_SPP_SRV_OPEN_EVT");
-            bt_handle = param->srv_open.handle;
+//Proceso de monitoreo de interfase UART
+void collector_rx_task(void *pvParameters) {
+    uint8_t* data;
+    for(;;) {
+        data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        while(data == NULL){
+            ESP_LOGI("RX_TASK","Waiting for available heap space...");
+            vTaskDelay(100/portTICK_PERIOD_MS);
+            data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        }
+        const int rxBytes = uart_read_bytes(UART_NUM_1, data, RX_BUF_SIZE, 500 / portTICK_RATE_MS);
+        if (rxBytes > 0) {
 
-            xTaskCreate(queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
+            data[rxBytes] = 0;
+            ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
+            //Send through queue to data processing Task
+            //esp_spp_write(*(((struct param *)pvParameters)->out_bt_handle),rxBytes,data);
 
-            break;
-        default:
-            break;
+            xQueueSend(((struct param *)pvParameters)->rxQueue,(void *)(&data),0);
+            //vPortFree(data); // data will be vPortFreed by recieving function
+        }
+        else{
+            vPortFree(data);
+        }
     }
+    vPortFree(data);
+    vTaskDelete(NULL);
 }
 
-void bt_init(void){
+void collector_parse_task(void *pvParameters){
 
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK( ret );
+    void **buff = pvPortMalloc(sizeof(void *));
+    BaseType_t xStatus;
+    can_msg_t msg_type;
 
-    esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
-    if ((ret = esp_bt_controller_init(&bt_cfg)) != ESP_OK) {
-        ESP_LOGE(APP_TAG, "%s initialize controller failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
+    elm327_data_t packet;
+
+    for(;;){
+        xStatus = xQueueReceive(((struct param *)pvParameters)->rxQueue, buff, 100/portTICK_PERIOD_MS);
+        if(xStatus == pdPASS) {
+            msg_type = parse_check_msg_type((uint8_t *)*buff,6);
+            ESP_LOGI("PARSE_TASK", "Message Type Recieved: %04x", msg_type);
+            if(parse_is_data((uint8_t *)(*buff))){
+                uint8_t var = (((uint8_t)parse_char_to_hex(((uint8_t *)(*buff))[11]))<<4) + ((uint8_t)parse_char_to_hex(((uint8_t *)(*buff))[12]));
+                switch(msg_type){
+                    case FUELTANK_MSG:
+                        packet.fuel = var;
+                        packet.fields = packet.fields | FUEL_FIELD;
+                        ESP_LOGI("FUELTANK_MSG","Fuel Level = %02x",var);
+                        break;
+                    case OILTEMP_MSG:
+                        packet.temp = var;
+                        packet.fields = packet.fields | TEMP_FIELD;
+                        ESP_LOGI("OILTEMP_MSG","Oil Temp = %02x",var);
+                        break;
+                    case SPEED_MSG:
+                        packet.speed = var;
+                        packet.fields = packet.fields | SPEED_FIELD;
+                        ESP_LOGI("SPEED_MSG","Speed = %02x",var);
+                        break;
+                    case VIN_MSG:
+                        vin_parse(VIN,*buff);
+                        packet.fields = packet.fields | VIN_FIELD;
+                        ESP_LOGI("VIN_MSG","VIN = %s",VIN);
+                        break;
+                    case UNKNOWN_MSG:
+                        break;
+                }
+            }
+            else{
+                ESP_LOGI("PARSE_TASK", "No Data!");
+            }
+
+            vPortFree(*buff);
+
+            if((packet.fields & (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD)) == (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD) ){
+                ESP_LOGI("PARSE_TASK","Packet Ready for Sending");
+
+                if(xQueueSend(((struct param *)pvParameters)->OutQueue,&packet,0) == pdPASS){
+                    ESP_LOGI("PARSE_TASK","Packet sent to Outgoing Queue");
+                }
+                else{
+                    if(xQueueSend(((struct param *)pvParameters)->storeQueue,&packet,0) == pdPASS){
+                        ESP_LOGI("PARSE_TASK","Packet sent to Storage Queue");
+                    }
+                    else{
+                        ESP_LOGI("PARSE_TASK","Storage Queue Full!");
+                    }
+                }
+                packet.fields = VIN_FIELD | MISC_FIELD;
+            }
+        }
+    }
+    vTaskDelete(NULL);
+}
+
+void collector_card_task(void *pvParameters){
+
+    stack_init();
+
+    elm327_data_t message;
+
+    int stackdepth = 0;
+
+    for(;;) {
+        if (uxQueueMessagesWaiting(((struct param *) pvParameters)->OutQueue) < MESSAGE_QUEUE_LENGTH && stackdepth > 0) {
+
+            fStack_pop(&message);
+            stackdepth--;
+            ESP_LOGI("SD_TASK", "Message popped from stack");
+            xQueueSend(((struct param *) pvParameters)->OutQueue, &message, 100/portTICK_PERIOD_MS);
+
+        }
+
+        if (xQueueReceive(((struct param *) pvParameters)->storeQueue, &message, 100/portTICK_PERIOD_MS) == pdPASS) {
+
+            fStack_push(&message);
+            stackdepth++;
+            ESP_LOGI("SD_TASK", "Message pushed to stack. Stack Depth: %i",stackdepth);
+        }
+    }
+    vTaskDelete(NULL);
+}
+
+// Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
+void collector_init(void) {
+    const uart_config_t uart_config = {
+            .baud_rate = 38400,//115200,
+            .data_bits = UART_DATA_8_BITS,
+            .parity = UART_PARITY_DISABLE,
+            .stop_bits = UART_STOP_BITS_1,
+            .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+    };
+    uart_param_config(UART_NUM_1, &uart_config);
+    uart_set_pin(UART_NUM_1, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    uart_driver_install(UART_NUM_1, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
+
+    vParams.rxQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(void *));
+    if(vParams.rxQueue != (NULL)){
+        ESP_LOGI("RX_QUEUE", "rxQueue creation successful");
     }
 
-    if ((ret = esp_bt_controller_enable(ESP_BT_MODE_CLASSIC_BT)) != ESP_OK) {
-        ESP_LOGE(APP_TAG, "%s enable controller failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
+    vParams.OutQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
+    if(vParams.OutQueue != (NULL)){
+        ESP_LOGI("OUT_QUEUE", "OutQueue creation successful");
     }
 
-    if ((ret = esp_bluedroid_init()) != ESP_OK) {
-        ESP_LOGE(APP_TAG, "%s initialize bluedroid failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
+    vParams.storeQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
+    if(vParams.storeQueue != (NULL)){
+        ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    if ((ret = esp_bluedroid_enable()) != ESP_OK) {
-        ESP_LOGE(APP_TAG, "%s enable bluedroid failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
-    }
+    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);
+    xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
 
-    if ((ret = esp_spp_register_callback(esp_spp_cb)) != ESP_OK) {
-        ESP_LOGE(APP_TAG, "%s spp register failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
-    }
-
-    if ((ret = esp_spp_init(esp_spp_mode)) != ESP_OK) {
-        ESP_LOGE(APP_TAG, "%s spp init failed: %s\n", __func__, esp_err_to_name(ret));
-        return;
-    }
 }

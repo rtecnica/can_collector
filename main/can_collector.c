@@ -27,8 +27,8 @@ void app_main() {
 
     esp_log_level_set("*",ESP_LOG_INFO);
 
-    bt_init();
+    collector_init();
 
-    elm327_init(&bt_handle);
+    xTaskCreate(collector_queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
 
 }

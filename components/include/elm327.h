@@ -24,8 +24,6 @@
 #include "driver/uart.h"
 #include "soc/uart_struct.h"
 
-#include "esp_spp_api.h"
-
 #define TXD_PIN GPIO_NUM_32
 #define RXD_PIN GPIO_NUM_36
 
@@ -59,36 +57,12 @@ typedef enum {
 } data_fields_t;
 
 /**
-* @brief Data struct containing intertask messaging handles
-*/
-struct param {
-    uint32_t *out_bt_handle;       /*!< BlueTooth connection handle for debug*/
-    QueueHandle_t rxQueue;         /*!< rxTask to parseTask queue*/
-    QueueHandle_t OutQueue;        /*!< parseTask to OutgoingTask Queue*/
-    QueueHandle_t storeQueue;      /*!< parseTask to OutgoingTask Queue*/
-} vParams;
-
-/**
- * @brief Task for recieving data from ELM327 chip.
- *
- * @param[in] pvParameters : Pointer to intertask messaging handle struct
- */
-void elm327_rx_task(void *pvParameters);
-
-/**
- * @brief Task for parsing and assembling data struct from sensor and GPS data
- *
- * @param[in] pvParameters : Pointer to intertask messaging handle struct
- */
-void elm327_parse_task(void *pvParameters);
-
-/**
  * @brief Initializer for UART connection, rxTask, parseTask and messaging handle structs
  *
  * @param[in] bt_handle : Pointer to BlueTooth connection handle
  *
  */
- void elm327_init(uint32_t *bt_handle);
+ void elm327_init();
 
 /**
  * @brief Utility function for sendind arbitrary data to the ELM327 via the UART connection
@@ -162,4 +136,3 @@ bool elm327_query_GPS(void);
  * @returns pointer to elm327_data_t
  *
  */
-void elm327_new_data(elm327_data_t *data);

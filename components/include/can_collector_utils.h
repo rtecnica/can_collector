@@ -7,48 +7,51 @@
  * @brief Utility functions for testing setup, mainly initializing and handling bluetooth connectivity for debugging.
  */
 
-#include "esp_bt.h"
-#include "esp_bt_main.h"
-#include "esp_gap_bt_api.h"
-#include "esp_bt_device.h"
-#include "esp_spp_api.h"
-#include "esp_log.h"
+#include "parse_utils.h"
+#include "stack_utils.h"
 
-#include "nvs.h"
-#include "nvs_flash.h"
-
-#include "elm327.h"
-
-#define APP_TAG "CAN_DATA_COLLECTOR"
-#define SPP_SERVER_NAME "CAN_DATA_COLLECTOR"
-#define EXAMPLE_DEVICE_NAME "CAN_DATA_COLLECTOR"
+uint8_t VIN[17];
 
 /**
- *  @var bt_handle: Bluetooth connection handle for global use. For other parameters
- *  @see ESP_SPP_API_H
- */
-uint32_t bt_handle;
-
-static const esp_spp_mode_t esp_spp_mode = ESP_SPP_MODE_CB;
-static const esp_spp_sec_t sec_mask = ESP_SPP_SEC_NONE;
-static const esp_spp_role_t role_slave = ESP_SPP_ROLE_SLAVE;
+* @brief Data struct containing intertask messaging handles
+*/
+struct param {
+    QueueHandle_t rxQueue;         /*!< rxTask to parseTask queue*/
+    QueueHandle_t OutQueue;        /*!< parseTask to OutgoingTask Queue*/
+    QueueHandle_t storeQueue;      /*!< parseTask to OutgoingTask Queue*/
+} vParams;
 
 /**
- * @brief Handler function for incoming bluetooth data
+ * @brief Task for requesting data from ELM327 chip.
  *
- * @param[in] param : ESP_SPP_DATA_IND_EVENT asociated struct
+ * @param[in] pvParameters : Pointer to intertask messaging handle struct
  */
-void bt_data_rcv_handler(esp_spp_cb_param_t *param);
+void collector_queryTask(void *pvParameters);
 
 /**
- * @brief Callback Function for handling ESP_SPP_*_EVENT
+ * @brief Task for recieving data from ELM327 chip.
  *
- * @param[in] event : The event currently handled
- * @param[in] param : pointer to event asociated struct
+ * @param[in] pvParameters : Pointer to intertask messaging handle struct
  */
-void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param);
+void collector_rx_task(void *pvParameters);
 
 /**
- * @brief Function for initialization of bluetooth stack
+ * @brief Task for parsing and assembling data struct from sensor and GPS data
+ *
+ * @param[in] pvParameters : Pointer to intertask messaging handle struct
  */
-void bt_init(void);
+void collector_parse_task(void *pvParameters);
+
+/**
+ * @brief
+ *
+ * @param
+ */
+void collector_card_task(void *pvParameters);
+
+/**
+ * @brief
+ *
+ * @param
+ */
+void collector_init(void);
