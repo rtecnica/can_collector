@@ -40,7 +40,7 @@ void elm327_rx_task(void *pvParameters) {
             vPortFree(data);
         }
     }
-    vPortFree(data);
+    //vPortFree(data);
     vTaskDelete(NULL);
 }
 
