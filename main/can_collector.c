@@ -19,9 +19,6 @@
 
 #include "../components/include/can_collector_utils.h"
 
-#include "time.h"
-#include "sys/time.h"
-
 
 void app_main() {
 

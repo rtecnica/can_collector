@@ -9,6 +9,7 @@
 
 #include "parse_utils.h"
 #include "stack_utils.h"
+#include "libGSM.h"
 
 uint8_t VIN[17];
 
@@ -48,6 +49,13 @@ void collector_parse_task(void *pvParameters);
  * @param
  */
 void collector_card_task(void *pvParameters);
+
+/**
+ * @brief
+ *
+ * @param
+ */
+void collector_SIM_task(void *pvParameters);
 
 /**
  * @brief

@@ -24,9 +24,6 @@
 #include "driver/uart.h"
 #include "soc/uart_struct.h"
 
-#define TXD_PIN GPIO_NUM_32
-#define RXD_PIN GPIO_NUM_36
-
 /**
  * @brief Main data struct for handling required information from CAN bus sensors and GPS
  */
