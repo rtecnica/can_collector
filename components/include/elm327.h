@@ -17,14 +17,22 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/semphr.h"
 #include "freertos/queue.h"
+#include "freertos/event_groups.h"
 
+#include "nvs_flash.h"
 #include "esp_log.h"
+#include "esp_event.h"
+#include "esp_wifi.h"
+#include "esp_event_loop.h"
 
 #include "driver/uart.h"
 #include "soc/uart_struct.h"
 
 #include "esp_spp_api.h"
+
+#include "mqtt_client.h"
 
 #define TXD_PIN GPIO_NUM_32
 #define RXD_PIN GPIO_NUM_36

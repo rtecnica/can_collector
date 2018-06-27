@@ -13,6 +13,202 @@
 static const int RX_BUF_SIZE = 128;
 
 char VIN[17];
+static const char *TAG = "CAN_COLLECTOR";
+
+static EventGroupHandle_t wifi_event_group;
+const static int CONNECTED_BIT = BIT0;
+
+static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
+{
+    esp_mqtt_client_handle_t client = event->client;
+    int msg_id;
+    // your_context_t *context = event->context;
+    switch (event->event_id) {
+        case MQTT_EVENT_CONNECTED:
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
+            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+            //msg_id = esp_mqtt_client_subscribe(client, "esp32", 0);
+
+            msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
+            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+
+            msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
+            ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
+            break;
+        case MQTT_EVENT_DISCONNECTED:
+            ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
+            break;
+
+        case MQTT_EVENT_SUBSCRIBED:
+            ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
+            msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
+            ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+            msg_id = esp_mqtt_client_publish(client, "esp32", "data", 0, 0, 0);
+            break;
+        case MQTT_EVENT_UNSUBSCRIBED:
+            ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
+            break;
+        case MQTT_EVENT_PUBLISHED:
+            ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+            break;
+        case MQTT_EVENT_DATA:
+            ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+            printf("DATA=%.*s\r\n", event->data_len, event->data);
+            break;
+        case MQTT_EVENT_ERROR:
+            ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+            break;
+    }
+    return ESP_OK;
+}
+
+static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
+{
+    switch (event->event_id) {
+        case SYSTEM_EVENT_STA_START:
+            esp_wifi_connect();
+            break;
+        case SYSTEM_EVENT_STA_GOT_IP:
+            xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
+
+            break;
+        case SYSTEM_EVENT_STA_DISCONNECTED:
+            esp_wifi_connect();
+            xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
+            break;
+        default:
+            break;
+    }
+    return ESP_OK;
+}
+
+static void wifi_init(void)
+{
+    tcpip_adapter_init();
+    wifi_event_group = xEventGroupCreate();
+    ESP_ERROR_CHECK(esp_event_loop_init(wifi_event_handler, NULL));
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
+    wifi_config_t wifi_config = {
+        .sta = {
+            .ssid = CONFIG_WIFI_SSID,
+            .password = CONFIG_WIFI_PASSWORD,
+        },
+    };
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+    ESP_LOGI(TAG, "start the WIFI SSID:[%s] password:[%s]", CONFIG_WIFI_SSID, "******");
+    ESP_ERROR_CHECK(esp_wifi_start());
+    ESP_LOGI(TAG, "Waiting for wifi");
+    xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true, portMAX_DELAY);
+}
+
+static esp_mqtt_client_handle_t mqtt_app_start(void)
+{
+    const esp_mqtt_client_config_t mqtt_cfg = {
+        .uri = "mqtt://172.16.127.182:1883",
+        .event_handle = mqtt_event_handler,
+        // .user_context = (void *)your_context
+    };
+    ESP_LOGI(TAG, "Iniciando el cliente en mqtt_app_start");
+    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+    ESP_LOGI(TAG, "Creado el cliente en mqtt_app_start");
+    esp_mqtt_client_start(client);
+    ESP_LOGI(TAG, "Iniciado el cliente en mqtt_app_start");
+    return client;
+}
+
+static void mqtt_app_stop(esp_mqtt_client_handle_t cliente)
+{
+    esp_mqtt_client_stop(cliente);
+}
+
+//Proceso de consumo de mensajes en queue
+void mqtt_msg_task(void *pvParameters) {
+    char msg[20];
+    char msgError[20];
+    char strIntento[10];
+    int num_intento = 0;
+    int msg_id;
+    esp_mqtt_client_handle_t client;
+    for(;;) {
+        vTaskDelay(200 / portTICK_RATE_MS);
+        ESP_LOGI(TAG, "Iniciando mqtt_msg_task");
+        client = mqtt_app_start();
+        ESP_LOGI(TAG, "Iniciado el mqtt_msg_task");
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: task_stack %d", client->config.task_stack);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: task_prio %d", client->config.task_prio);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: uri %s", client->config.uri);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: host %s", client->config.host);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: path %s", client->config.path);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: scheme %s", client->config.scheme);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: port %d", client->config.port);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: network_timeout_ms %d", client->config.network_timeout_ms);
+        while (1){
+            if (num_intento == 0){ //Aqui se hace la consulta al lector del can bus, se debe consumir la cola
+                vTaskDelay(200 / portTICK_RATE_MS);
+                strcpy(msg, "intento=");
+                itoa(num_intento, strIntento, 10);
+                strcat(msg, strIntento);
+                strcat(msg, ",client=prueba1,gps(lat=20.3,lon=21.3),vel=23.4,comb=50.5");
+                ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
+                strcpy(msg, "Hola");
+                msg_id = esp_mqtt_client_publish(client, "esp32", msg, 0, 0, 0);
+                ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
+            }
+            if (msg_id < 0){
+                vTaskDelay(200 / portTICK_RATE_MS);
+                num_intento++;
+                strcpy(msg, "intento=");
+                itoa(num_intento, strIntento, 10);
+                strcat(msg, strIntento);
+                strcat(msg, ",client=prueba1,gps(lat=20.3,lon=21.3),vel=23.4,comb=50.5");
+                msg_id = esp_mqtt_client_publish(client, "esp32", msg, 0, 0, 0);
+                ESP_LOGI(TAG, "Entro al error: intento %d", num_intento);
+                break;
+            } else {
+                ESP_LOGI(TAG, "Volvio del error");
+                num_intento = 0;
+            }
+            if (num_intento > 0 ){
+                strcpy(msgError, "Error=1,intentos=");
+                itoa(num_intento, strIntento, 10);
+                strcat(msgError, strIntento);
+                esp_mqtt_client_publish(client, "esp32_error", msgError, 0, 0, 0);
+                continue;
+            }
+        }
+        mqtt_app_stop(client);
+        /*uint8_t* data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        while(data == NULL){
+            ESP_LOGI("RX_TASK","Waiting for available heap space...");
+            vTaskDelay(100/portTICK_PERIOD_MS);
+            data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        }
+        const int rxBytes = uart_read_bytes(UART_NUM_1, data, RX_BUF_SIZE, 500 / portTICK_RATE_MS);
+        if (rxBytes > 0) {
+
+            data[rxBytes] = 0;
+            ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+
+            //Send through queue to data processing Task
+            esp_spp_write(*((( struct param *)pvParameters)->out_bt_handle),rxBytes,data);
+
+            xQueueSend((( struct param *)pvParameters)->rxQueue,(void *)(&data),0);
+            //vPortFree(data); // data will be vPortFreed by recieving function
+        }
+        else{
+            vPortFree(data);
+        }*/
+
+    }
+    //vPortFree(data);
+    vTaskDelete(NULL);
+}
 
 //Proceso de monitoreo de interfase UART
 void elm327_rx_task(void *pvParameters) {
@@ -143,6 +339,18 @@ void elm327_init(uint32_t *bt_handle) {
 
     xTaskCreate(elm327_rx_task, "elm327_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);
     xTaskCreate(elm327_parse_task, "elm327_parse_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
+ 
+    esp_log_level_set("*", ESP_LOG_INFO);
+    esp_log_level_set("MQTT_CLIENT", ESP_LOG_VERBOSE);
+    esp_log_level_set("TRANSPORT_TCP", ESP_LOG_VERBOSE);
+    esp_log_level_set("TRANSPORT_SSL", ESP_LOG_VERBOSE);
+    esp_log_level_set("TRANSPORT", ESP_LOG_VERBOSE);
+    esp_log_level_set("OUTBOX", ESP_LOG_VERBOSE);
+
+    nvs_flash_init();
+    wifi_init();
+
+    xTaskCreate(mqtt_msg_task, "mqtt_msg_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 2, NULL);
 }
 
 //Función de utilidad para enviar bytestream a través de UART al ELM327
