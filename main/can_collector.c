@@ -25,7 +25,4 @@ void app_main() {
     esp_log_level_set("*",ESP_LOG_INFO);
 
     collector_init();
-
-    xTaskCreate(collector_queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
-
 }

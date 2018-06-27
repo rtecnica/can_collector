@@ -27,7 +27,7 @@ struct param {
  *
  * @param[in] pvParameters : Pointer to intertask messaging handle struct
  */
-void collector_queryTask(void *pvParameters);
+void collector_query_task(void *pvParameters);
 
 /**
  * @brief Task for recieving data from ELM327 chip.

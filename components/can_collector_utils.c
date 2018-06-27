@@ -60,7 +60,7 @@ void vApplicationIdleHook( void ) {
     ulIdleCycleCount++;
 }
 
-void collector_queryTask(void *pvParameters){
+void collector_query_task(void *pvParameters){
 
     elm327_reset();
     vTaskDelay(5000/portTICK_PERIOD_MS);
@@ -84,7 +84,6 @@ void collector_queryTask(void *pvParameters){
     }
     vTaskDelete(NULL);
 }
-
 
 //Proceso de monitoreo de interfase UART
 void collector_rx_task(void *pvParameters) {
@@ -233,7 +232,7 @@ void collector_SIM_task(void *pvParameters){
         ESP_LOGI(TIME_TAG,"OBTAINING TIME");
         ESP_LOGI(TIME_TAG, "Initializing SNTP");
         sntp_setoperatingmode(SNTP_OPMODE_POLL);
-        sntp_setservername(0, "ntp.shoa.cl");
+        sntp_setservername(0, "south-america.pool.ntp.org");
         sntp_init();
         ESP_LOGI(TIME_TAG,"SNTP INITIALIZED");
 
@@ -297,12 +296,14 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);
+    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES -1, NULL);
     ESP_LOGI("COLLECTOR_INIT", "RX Task creation successful");
-    xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 2, NULL);
     ESP_LOGI("COLLECTOR_INIT", "Parse Task creation successful");
-    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 2, NULL);
     ESP_LOGI("COLLECTOR_INIT", "Card Task creation successful");
     xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);
-    ESP_LOGI("COLLECTOR_INIT", "Card Task creation successful");
+    ESP_LOGI("COLLECTOR_INIT", "SIM Task creation successful");
+    xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
+    ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
 }
