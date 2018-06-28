@@ -39,6 +39,7 @@
 
 #include <esp_event.h>
 #include <esp_wifi.h>
+#include <include/elm327.h>
 
 #include "apps/sntp/sntp.h"
 #include "cJSON.h"
@@ -60,7 +61,7 @@ void vApplicationIdleHook( void ) {
     ulIdleCycleCount++;
 }
 
-void collector_query_task(void *pvParameters){
+void collector_query_task(void *queueStruct){
 
     elm327_reset();
     vTaskDelay(5000/portTICK_PERIOD_MS);
@@ -78,15 +79,15 @@ void collector_query_task(void *pvParameters){
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         //elm327_query_GPS();
         //vTaskDelay(2000 / portTICK_PERIOD_MS);
-        ESP_LOGI("##############", "Idle task count: %i",ulIdleCycleCount);
-        ESP_LOGI("##############", "Available Heap Size: %i bytes",esp_get_free_heap_size());
+        ESP_LOGI("HOUSEKEEPING", "Idle task count: %i",ulIdleCycleCount);
+        ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
         ulIdleCycleCount = 0UL;
     }
     vTaskDelete(NULL);
 }
 
 //Proceso de monitoreo de interfase UART
-void collector_rx_task(void *pvParameters) {
+void collector_rx_task(void *queueStruct) {
     uint8_t* data;
     for(;;) {
         data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
@@ -103,7 +104,7 @@ void collector_rx_task(void *pvParameters) {
             ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
-            xQueueSend(((struct param *)pvParameters)->rxQueue,(void *)(&data),0);
+            xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
             //vPortFree(data); // data will be vPortFreed by recieving function
         }
         else{
@@ -114,16 +115,17 @@ void collector_rx_task(void *pvParameters) {
     vTaskDelete(NULL);
 }
 
-void collector_parse_task(void *pvParameters){
+void collector_parse_task(void *queueStruct){
 
     void **buff = pvPortMalloc(sizeof(void *));
     BaseType_t xStatus;
     can_msg_t msg_type;
 
     elm327_data_t packet;
+    packet.fields = MISC_FIELD;
 
     for(;;){
-        xStatus = xQueueReceive(((struct param *)pvParameters)->rxQueue, buff, 100/portTICK_PERIOD_MS);
+        xStatus = xQueueReceive(((struct param *)queueStruct)->rxQueue, buff, 100/portTICK_PERIOD_MS);
         if(xStatus == pdPASS) {
             msg_type = parse_check_msg_type((uint8_t *)*buff,6);
             ESP_LOGI("PARSE_TASK", "Message Type Recieved: %04x", msg_type);
@@ -163,11 +165,11 @@ void collector_parse_task(void *pvParameters){
             if((packet.fields & (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD)) == (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD) ){
                 ESP_LOGI("PARSE_TASK","Packet Ready for Sending");
 
-                if(xQueueSend(((struct param *)pvParameters)->OutQueue,&packet,0) == pdPASS){
+                if(xQueueSend(((struct param *)queueStruct)->OutQueue,&packet,0) == pdPASS){
                     ESP_LOGI("PARSE_TASK","Packet sent to Outgoing Queue");
                 }
                 else{
-                    if(xQueueSend(((struct param *)pvParameters)->storeQueue,&packet,0) == pdPASS){
+                    if(xQueueSend(((struct param *)queueStruct)->storeQueue,&packet,0) == pdPASS){
                         ESP_LOGI("PARSE_TASK","Packet sent to Storage Queue");
                     }
                     else{
@@ -181,7 +183,7 @@ void collector_parse_task(void *pvParameters){
     vTaskDelete(NULL);
 }
 
-void collector_card_task(void *pvParameters){
+void collector_card_task(void *queueStruct){
 
     stack_init();
 
@@ -190,16 +192,16 @@ void collector_card_task(void *pvParameters){
     int stackdepth = 0;
 
     for(;;) {
-        if (uxQueueMessagesWaiting(((struct param *) pvParameters)->OutQueue) < MESSAGE_QUEUE_LENGTH && stackdepth > 0) {
+        if (uxQueueMessagesWaiting(((struct param *) queueStruct)->OutQueue) < MESSAGE_QUEUE_LENGTH && stackdepth > 0) {
 
             fStack_pop(&message);
             stackdepth--;
             ESP_LOGI("SD_TASK", "Message popped from stack");
-            xQueueSend(((struct param *) pvParameters)->OutQueue, &message, 100/portTICK_PERIOD_MS);
+            xQueueSend(((struct param *) queueStruct)->OutQueue, &message, 100/portTICK_PERIOD_MS);
 
         }
 
-        if (xQueueReceive(((struct param *) pvParameters)->storeQueue, &message, 100/portTICK_PERIOD_MS) == pdPASS) {
+        if (xQueueReceive(((struct param *) queueStruct)->storeQueue, &message, 100/portTICK_PERIOD_MS) == pdPASS) {
 
             fStack_push(&message);
             stackdepth++;
@@ -209,7 +211,7 @@ void collector_card_task(void *pvParameters){
     vTaskDelete(NULL);
 }
 
-void collector_SIM_task(void *pvParameters){
+void collector_SIM_task(void *queueStruct){
 
     if (ppposInit() == 0) {
         ESP_LOGE("PPPoS EXAMPLE", "ERROR: GSM not initialized, HALTED");
@@ -281,28 +283,28 @@ void collector_init(void) {
     uart_set_pin(UART_NUM_1, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
     uart_driver_install(UART_NUM_1, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
 
-    vParams.rxQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(void *));
-    if(vParams.rxQueue != (NULL)){
+    msgQueues.rxQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(void *));
+    if(msgQueues.rxQueue != (NULL)){
         ESP_LOGI("RX_QUEUE", "rxQueue creation successful");
     }
 
-    vParams.OutQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
-    if(vParams.OutQueue != (NULL)){
+    msgQueues.OutQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
+    if(msgQueues.OutQueue != (NULL)){
         ESP_LOGI("OUT_QUEUE", "OutQueue creation successful");
     }
 
-    vParams.storeQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
-    if(vParams.storeQueue != (NULL)){
+    msgQueues.storeQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(elm327_data_t));
+    if(msgQueues.storeQueue != (NULL)){
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES -1, NULL);
+    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     ESP_LOGI("COLLECTOR_INIT", "RX Task creation successful");
-    xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     ESP_LOGI("COLLECTOR_INIT", "Parse Task creation successful");
-    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     ESP_LOGI("COLLECTOR_INIT", "Card Task creation successful");
-    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES, NULL);
+    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
     ESP_LOGI("COLLECTOR_INIT", "SIM Task creation successful");
     xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
     ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");

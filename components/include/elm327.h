@@ -1,13 +1,11 @@
-//
-// Created by Ignacio Maldonado Aylwin on 5/29/18.
-//
 
 //TODO Fill in Documentation
 
 /**
  * @file
- *
- * @brief ELM327 Main lib
+ * @author Ignacio Maldonado
+ * @brief ELM327 Main lib, contains methods for sending commands to
+ * ELM327 through UART and data type struct for information handling
  *
  */
 
@@ -40,33 +38,26 @@ typedef struct {
 
 /**
 * @brief Enumeration for defining presence of new data
+* MISC_FIELD must always be enabled for correct function of fileStack
 */
 typedef enum {
-    TEMP_FIELD      = 0b10000000,
-    FUEL_FIELD      = 0b01000000,
-    SPEED_FIELD     = 0b00100000,
-    LONG_FIELD      = 0b00010000,
-    LAT_FIELD       = 0b00001000,
-    TIME_FIELD      = 0b00000100,
-    VIN_FIELD       = 0b00000010,
-    MISC_FIELD      = 0b00000001,
-    ALL_FIELDS      = 0b11111111,
+    TEMP_FIELD      = 0b10000000, /*!< Set when new temperature data is available*/
+    FUEL_FIELD      = 0b01000000, /*!< Set when new fuel tank level data is available*/
+    SPEED_FIELD     = 0b00100000, /*!< Set when new vehicle speed data is available*/
+    LONG_FIELD      = 0b00010000, /*!< Set when new longitude data is available*/
+    LAT_FIELD       = 0b00001000, /*!< Set when new latitude data is available*/
+    TIME_FIELD      = 0b00000100, /*!< Set when new current time data is available*/
+    VIN_FIELD       = 0b00000010, /*!< Set when VIN data has been correctly parsed*/
+    MISC_FIELD      = 0b00000001, /*!< Set by default for correct functioning of fileStack*/
+    ALL_FIELDS      = 0b11111111, /*!< All fields set*/
 } data_fields_t;
 
 /**
- * @brief Initializer for UART connection, rxTask, parseTask and messaging handle structs
+ * @brief Utility function for sending arbitrary data to the ELM327 via the UART connection
  *
- * @param[in] bt_handle : Pointer to BlueTooth connection handle
- *
- */
- void elm327_init();
-
-/**
- * @brief Utility function for sendind arbitrary data to the ELM327 via the UART connection
- *
- * @param[in] logName : Name of log to send debug info
- * @param[in] data : Buffer for data to send
- * @param[in] len : Length of buffer
+ * @param logName : Name of log to send debug info
+ * @param data : Buffer for data to send
+ * @param len : Length of buffer
  *
  * @returns True if sent appropiate amount of bytes, False otherwise
  */
@@ -118,18 +109,3 @@ bool elm327_query_speed(void);
  *
  */
 bool elm327_query_VIN(void);
-
-/**
- * @brief Request Time and Position from GPS
- *
- * @returns True if sent appropiate amount of bytes, False otherwise
- *
- */
-bool elm327_query_GPS(void);
-
-/**
- * @brief Sets elm327_data_t fields to default values
- *
- * @returns pointer to elm327_data_t
- *
- */
