@@ -136,12 +136,20 @@ void mqtt_msg_task(void *pvParameters) {
     esp_mqtt_client_handle_t client;
     for(;;) {
         vTaskDelay(200 / portTICK_RATE_MS);
-        ESP_LOGI(TAG, "Iniciando el cliente en mqtt_msg_task");
+        ESP_LOGI(TAG, "Iniciando mqtt_msg_task");
         client = mqtt_app_start();
-        ESP_LOGI(TAG, "Iniciado el cliente en mqtt_msg_task");
+        ESP_LOGI(TAG, "Iniciado el mqtt_msg_task");
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: task_stack %d", client->config.task_stack);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: task_prio %d", client->config.task_prio);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: uri %s", client->config.uri);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: host %s", client->config.host);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: path %s", client->config.path);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: scheme %s", client->config.scheme);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: port %d", client->config.port);
+//        ESP_LOGI(TAG, "Cliente mqtt_msg_task: network_timeout_ms %d", client->config.network_timeout_ms);
         while (1){
-            vTaskDelay(2000 / portTICK_RATE_MS);
             if (num_intento == 0){ //Aqui se hace la consulta al lector del can bus, se debe consumir la cola
+                vTaskDelay(200 / portTICK_RATE_MS);
                 strcpy(msg, "intento=");
                 itoa(num_intento, strIntento, 10);
                 strcat(msg, strIntento);
@@ -151,8 +159,8 @@ void mqtt_msg_task(void *pvParameters) {
                 msg_id = esp_mqtt_client_publish(client, "esp32", msg, 0, 0, 0);
                 ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
             }
-            vTaskDelay(2000 / portTICK_RATE_MS);
             if (msg_id < 0){
+                vTaskDelay(200 / portTICK_RATE_MS);
                 num_intento++;
                 strcpy(msg, "intento=");
                 itoa(num_intento, strIntento, 10);
@@ -174,6 +182,29 @@ void mqtt_msg_task(void *pvParameters) {
             }
         }
         mqtt_app_stop(client);
+        /*uint8_t* data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        while(data == NULL){
+            ESP_LOGI("RX_TASK","Waiting for available heap space...");
+            vTaskDelay(100/portTICK_PERIOD_MS);
+            data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+        }
+        const int rxBytes = uart_read_bytes(UART_NUM_1, data, RX_BUF_SIZE, 500 / portTICK_RATE_MS);
+        if (rxBytes > 0) {
+
+            data[rxBytes] = 0;
+            ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+
+            //Send through queue to data processing Task
+            esp_spp_write(*((( struct param *)pvParameters)->out_bt_handle),rxBytes,data);
+
+            xQueueSend((( struct param *)pvParameters)->rxQueue,(void *)(&data),0);
+            //vPortFree(data); // data will be vPortFreed by recieving function
+        }
+        else{
+            vPortFree(data);
+        }*/
+
     }
     //vPortFree(data);
     vTaskDelete(NULL);
@@ -319,7 +350,7 @@ void elm327_init(uint32_t *bt_handle) {
     nvs_flash_init();
     wifi_init();
 
-    xTaskCreate(mqtt_msg_task, "mqtt_msg_task", 4096, (void *)&vParams, configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate(mqtt_msg_task, "mqtt_msg_task", 1024 * 2, (void *)&vParams, configMAX_PRIORITIES - 2, NULL);
 }
 
 //Función de utilidad para enviar bytestream a través de UART al ELM327
