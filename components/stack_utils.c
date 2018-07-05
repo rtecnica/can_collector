@@ -1,11 +1,9 @@
-//
-// Created by Ignacio Maldonado Aylwin on 6/14/18.
-//
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
- *
- * @brief
+ * @author Ignacio Maldonado Aylwin
  *
  */
 
