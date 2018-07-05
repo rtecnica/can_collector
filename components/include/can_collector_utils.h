@@ -1,4 +1,6 @@
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
  * @author Ignacio Maldonado
@@ -7,10 +9,14 @@
  * is available.
  */
 
+#ifndef __CAN_COLLECTOR_UTILS_H__
+#define __CAN_COLLECTOR_UTILS_H__
+
 #include "parse_utils.h"
 #include "stack_utils.h"
+#include "elm327.h"
 #include "libGSM.h"
-
+#include "L80GPS.h"
 /**
 * @brief Container for VIN string.
 */
@@ -67,3 +73,5 @@ void collector_SIM_task(void *queueStruct);
  *
  */
 void collector_init(void);
+
+#endif
