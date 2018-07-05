@@ -1,4 +1,6 @@
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
  * @author Ignacio Maldonado
@@ -6,6 +8,9 @@
  * data on an SD card, while outgoing connection is unavailable.
  *
  */
+
+#ifndef __STACK_UTILS_H__
+#define __STACK_UTILS_H__
 
 #include "esp_vfs_fat.h"
 #include "driver/sdmmc_host.h"
@@ -37,3 +42,5 @@ void fStack_pop(elm327_data_t *data);
  *
  */
 void fStack_push(elm327_data_t *data);
+
+#endif
