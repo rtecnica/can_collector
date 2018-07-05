@@ -1,11 +1,13 @@
-//
-// Created by Ignacio Maldonado Aylwin on 6/7/18.
-//
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
+ * @author Ignacio Maldonado Aylwin
+ *
  */
 
+#include "include/elm327.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/portable.h"
 
@@ -71,7 +73,7 @@ can_msg_t parse_check_msg_type(uint8_t *data, int len){
         return -1;
 }
 
-void vin_parse(uint8_t *VIN_global, uint8_t *msg){
+void parse_vin(uint8_t *VIN_global, uint8_t *msg){
     uint8_t *tmp = (uint8_t *)pvPortMalloc(17);
     tmp[0] = (((parse_char_to_hex((msg)[22]))<<4) + (parse_char_to_hex((msg)[23])));
     tmp[1] = (((parse_char_to_hex((msg)[25]))<<4) + (parse_char_to_hex((msg)[26])));
@@ -94,8 +96,27 @@ void vin_parse(uint8_t *VIN_global, uint8_t *msg){
     vPortFree(tmp);
 }
 
+uint8_t parse_msg(uint8_t *buff){
+   return (((uint8_t)parse_char_to_hex(((uint8_t *)(buff))[11]))<<4) + ((uint8_t)parse_char_to_hex(((uint8_t *)(buff))[12]));
+}
+
 bool parse_is_data(uint8_t *data){
     uint16_t nodata = 0x4e4f;
     uint16_t is = (((uint16_t)(data[5]))<<(8)) + ((uint16_t)(data[6]));
     return (is^nodata);
+}
+
+bool parse_is_GPS(uint8_t *data){
+    return data[0]=='$';
+}
+
+void parse_GPS(uint8_t *data, elm327_data_t *packet){
+   uint8_t blankLAT[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+   uint8_t blankLONG[8] = {8, 7, 6, 5, 4, 3, 2, 1};
+   uint8_t blankTIME[6] = {0, 4, 2, 0, 0, 0};
+
+   memcpy(packet->LAT,blankLAT,8);
+   memcpy(packet->LONG,blankLONG,8);
+   memcpy(packet->TIME,blankTIME,6);
+
 }

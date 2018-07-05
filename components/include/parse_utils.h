@@ -1,14 +1,20 @@
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
  * @author Ignacio Maldonado
  * @brief Utilities for parsing information from ELM327 chip.
  */
 
+#ifndef __PARSE_UTILS_H__
+#define __PARSE_UTILS_H__
+
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "elm327.h"
 
 /**
 * @brief Char to hexadecimal correspondence
@@ -73,7 +79,17 @@ can_msg_t parse_check_msg_type(uint8_t *data, int len);
  * @param VIN_global : Pointer to VIN global variable container
  *
  */
-void vin_parse(uint8_t *VIN_global, uint8_t *msg);
+void parse_vin(uint8_t *VIN_global, uint8_t *msg);
+
+/**
+ * @brief Utility for parsing msg data.
+ *
+ * @param data : pointer to string that contains response
+ *
+ * @return data byte.
+ *
+ */
+uint8_t parse_msg(uint8_t *buff);
 
 /**
  * @brief Utility for checking whether or not ELM327 response contains data.
@@ -84,3 +100,26 @@ void vin_parse(uint8_t *VIN_global, uint8_t *msg);
  *
  */
 bool parse_is_data(uint8_t *data);
+
+/**
+ * @brief Utility for checking whether or not response is GPS data.
+ *
+ * @param data : pointer to string that contains response
+ *
+ * @return true if message contains data, false otherwise
+ *
+ */
+bool parse_is_GPS(uint8_t *data);
+
+/**
+ * @brief Utility for parsing GPS data.
+ *
+ * @param data : pointer to string that contains response
+ *
+ * @param packet : pointer to container for parsing result.
+ *
+ */
+void parse_GPS(uint8_t *data, elm327_data_t *packet);
+
+
+#endif

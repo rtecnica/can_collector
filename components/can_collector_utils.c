@@ -1,8 +1,10 @@
-//
-// Created by Ignacio Maldonado Aylwin on 6/5/18.
-//
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
+ * @author Ignacio Maldonado Aylwin
+ *
  */
 #include "include/can_collector_utils.h"
 
@@ -46,10 +48,8 @@
 
 #include "../build/include/sdkconfig.h"
 
-#define MESSAGE_QUEUE_LENGTH 5
 
-#define TXD_PIN GPIO_NUM_32
-#define RXD_PIN GPIO_NUM_36
+#define MESSAGE_QUEUE_LENGTH 5
 
 static const char *TIME_TAG = "[SNTP]";
 
@@ -62,23 +62,17 @@ void vApplicationIdleHook( void ) {
 }
 
 void collector_query_task(void *queueStruct){
-
-    elm327_reset();
-    vTaskDelay(5000/portTICK_PERIOD_MS);
-    elm327_setCAN();
-    vTaskDelay(3000/portTICK_PERIOD_MS);
+    ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
     elm327_query_VIN();
     vTaskDelay(3000/portTICK_PERIOD_MS);
 
     for(;;) {
         elm327_query_fueltank();
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
         elm327_query_oiltemp();
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
         elm327_query_speed();
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-        //elm327_query_GPS();
-        //vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
         ESP_LOGI("HOUSEKEEPING", "Idle task count: %i",ulIdleCycleCount);
         ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
         ulIdleCycleCount = 0UL;
@@ -88,34 +82,55 @@ void collector_query_task(void *queueStruct){
 
 //Proceso de monitoreo de interfase UART
 void collector_rx_task(void *queueStruct) {
+    ESP_LOGI("COLLECTOR_INIT", "RX Task creation successful");
+
     uint8_t* data;
     for(;;) {
-        data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+
+        data = (uint8_t*) pvPortMalloc(ELM_RX_BUF_SIZE+1);
         while(data == NULL){
             ESP_LOGI("RX_TASK","Waiting for available heap space...");
             vTaskDelay(100/portTICK_PERIOD_MS);
-            data = (uint8_t*) pvPortMalloc(RX_BUF_SIZE+1);
+            data = (uint8_t*) pvPortMalloc(ELM_RX_BUF_SIZE+1);
         }
-        const int rxBytes = uart_read_bytes(UART_NUM_1, data, RX_BUF_SIZE, 500 / portTICK_RATE_MS);
+
+        int rxBytes = uart_read_bytes(ELM_UART_NUM, data, ELM_RX_BUF_SIZE, 100 / portTICK_RATE_MS);
         if (rxBytes > 0) {
 
             data[rxBytes] = 0;
-            ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+            //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            ESP_LOGI("RX_TASK", "%s", data);
+            //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
-            //vPortFree(data); // data will be vPortFreed by recieving function
+            // data will be vPortFreed by receiving function
         }
-        else{
-            vPortFree(data);
+        else {
+            rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 200 / portTICK_RATE_MS);
+            if (rxBytes > 0) {
+
+                data[rxBytes] = 0;
+                //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+                ESP_LOGI("RX_TASK", "%s", data);
+                //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+
+                //Send through queue to data processing Task
+                xQueueSend(((struct param *) queueStruct)->rxQueue, (void *) (&data), 0);
+                // data will be vPortFreed by receiving function
+            } else {
+                vPortFree(data);
+            }
         }
+        //vPortFree(data);
+        //ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
     }
-    vPortFree(data);
+    //vPortFree(data);
     vTaskDelete(NULL);
 }
 
 void collector_parse_task(void *queueStruct){
+    ESP_LOGI("COLLECTOR_INIT", "Parse Task creation successful");
 
     void **buff = pvPortMalloc(sizeof(void *));
     BaseType_t xStatus;
@@ -125,12 +140,17 @@ void collector_parse_task(void *queueStruct){
     packet.fields = MISC_FIELD;
 
     for(;;){
-        xStatus = xQueueReceive(((struct param *)queueStruct)->rxQueue, buff, 100/portTICK_PERIOD_MS);
+        xStatus = xQueueReceive(((struct param *)queueStruct)->rxQueue, buff, 200 / portTICK_PERIOD_MS);
         if(xStatus == pdPASS) {
-            msg_type = parse_check_msg_type((uint8_t *)*buff,6);
-            ESP_LOGI("PARSE_TASK", "Message Type Recieved: %04x", msg_type);
-            if(parse_is_data((uint8_t *)(*buff))){
-                uint8_t var = (((uint8_t)parse_char_to_hex(((uint8_t *)(*buff))[11]))<<4) + ((uint8_t)parse_char_to_hex(((uint8_t *)(*buff))[12]));
+            if(parse_is_GPS((uint8_t *)(*buff))){
+                ESP_LOGI("PARSE_TASK", "Message Type Received: GPS");
+                parse_GPS((uint8_t *)(*buff),&packet);
+                packet.fields = packet.fields | LAT_FIELD | LONG_FIELD | TIME_FIELD;
+            }
+            else if(parse_is_data((uint8_t *)(*buff))){
+                msg_type = parse_check_msg_type((uint8_t *)*buff,6);
+                ESP_LOGI("PARSE_TASK", "Message Type Received: %04x", msg_type);
+                uint8_t var = parse_msg(*buff);
                 switch(msg_type){
                     case FUELTANK_MSG:
                         packet.fuel = var;
@@ -148,7 +168,8 @@ void collector_parse_task(void *queueStruct){
                         ESP_LOGI("SPEED_MSG","Speed = %02x",var);
                         break;
                     case VIN_MSG:
-                        vin_parse(VIN,*buff);
+                        parse_vin(VIN,*buff);
+                        memcpy(packet.VIN,VIN,17);
                         packet.fields = packet.fields | VIN_FIELD;
                         ESP_LOGI("VIN_MSG","VIN = %s",VIN);
                         break;
@@ -159,7 +180,6 @@ void collector_parse_task(void *queueStruct){
             else{
                 ESP_LOGI("PARSE_TASK", "No Data!");
             }
-
             vPortFree(*buff);
 
             if((packet.fields & (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD)) == (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD) ){
@@ -184,6 +204,7 @@ void collector_parse_task(void *queueStruct){
 }
 
 void collector_card_task(void *queueStruct){
+    ESP_LOGI("COLLECTOR_INIT", "Card Task creation successful");
 
     stack_init();
 
@@ -212,6 +233,7 @@ void collector_card_task(void *queueStruct){
 }
 
 void collector_SIM_task(void *queueStruct){
+    ESP_LOGI("COLLECTOR_INIT", "SIM Task creation successful");
 
     if (ppposInit() == 0) {
         ESP_LOGE("PPPoS EXAMPLE", "ERROR: GSM not initialized, HALTED");
@@ -224,7 +246,7 @@ void collector_SIM_task(void *queueStruct){
     time_t now = 0;
     struct tm timeinfo = { 0 };
     int retry = 0;
-    const int retry_count = 10;
+    const int retry_count = 10;ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
 
     time(&now);
     localtime_r(&now, &timeinfo);
@@ -272,16 +294,10 @@ void collector_SIM_task(void *queueStruct){
 
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
-    const uart_config_t uart_config = {
-            .baud_rate = 38400,//115200,
-            .data_bits = UART_DATA_8_BITS,
-            .parity = UART_PARITY_DISABLE,
-            .stop_bits = UART_STOP_BITS_1,
-            .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
-    };
-    uart_param_config(UART_NUM_1, &uart_config);
-    uart_set_pin(UART_NUM_1, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-    uart_driver_install(UART_NUM_1, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
+
+
+    elm327_init();
+    GPS_init();
 
     msgQueues.rxQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(void *));
     if(msgQueues.rxQueue != (NULL)){
@@ -299,13 +315,9 @@ void collector_init(void) {
     }
 
     xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
-    ESP_LOGI("COLLECTOR_INIT", "RX Task creation successful");
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    ESP_LOGI("COLLECTOR_INIT", "Parse Task creation successful");
     xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    ESP_LOGI("COLLECTOR_INIT", "Card Task creation successful");
-    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
-    ESP_LOGI("COLLECTOR_INIT", "SIM Task creation successful");
+    //xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
     xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
-    ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
+
 }
