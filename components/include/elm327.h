@@ -1,6 +1,6 @@
-
-//TODO Fill in Documentation
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
  * @author Ignacio Maldonado
@@ -8,6 +8,9 @@
  * ELM327 through UART and data type struct for information handling
  *
  */
+
+#ifndef __ELM327_H__
+#define __ELM327_H__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,6 +25,22 @@
 #include "driver/uart.h"
 #include "soc/uart_struct.h"
 
+#ifndef ELM_UART_NUM
+#define ELM_UART_NUM UART_NUM_2
+#endif
+
+#ifndef ELM_TXD_PIN
+#define  ELM_TXD_PIN GPIO_NUM_13
+#endif
+
+#ifndef ELM_RXD_PIN
+#define  ELM_RXD_PIN GPIO_NUM_16
+#endif
+
+#ifndef ELM_RX_BUF_SIZE
+#define  ELM_RX_BUF_SIZE 128
+#endif
+
 /**
  * @brief Main data struct for handling required information from CAN bus sensors and GPS
  */
@@ -31,7 +50,7 @@ typedef struct {
     uint8_t speed; /*!< Current Ground Speed*/
     uint8_t LONG[8];  /*!< Longitud*/
     uint8_t LAT[8];   /*!< Latitude*/
-    uint8_t TIME[4];  /*!< GPS time*/
+    uint8_t TIME[6];  /*!< GPS time*/
     uint8_t VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
     uint8_t fields;/*!< Byte with bitmapped available fields*/
 } elm327_data_t;
@@ -109,3 +128,11 @@ bool elm327_query_speed(void);
  *
  */
 bool elm327_query_VIN(void);
+
+/**
+ * @brief Inits UART and resets elm327
+ *
+ */
+void elm327_init(void);
+
+#endif
