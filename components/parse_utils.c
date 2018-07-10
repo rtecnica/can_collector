@@ -107,16 +107,51 @@ bool parse_is_data(uint8_t *data){
 }
 
 bool parse_is_GPS(uint8_t *data){
-    return data[0]=='$';
+    return data[0] == '$';
 }
 
 void parse_GPS(uint8_t *data, elm327_data_t *packet){
-   uint8_t blankLAT[8] = {1, 2, 3, 4, 5, 6, 7, 8};
-   uint8_t blankLONG[8] = {8, 7, 6, 5, 4, 3, 2, 1};
-   uint8_t blankTIME[6] = {0, 4, 2, 0, 0, 0};
 
-   memcpy(packet->LAT,blankLAT,8);
-   memcpy(packet->LONG,blankLONG,8);
-   memcpy(packet->TIME,blankTIME,6);
+    uint8_t blankTIME[6];
+    uint8_t blankLAT[11];
+    uint8_t blankLONG[11];
 
+    uint8_t *index = data;
+    for(; *index != ',';  index++);
+    index++;
+    memcpy(blankTIME,index,6);
+
+
+    for(; *index != ',';  index++);
+
+    if(*(index+1) != ','){
+        index++;
+        memcpy(blankLAT,index,11);
+        index +=13;
+        memcpy(blankLONG,index,11);
+
+        memcpy(packet->LAT,blankLAT,11);
+        uint8_t lat[12];
+        lat[11] = 0x0;
+        memcpy(lat,blankLAT,11);
+        ESP_LOGI("GPS_PARSE","Latitude: %s",lat);
+
+        memcpy(packet->LONG,blankLONG,11);
+        uint8_t lang[12];
+        lang[11] = 0x0;
+        memcpy(lang,blankLONG,11);
+        ESP_LOGI("GPS_PARSE","Longitude: %s",lang);
+
+        memcpy(packet->TIME,blankTIME,6);
+        uint8_t time[7];
+        time[6] = 0x0;
+        memcpy(time,blankTIME,6);
+        ESP_LOGI("GPS_PARSE","Time: %s",time);
+
+        //ESP_LOG_BUFFER_HEXDUMP("GPS_PARSE", blankTIME, 6, ESP_LOG_INFO);
+        //ESP_LOG_BUFFER_HEXDUMP("GPS_PARSE", blankLAT, 11, ESP_LOG_INFO);
+        //ESP_LOG_BUFFER_HEXDUMP("GPS_PARSE", blankLONG, 11, ESP_LOG_INFO);
+    } else{
+        ESP_LOGI("GPS_PARSE", "No GPS Lock!");
+    }
 }
