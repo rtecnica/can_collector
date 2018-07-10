@@ -41,7 +41,7 @@
 
 #include <esp_event.h>
 #include <esp_wifi.h>
-#include <include/elm327.h>
+#include <../include/elm327.h>
 
 #include "apps/sntp/sntp.h"
 #include "cJSON.h"
@@ -107,7 +107,7 @@ void collector_rx_task(void *queueStruct) {
             // data will be vPortFreed by receiving function
         }
         else {
-            rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 200 / portTICK_RATE_MS);
+            rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 100 / portTICK_RATE_MS);
             if (rxBytes > 0) {
 
                 data[rxBytes] = 0;
@@ -246,7 +246,7 @@ void collector_SIM_task(void *queueStruct){
     time_t now = 0;
     struct tm timeinfo = { 0 };
     int retry = 0;
-    const int retry_count = 10;ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
+    const int retry_count = 10;
 
     time(&now);
     localtime_r(&now, &timeinfo);

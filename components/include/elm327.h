@@ -26,15 +26,15 @@
 #include "soc/uart_struct.h"
 
 #ifndef ELM_UART_NUM
-#define ELM_UART_NUM UART_NUM_2
+#define ELM_UART_NUM UART_NUM_1
 #endif
 
 #ifndef ELM_TXD_PIN
-#define  ELM_TXD_PIN GPIO_NUM_13
+#define ELM_TXD_PIN GPIO_NUM_33
 #endif
 
 #ifndef ELM_RXD_PIN
-#define  ELM_RXD_PIN GPIO_NUM_16
+#define ELM_RXD_PIN GPIO_NUM_16
 #endif
 
 #ifndef ELM_RX_BUF_SIZE
@@ -48,8 +48,8 @@ typedef struct {
     uint8_t temp;  /*!< Motor Oil temperature*/
     uint8_t fuel;  /*!< Remaining Fuel in primary Tank*/
     uint8_t speed; /*!< Current Ground Speed*/
-    uint8_t LONG[8];  /*!< Longitud*/
-    uint8_t LAT[8];   /*!< Latitude*/
+    uint8_t LONG[11];  /*!< Longitud*/
+    uint8_t LAT[11];   /*!< Latitude*/
     uint8_t TIME[6];  /*!< GPS time*/
     uint8_t VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
     uint8_t fields;/*!< Byte with bitmapped available fields*/
