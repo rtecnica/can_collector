@@ -3,7 +3,7 @@
 */
 /**
  * @file
- *
+ * @author Ignacio Maldonado Aylwin
  *
  */
 
@@ -19,16 +19,10 @@
 
 #include "../components/include/can_collector_utils.h"
 
-#include "time.h"
-#include "sys/time.h"
-
 
 void app_main() {
 
     esp_log_level_set("*",ESP_LOG_INFO);
 
     collector_init();
-
-    xTaskCreate(collector_queryTask, "queryTask", 2 * 1024, NULL, configMAX_PRIORITIES - 2, NULL);
-
 }

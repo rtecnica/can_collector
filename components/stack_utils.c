@@ -1,11 +1,9 @@
-//
-// Created by Ignacio Maldonado Aylwin on 6/14/18.
-//
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
- *
- * @brief
+ * @author Ignacio Maldonado Aylwin
  *
  */
 
@@ -37,8 +35,6 @@ void stack_init(void) {
     // does make a difference some boards, so we do that here.
     gpio_set_pull_mode(15, GPIO_PULLUP_ONLY);   // CMD, needed in 4- and 1- line modes
     gpio_set_pull_mode(2, GPIO_PULLUP_ONLY);    // D0, needed in 4- and 1-line modes
-    gpio_set_pull_mode(4, GPIO_PULLUP_ONLY);    // D1, needed in 4-line mode only
-    gpio_set_pull_mode(12, GPIO_PULLUP_ONLY);   // D2, needed in 4-line mode only
     gpio_set_pull_mode(13, GPIO_PULLUP_ONLY);   // D3, needed in 4- and 1-line modes
 
     // Options for mounting the filesystem.

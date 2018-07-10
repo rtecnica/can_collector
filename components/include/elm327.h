@@ -1,15 +1,16 @@
-//
-// Created by Ignacio Maldonado Aylwin on 5/29/18.
-//
-
-//TODO Fill in Documentation
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
- *
- * @brief ELM327 Main lib
+ * @author Ignacio Maldonado
+ * @brief ELM327 Main lib, contains methods for sending commands to
+ * ELM327 through UART and data type struct for information handling
  *
  */
+
+#ifndef __ELM327_H__
+#define __ELM327_H__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,8 +25,21 @@
 #include "driver/uart.h"
 #include "soc/uart_struct.h"
 
-#define TXD_PIN GPIO_NUM_32
-#define RXD_PIN GPIO_NUM_36
+#ifndef ELM_UART_NUM
+#define ELM_UART_NUM UART_NUM_1
+#endif
+
+#ifndef ELM_TXD_PIN
+#define ELM_TXD_PIN GPIO_NUM_33
+#endif
+
+#ifndef ELM_RXD_PIN
+#define ELM_RXD_PIN GPIO_NUM_16
+#endif
+
+#ifndef ELM_RX_BUF_SIZE
+#define  ELM_RX_BUF_SIZE 128
+#endif
 
 /**
  * @brief Main data struct for handling required information from CAN bus sensors and GPS
@@ -34,42 +48,35 @@ typedef struct {
     uint8_t temp;  /*!< Motor Oil temperature*/
     uint8_t fuel;  /*!< Remaining Fuel in primary Tank*/
     uint8_t speed; /*!< Current Ground Speed*/
-    uint8_t LONG[8];  /*!< Longitud*/
-    uint8_t LAT[8];   /*!< Latitude*/
-    uint8_t TIME[4];  /*!< GPS time*/
+    uint8_t LONG[11];  /*!< Longitud*/
+    uint8_t LAT[11];   /*!< Latitude*/
+    uint8_t TIME[6];  /*!< GPS time*/
     uint8_t VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
     uint8_t fields;/*!< Byte with bitmapped available fields*/
 } elm327_data_t;
 
 /**
 * @brief Enumeration for defining presence of new data
+* MISC_FIELD must always be enabled for correct function of fileStack
 */
 typedef enum {
-    TEMP_FIELD      = 0b10000000,
-    FUEL_FIELD      = 0b01000000,
-    SPEED_FIELD     = 0b00100000,
-    LONG_FIELD      = 0b00010000,
-    LAT_FIELD       = 0b00001000,
-    TIME_FIELD      = 0b00000100,
-    VIN_FIELD       = 0b00000010,
-    MISC_FIELD      = 0b00000001,
-    ALL_FIELDS      = 0b11111111,
+    TEMP_FIELD      = 0b10000000, /*!< Set when new temperature data is available*/
+    FUEL_FIELD      = 0b01000000, /*!< Set when new fuel tank level data is available*/
+    SPEED_FIELD     = 0b00100000, /*!< Set when new vehicle speed data is available*/
+    LONG_FIELD      = 0b00010000, /*!< Set when new longitude data is available*/
+    LAT_FIELD       = 0b00001000, /*!< Set when new latitude data is available*/
+    TIME_FIELD      = 0b00000100, /*!< Set when new current time data is available*/
+    VIN_FIELD       = 0b00000010, /*!< Set when VIN data has been correctly parsed*/
+    MISC_FIELD      = 0b00000001, /*!< Set by default for correct functioning of fileStack*/
+    ALL_FIELDS      = 0b11111111, /*!< All fields set*/
 } data_fields_t;
 
 /**
- * @brief Initializer for UART connection, rxTask, parseTask and messaging handle structs
+ * @brief Utility function for sending arbitrary data to the ELM327 via the UART connection
  *
- * @param[in] bt_handle : Pointer to BlueTooth connection handle
- *
- */
- void elm327_init();
-
-/**
- * @brief Utility function for sendind arbitrary data to the ELM327 via the UART connection
- *
- * @param[in] logName : Name of log to send debug info
- * @param[in] data : Buffer for data to send
- * @param[in] len : Length of buffer
+ * @param logName : Name of log to send debug info
+ * @param data : Buffer for data to send
+ * @param len : Length of buffer
  *
  * @returns True if sent appropiate amount of bytes, False otherwise
  */
@@ -123,16 +130,9 @@ bool elm327_query_speed(void);
 bool elm327_query_VIN(void);
 
 /**
- * @brief Request Time and Position from GPS
- *
- * @returns True if sent appropiate amount of bytes, False otherwise
+ * @brief Inits UART and resets elm327
  *
  */
-bool elm327_query_GPS(void);
+void elm327_init(void);
 
-/**
- * @brief Sets elm327_data_t fields to default values
- *
- * @returns pointer to elm327_data_t
- *
- */
+#endif

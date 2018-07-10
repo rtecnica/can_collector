@@ -1,18 +1,24 @@
-//
-// Created by Ignacio Maldonado Aylwin on 6/7/18.
-//
-
+/*
+    Copyright Verbux Soluciones Informáticas Junio 2018
+*/
 /**
  * @file
- *
- * @brief Parsing Utilities
+ * @author Ignacio Maldonado
+ * @brief Utilities for parsing information from ELM327 chip.
  */
+
+#ifndef __PARSE_UTILS_H__
+#define __PARSE_UTILS_H__
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "elm327.h"
 
+/**
+* @brief Char to hexadecimal correspondence
+*/
 typedef enum {
     HEX_CHAR_0      = 0x30,
     HEX_CHAR_1      = 0x31,
@@ -32,6 +38,9 @@ typedef enum {
     HEX_CHAR_F      = 0x46,
 } hex_char_t;
 
+/**
+* @brief Enumeration of possible response message types.
+*/
 typedef enum {
     FUELTANK_MSG    = 0x012F,
     OILTEMP_MSG     = 0x015C,
@@ -41,9 +50,9 @@ typedef enum {
 } can_msg_t;
 
 /**
- * @brief Utility for converting ASCII Character into hexidecimal
+ * @brief Utility for converting ASCII Character into hexidecimal.
  *
- * @param[in] ASCII byte
+ * @param ASCII byte
  *
  * @return Equivalent Integer Value i.e f("1A") = 26
  *
@@ -52,10 +61,10 @@ typedef enum {
 uint8_t parse_char_to_hex(uint8_t bite);
 
 /**
- * @brief Utility for checking type of ELM327 Message
+ * @brief Utility for checking type of ELM327 Response Message.
  *
- * @param[in] data : Buffer Holding message
- * @param[in] len  : Length of buffer
+ * @param data : Buffer Holding message
+ * @param len  : Length of buffer
  *
  * @return 1 for Fuel tank response, 2 for Motor Oil temp response, 3 for Speed response, 4 for VIN response, 0 otherwise and -1 if the message is too short.
  *
@@ -64,23 +73,53 @@ uint8_t parse_char_to_hex(uint8_t bite);
 can_msg_t parse_check_msg_type(uint8_t *data, int len);
 
 /**
- * @brief
+ * @brief Utility for parsing VIN string from ELM327 response.
  *
- * @param[in]
- *
- * @return
- *
+ * @param msg : Pointer to string that contains ELM327 response
+ * @param VIN_global : Pointer to VIN global variable container
  *
  */
-void vin_parse(uint8_t *VIN_global, uint8_t *msg);
+void parse_vin(uint8_t *VIN_global, uint8_t *msg);
 
 /**
- * @brief
+ * @brief Utility for parsing msg data.
  *
- * @param[in]
+ * @param data : pointer to string that contains response
  *
- * @return
+ * @return data byte.
  *
+ */
+uint8_t parse_msg(uint8_t *buff);
+
+/**
+ * @brief Utility for checking whether or not ELM327 response contains data.
+ *
+ * @param data : pointer to string that contains ELM327 response
+ *
+ * @return true if message contains data, false otherwise
  *
  */
 bool parse_is_data(uint8_t *data);
+
+/**
+ * @brief Utility for checking whether or not response is GPS data.
+ *
+ * @param data : pointer to string that contains response
+ *
+ * @return true if message contains data, false otherwise
+ *
+ */
+bool parse_is_GPS(uint8_t *data);
+
+/**
+ * @brief Utility for parsing GPS data.
+ *
+ * @param data : pointer to string that contains response
+ *
+ * @param packet : pointer to container for parsing result.
+ *
+ */
+void parse_GPS(uint8_t *data, elm327_data_t *packet);
+
+
+#endif
