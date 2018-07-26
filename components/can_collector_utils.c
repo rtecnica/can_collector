@@ -56,6 +56,8 @@
 static const int RX_BUF_SIZE = 128;
 volatile uint32_t ulIdleCycleCount = 0UL;
 
+static const char *TAG = "CAN_COLLECTOR_UTILS";
+
 #define EXAMPLE_TASK_PAUSE	300		// pause between task runs in seconds
 #define TASK_SEMAPHORE_WAIT 140000	// time to wait for mutex in miliseconds
 
@@ -108,6 +110,70 @@ extern const uint8_t server_root_cert_pem_start[] asm("_binary_server_root_cert_
 extern const uint8_t server_root_cert_pem_end[]   asm("_binary_server_root_cert_pem_end");
 
 static int level = 0;
+
+static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
+{
+    esp_mqtt_client_handle_t client = event->client;
+    int msg_id;
+    // your_context_t *context = event->context;
+    switch (event->event_id) {
+        case MQTT_EVENT_CONNECTED:
+            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
+            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+            //msg_id = esp_mqtt_client_subscribe(client, "esp32", 0);
+
+            msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
+            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+
+            msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
+            ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
+            break;
+        case MQTT_EVENT_DISCONNECTED:
+            ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
+            break;
+
+        case MQTT_EVENT_SUBSCRIBED:
+            ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
+            msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
+            ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+            msg_id = esp_mqtt_client_publish(client, "esp32", "data", 0, 0, 0);
+            break;
+        case MQTT_EVENT_UNSUBSCRIBED:
+            ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
+            break;
+        case MQTT_EVENT_PUBLISHED:
+            ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+            break;
+        case MQTT_EVENT_DATA:
+            ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+            printf("DATA=%.*s\r\n", event->data_len, event->data);
+            break;
+        case MQTT_EVENT_ERROR:
+            ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+            break;
+    }
+    return ESP_OK;
+}
+
+static void mqtt_app_start(QueueHandle_t queue)
+{
+    const esp_mqtt_client_config_t mqtt_cfg = {
+        .uri = "mqtt://172.16.127.182:1883",
+        .event_handle = mqtt_event_handler,
+        // .user_context = (void *)your_context
+    };
+
+/*    const esp_mqtt_client_config_t mqtt_cfg = {
+        .uri = "mqtt://iot.eclipse.org",
+        .event_handle = mqtt_event_handler,
+        // .user_context = (void *)your_context
+    };*/
+
+    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg, queue);
+    esp_mqtt_client_start(client);
+}
 
 void vApplicationIdleHook( void ) {
     /* This hook function does nothing but increment a counter. */
@@ -836,6 +902,7 @@ void collector_init(void) {
     //xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
+    mqtt_app_start(msgQueues.OutQueue);
     //xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
 
 }
