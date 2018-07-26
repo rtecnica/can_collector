@@ -336,17 +336,23 @@ static int atCmd_waitResponse(char * cmd, char *resp, char * resp1, int cmdSize,
 
 	if (cmd != NULL) {
 		if (cmdSize == -1) cmdSize = strlen(cmd);
-		#if GSM_DEBUG
+		//#if GSM_DEBUG
 		infoCommand(cmd, cmdSize, "AT COMMAND:");
-		#endif
+		//#endif
 		uart_write_bytes(uart_num, (const char*)cmd, cmdSize);
+		ESP_LOGI(TAG,"uart_write_bytes ");
 		uart_wait_tx_done(uart_num, 100 / portTICK_RATE_MS);
+		ESP_LOGI(TAG,"uart_wait_tx_done ");
+		ESP_LOGI(TAG,"Comando %s", cmd);
 	}
 
+	ESP_LOGI(TAG,"Recibiendo response");
 	if (response != NULL) {
+		ESP_LOGI(TAG,"response != NULL");
 		// Read GSM response into buffer
 		char *pbuf = *response;
 		len = uart_read_bytes(uart_num, (uint8_t*)data, 256, timeout / portTICK_RATE_MS);
+		ESP_LOGI(TAG,"uart_read_bytes: %d bytes", len);
 		while (len > 0) {
 			if ((tot+len) >= size) {
 				char *ptemp = realloc(pbuf, size+512);
@@ -365,12 +371,14 @@ static int atCmd_waitResponse(char * cmd, char *resp, char * resp1, int cmdSize,
 
     // ** Wait for and check the response
 	idx = 0;
+	ESP_LOGI(TAG,"Entrando al while(1)");
 	while(1)
 	{
 		memset(data, 0, 256);
 		len = 0;
 		len = uart_read_bytes(uart_num, (uint8_t*)data, 256, 10 / portTICK_RATE_MS);
 		if (len > 0) {
+			ESP_LOGI(TAG,"uart_read_bytes dentro del while(1): %d bytes", len);
 			for (int i=0; i<len;i++) {
 				if (idx < 256) {
 					if ((data[i] >= 0x20) && (data[i] < 0x80)) sresp[idx++] = data[i];
@@ -383,25 +391,25 @@ static int atCmd_waitResponse(char * cmd, char *resp, char * resp1, int cmdSize,
 			if (tot > 0) {
 				// Check the response
 				if (strstr(sresp, resp) != NULL) {
-					#if GSM_DEBUG
+					//#if GSM_DEBUG
 					ESP_LOGI(TAG,"AT RESPONSE: [%s]", sresp);
-					#endif
+					//#endif
 					break;
 				}
 				else {
 					if (resp1 != NULL) {
 						if (strstr(sresp, resp1) != NULL) {
-							#if GSM_DEBUG
+							//#if GSM_DEBUG
 							ESP_LOGI(TAG,"AT RESPONSE (1): [%s]", sresp);
-							#endif
+							//#endif
 							res = 2;
 							break;
 						}
 					}
 					// no match
-					#if GSM_DEBUG
+					//#if GSM_DEBUG
 					ESP_LOGI(TAG,"AT BAD RESPONSE: [%s]", sresp);
-					#endif
+					//#endif
 					res = 0;
 					break;
 				}
@@ -411,9 +419,9 @@ static int atCmd_waitResponse(char * cmd, char *resp, char * resp1, int cmdSize,
 		timeoutCnt += 10;
 		if (timeoutCnt > timeout) {
 			// timeout
-			#if GSM_DEBUG
+			//#if GSM_DEBUG
 			ESP_LOGE(TAG,"AT: TIMEOUT");
-			#endif
+			//#endif
 			res = 0;
 			break;
 		}
@@ -425,18 +433,23 @@ static int atCmd_waitResponse(char * cmd, char *resp, char * resp1, int cmdSize,
 //------------------------------------
 static void _disconnect(uint8_t rfOff)
 {
+	ESP_LOGI(TAG,"entrando al _disconnect");
 	int res = atCmd_waitResponse("AT\r\n", GSM_OK_Str, NULL, 4, 1000, NULL, 0);
+	ESP_LOGI(TAG,"res == %d", res);
 	if (res == 1) {
+		ESP_LOGI(TAG,"res == 1");
+		ESP_LOGI(TAG,"rfOff == %d", rfOff);
 		if (rfOff) {
 			cmd_Reg.timeoutMs = 10000;
 			res = atCmd_waitResponse("AT+CFUN=4\r\n", GSM_OK_Str, NULL, 11, 10000, NULL, 0); // disable RF function
 		}
+		ESP_LOGI(TAG,"despues del rfOff: res == %d", res);
 		return;
 	}
 
-	#if GSM_DEBUG
+	//#if GSM_DEBUG
 	ESP_LOGI(TAG,"ONLINE, DISCONNECTING...");
-	#endif
+	//#endif
 	vTaskDelay(1000 / portTICK_PERIOD_MS);
 	uart_flush(uart_num);
 	uart_write_bytes(uart_num, "+++", 3);
@@ -448,9 +461,9 @@ static void _disconnect(uint8_t rfOff)
 	while (res == 0) {
 		n++;
 		if (n > 10) {
-			#if GSM_DEBUG
+			//#if GSM_DEBUG
 			ESP_LOGI(TAG,"STILL CONNECTED.");
-			#endif
+			//#endif
 			n = 0;
 			vTaskDelay(1000 / portTICK_PERIOD_MS);
 			uart_flush(uart_num);
@@ -466,14 +479,16 @@ static void _disconnect(uint8_t rfOff)
 		cmd_Reg.timeoutMs = 10000;
 		res = atCmd_waitResponse("AT+CFUN=4\r\n", GSM_OK_Str, NULL, 11, 3000, NULL, 0);
 	}
-	#if GSM_DEBUG
+	//#if GSM_DEBUG
 	ESP_LOGI(TAG,"DISCONNECTED.");
-	#endif
+	//#endif
+	ESP_LOGI(TAG,"saliendo _disconnect");
 }
 
 //----------------------------
 static void enableAllInitCmd()
 {
+	ESP_LOGI(TAG,"enableAllInitCmd");
 	for (int idx = 0; idx < GSM_InitCmdsSize; idx++) {
 		GSM_Init[idx]->skip = 0;
 	}
@@ -486,23 +501,35 @@ static void enableAllInitCmd()
 //-----------------------------
 static void pppos_client_task()
 {
+	ESP_LOGI(TAG,"Entrando a pppos_client_task");
 	xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
 	pppos_task_started = 1;
 	xSemaphoreGive(pppos_mutex);
+	ESP_LOGI(TAG,"suelto el semaforo pppos_mutex - pppos_client_task");
 
     // Allocate receive buffer
     char* data = (char*) malloc(BUF_SIZE);
     if (data == NULL) {
-		#if GSM_DEBUG
+		//#if GSM_DEBUG
 		ESP_LOGE(TAG,"Failed to allocate data buffer.");
-		#endif
+		//#endif
     	goto exit;
     }
+	ESP_LOGI(TAG,"data es distinto de null - pppos_client_task");
 
-    if (gpio_set_direction(UART_GPIO_TX, GPIO_MODE_OUTPUT)) goto exit;
-	if (gpio_set_direction(UART_GPIO_RX, GPIO_MODE_INPUT)) goto exit;
-	if (gpio_set_pull_mode(UART_GPIO_RX, GPIO_PULLUP_ONLY)) goto exit;
-
+    if (gpio_set_direction(UART_GPIO_TX, GPIO_MODE_OUTPUT)) {
+		ESP_LOGI(TAG,"gpio_set_direction(UART_GPIO_TX, GPIO_MODE_OUTPUT)");
+		goto exit;
+	}
+	if (gpio_set_direction(UART_GPIO_RX, GPIO_MODE_INPUT)) {
+		ESP_LOGI(TAG,"gpio_set_direction(UART_GPIO_RX, GPIO_MODE_INPUT)");
+		 goto exit;
+	}
+	if (gpio_set_pull_mode(UART_GPIO_RX, GPIO_PULLUP_ONLY))  {
+		ESP_LOGI(TAG,"gpio_set_pull_mode(UART_GPIO_RX, GPIO_PULLUP_ONLY)");
+		goto exit;
+	}
+	ESP_LOGI(TAG,"pase los if's de gpio - pppos_client_task");
 	char PPP_ApnATReq[sizeof(CONFIG_GSM_APN)+24];
 	
 	uart_config_t uart_config = {
@@ -514,31 +541,44 @@ static void pppos_client_task()
 	};
 
 	//Configure UART1 parameters
-	if (uart_param_config(uart_num, &uart_config)) goto exit;
+	if (uart_param_config(uart_num, &uart_config))  {
+		ESP_LOGI(TAG,"uart_param_config(uart_num, &uart_config)");
+		 goto exit;
+	}
 	//Set UART1 pins(TX, RX, RTS, CTS)
-	if (uart_set_pin(uart_num, UART_GPIO_TX, UART_GPIO_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE)) goto exit;
-	if (uart_driver_install(uart_num, BUF_SIZE * 2, BUF_SIZE * 2, 0, NULL, 0)) goto exit;
-
+	if (uart_set_pin(uart_num, UART_GPIO_TX, UART_GPIO_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE))  {
+		ESP_LOGI(TAG,"uart_set_pin(uart_num, UART_GPIO_TX, UART_GPIO_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE)");
+		 goto exit;
+	}
+	if (uart_driver_install(uart_num, BUF_SIZE * 2, BUF_SIZE * 2, 0, NULL, 0))   {
+		ESP_LOGI(TAG,"uart_driver_install(uart_num, BUF_SIZE * 2, BUF_SIZE * 2, 0, NULL, 0)");
+		goto exit;
+	}
 	// Set APN from config
+	ESP_LOGI(TAG,"pase los if's de uart - pppos_client_task");
 	sprintf(PPP_ApnATReq, "AT+CGDCONT=1,\"IP\",\"%s\"\r\n", CONFIG_GSM_APN);
+	ESP_LOGI(TAG,"mensaje del sprintf %s - pppos_client_task",PPP_ApnATReq);
 	cmd_APN.cmd = PPP_ApnATReq;
 	cmd_APN.cmdSize = strlen(PPP_ApnATReq);
 
 	_disconnect(1); // Disconnect if connected
 
+	ESP_LOGI(TAG,"despues del _disconnect(1)");
 	xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
+	ESP_LOGI(TAG,"tomado el semaforo pppos_mutex");
     pppos_tx_count = 0;
     pppos_rx_count = 0;
 	gsm_status = GSM_STATE_FIRSTINIT;
 	xSemaphoreGive(pppos_mutex);
+	ESP_LOGI(TAG,"liberado el semaforo pppos_mutex");
 
 	enableAllInitCmd();
 
 	while(1)
 	{
-		#if GSM_DEBUG
+		//#if GSM_DEBUG
 		ESP_LOGI(TAG,"GSM initialization start");
-		#endif
+		//#endif
 		vTaskDelay(500 / portTICK_PERIOD_MS);
 
 		int gsmCmdIter = 0;
@@ -559,9 +599,9 @@ static void pppos_client_task()
 					GSM_Init[gsmCmdIter]->timeoutMs, NULL, 0) == 0)
 			{
 				// * No response or not as expected, start from first initialization command
-				#if GSM_DEBUG
+		//		#if GSM_DEBUG
 				ESP_LOGW(TAG,"Wrong response, restarting...");
-				#endif
+		//		#endif
 
 				nfail++;
 				if (nfail > 20) goto exit;
@@ -578,9 +618,9 @@ static void pppos_client_task()
 			gsmCmdIter++;
 		}
 
-		#if GSM_DEBUG
+		//#if GSM_DEBUG
 		ESP_LOGI(TAG,"GSM initialized.");
-		#endif
+		//#endif
 
 		xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
 		if (gsm_status == GSM_STATE_FIRSTINIT) {
@@ -590,9 +630,9 @@ static void pppos_client_task()
 					ppp_output_callback, ppp_status_cb, NULL);
 
 			if (ppp == NULL) {
-				#if GSM_DEBUG
+				//#if GSM_DEBUG
 				ESP_LOGE(TAG, "Error initializing PPPoS");
-				#endif
+				//#endif
 				break; // end task
 			}
 			//netif_set_default(&ppp_netif);
@@ -616,10 +656,10 @@ static void pppos_client_task()
 				int end_task = do_pppos_connect;
 				do_pppos_connect = 1;
 				xSemaphoreGive(pppos_mutex);
-				#if GSM_DEBUG
+				//#if GSM_DEBUG
 				printf("\r\n");
 				ESP_LOGI(TAG, "Disconnect requested.");
-				#endif
+				//#endif
 
 				pppapi_close(ppp, 0);
 				int gstat = 1;
@@ -644,9 +684,9 @@ static void pppos_client_task()
 				xSemaphoreGive(pppos_mutex);
 				_disconnect(rfoff); // Disconnect GSM if still connected
 
-				#if GSM_DEBUG
+				//#if GSM_DEBUG
 				ESP_LOGI(TAG, "Disconnected.");
-				#endif
+				//#endif
 
 				gsmCmdIter = 0;
 				enableAllInitCmd();
@@ -665,20 +705,20 @@ static void pppos_client_task()
 					gstat = do_pppos_connect;
 					xSemaphoreGive(pppos_mutex);
 				}
-				#if GSM_DEBUG
+				//#if GSM_DEBUG
 				printf("\r\n");
 				ESP_LOGI(TAG, "Reconnect requested.");
-				#endif
+				//#endif
 				break;
 			}
 
 			// === Check if disconnected ===
 			if (gsm_status == GSM_STATE_DISCONNECTED) {
 				xSemaphoreGive(pppos_mutex);
-				#if GSM_DEBUG
+				//#if GSM_DEBUG
 				printf("\r\n");
 				ESP_LOGE(TAG, "Disconnected, trying again...");
-				#endif
+				//#endif
 				pppapi_close(ppp, 0);
 
 				enableAllInitCmd();
@@ -703,6 +743,7 @@ static void pppos_client_task()
 	}  // main task loop
 
 exit:
+	ESP_LOGI(TAG,"goto exit");
 	if (data) free(data);  // free data buffer
 	if (ppp) ppp_free(ppp);
 
@@ -710,46 +751,67 @@ exit:
 	pppos_task_started = 0;
 	gsm_status = GSM_STATE_FIRSTINIT;
 	xSemaphoreGive(pppos_mutex);
-	#if GSM_DEBUG
+	//#if GSM_DEBUG
 	ESP_LOGE(TAG, "PPPoS TASK TERMINATED");
-	#endif
+	//#endif
 	vTaskDelete(NULL);
 }
 
 //=============
 int ppposInit()
 {
-	if (pppos_mutex != NULL) xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
+    ESP_LOGI("libGSM - ppposInit", "entrando");
+	if (pppos_mutex != NULL){
+		xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
+    	ESP_LOGI("libGSM - ppposInit", "tomado el semaforo");
+	}
 	do_pppos_connect = 1;
 	int gstat = 0;
 	int task_s = pppos_task_started;
-	if (pppos_mutex != NULL) xSemaphoreGive(pppos_mutex);
-
+	if (pppos_mutex != NULL){
+		xSemaphoreGive(pppos_mutex);
+    	ESP_LOGI("libGSM - ppposInit", "soltado el semaforo");
+	}
 	if (task_s == 0) {
-		if (pppos_mutex == NULL) pppos_mutex = xSemaphoreCreateMutex();
-		if (pppos_mutex == NULL) return 0;
-
+	    ESP_LOGI("libGSM - ppposInit", "task_s == 0");
+		if (pppos_mutex == NULL) {
+			pppos_mutex = xSemaphoreCreateMutex();
+		    ESP_LOGI("libGSM - ppposInit", "creado el semaforo");
+		}
+		if (pppos_mutex == NULL){
+		    ESP_LOGI("libGSM - ppposInit", "no se pudo crear el pppos_mutex");
+			return 0;
+		}
 		if (tcpip_adapter_initialized == 0) {
 			tcpip_adapter_init();
 			tcpip_adapter_initialized = 1;
+		    ESP_LOGI("libGSM - ppposInit", "tcpip_adapter_initialized == 0");
 		}
 		xTaskCreate(&pppos_client_task, "pppos_client_task", PPPOS_CLIENT_STACK_SIZE, NULL, configMAX_PRIORITIES, NULL);
+		ESP_LOGI("libGSM - ppposInit", "tarea pppos_client_task creada");
+	    ESP_LOGI("libGSM - ppposInit", "entrando al ciclo task_s == 0: task_s = %d",task_s);
 		while (task_s == 0) {
 			vTaskDelay(10 / portTICK_RATE_MS);
 			xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
 			task_s = pppos_task_started;
 			xSemaphoreGive(pppos_mutex);
 		}
+	    ESP_LOGI("libGSM - ppposInit", "fuera del ciclo task_s == 0: task_s = %d",task_s);
 	}
 
+	ESP_LOGI("libGSM - ppposInit", "entrando al ciclo gstat != 1: gstat = %d", gstat);
 	while (gstat != 1) {
 		vTaskDelay(10 / portTICK_RATE_MS);
 		xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
 		gstat = gsm_status;
 		task_s = pppos_task_started;
 		xSemaphoreGive(pppos_mutex);
-		if (task_s == 0) return 0;
+		if (task_s == 0) {
+			ESP_LOGI("libGSM - ppposInit", "task_s == 0 en el ciclo gstat != 1: task_s = %d", task_s);
+			return 0;
+		}
 	}
+	ESP_LOGI("libGSM - ppposInit", "fuera del ciclo gstat != 1: gstat = %d", gstat);
 
 	return 1;
 }
