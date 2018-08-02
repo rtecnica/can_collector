@@ -763,43 +763,43 @@ int ppposInit()
     ESP_LOGI("libGSM - ppposInit", "entrando");
 	if (pppos_mutex != NULL){
 		xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
-    	ESP_LOGI("libGSM - ppposInit", "tomado el semaforo");
+    	//ESP_LOGI("libGSM - ppposInit", "tomado el semaforo");
 	}
 	do_pppos_connect = 1;
 	int gstat = 0;
 	int task_s = pppos_task_started;
 	if (pppos_mutex != NULL){
 		xSemaphoreGive(pppos_mutex);
-    	ESP_LOGI("libGSM - ppposInit", "soltado el semaforo");
+    	//ESP_LOGI("libGSM - ppposInit", "soltado el semaforo");
 	}
 	if (task_s == 0) {
-	    ESP_LOGI("libGSM - ppposInit", "task_s == 0");
+	    //ESP_LOGI("libGSM - ppposInit", "task_s == 0");
 		if (pppos_mutex == NULL) {
 			pppos_mutex = xSemaphoreCreateMutex();
-		    ESP_LOGI("libGSM - ppposInit", "creado el semaforo");
+		    //ESP_LOGI("libGSM - ppposInit", "creado el semaforo");
 		}
 		if (pppos_mutex == NULL){
-		    ESP_LOGI("libGSM - ppposInit", "no se pudo crear el pppos_mutex");
+		    //ESP_LOGI("libGSM - ppposInit", "no se pudo crear el pppos_mutex");
 			return 0;
 		}
 		if (tcpip_adapter_initialized == 0) {
 			tcpip_adapter_init();
 			tcpip_adapter_initialized = 1;
-		    ESP_LOGI("libGSM - ppposInit", "tcpip_adapter_initialized == 0");
+		    //ESP_LOGI("libGSM - ppposInit", "tcpip_adapter_initialized == 0");
 		}
 		xTaskCreate(&pppos_client_task, "pppos_client_task", PPPOS_CLIENT_STACK_SIZE, NULL, configMAX_PRIORITIES, NULL);
-		ESP_LOGI("libGSM - ppposInit", "tarea pppos_client_task creada");
-	    ESP_LOGI("libGSM - ppposInit", "entrando al ciclo task_s == 0: task_s = %d",task_s);
+		//ESP_LOGI("libGSM - ppposInit", "tarea pppos_client_task creada");
+	    //ESP_LOGI("libGSM - ppposInit", "entrando al ciclo task_s == 0: task_s = %d",task_s);
 		while (task_s == 0) {
 			vTaskDelay(10 / portTICK_RATE_MS);
 			xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
 			task_s = pppos_task_started;
 			xSemaphoreGive(pppos_mutex);
 		}
-	    ESP_LOGI("libGSM - ppposInit", "fuera del ciclo task_s == 0: task_s = %d",task_s);
+	    //ESP_LOGI("libGSM - ppposInit", "fuera del ciclo task_s == 0: task_s = %d",task_s);
 	}
 
-	ESP_LOGI("libGSM - ppposInit", "entrando al ciclo gstat != 1: gstat = %d", gstat);
+	//ESP_LOGI("libGSM - ppposInit", "entrando al ciclo gstat != 1: gstat = %d", gstat);
 	while (gstat != 1) {
 		vTaskDelay(10 / portTICK_RATE_MS);
 		xSemaphoreTake(pppos_mutex, PPPOSMUTEX_TIMEOUT);
@@ -807,11 +807,11 @@ int ppposInit()
 		task_s = pppos_task_started;
 		xSemaphoreGive(pppos_mutex);
 		if (task_s == 0) {
-			ESP_LOGI("libGSM - ppposInit", "task_s == 0 en el ciclo gstat != 1: task_s = %d", task_s);
+			//ESP_LOGI("libGSM - ppposInit", "task_s == 0 en el ciclo gstat != 1: task_s = %d", task_s);
 			return 0;
 		}
 	}
-	ESP_LOGI("libGSM - ppposInit", "fuera del ciclo gstat != 1: gstat = %d", gstat);
+	//ESP_LOGI("libGSM - ppposInit", "fuera del ciclo gstat != 1: gstat = %d", gstat);
 
 	return 1;
 }

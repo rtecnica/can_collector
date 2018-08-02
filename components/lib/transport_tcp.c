@@ -11,6 +11,7 @@
 
 #include "platform.h"
 #include "transport.h"
+#include "libGSM.h"
 
 static const char *TAG = "TRANS_TCP";
 
@@ -43,6 +44,12 @@ static int tcp_connect(transport_handle_t t, const char *host, int port, int tim
 
     bzero(&remote_ip, sizeof(struct sockaddr_in));
 
+    if (ppposInit() == 0) {
+        ESP_LOGE(TAG, "No se conecto ppposInit");
+        return -1;
+    }
+    //ESP_LOGI(TAG, "Se conecto ppposInit");
+
     //if stream_host is not ip address, resolve it AF_INET,servername,&serveraddr.sin_addr
     if (inet_pton(AF_INET, host, &remote_ip.sin_addr) != 1) {
         if (resolve_dns(host, &remote_ip) < 0) {
@@ -64,13 +71,15 @@ static int tcp_connect(transport_handle_t t, const char *host, int port, int tim
 
     setsockopt(tcp->sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
-    ESP_LOGD(TAG, "[sock=%d],connecting to server IP:%s,Port:%d...",
+    ESP_LOGI(TAG, "[sock=%d],connecting to server IP:%s,Port:%d...",
              tcp->sock, ipaddr_ntoa((const ip_addr_t*)&remote_ip.sin_addr.s_addr), port);
     if (connect(tcp->sock, (struct sockaddr *)(&remote_ip), sizeof(struct sockaddr)) != 0) {
         close(tcp->sock);
         tcp->sock = -1;
+        ESP_LOGE(TAG, "No se conecto el socket");
         return -1;
     }
+    //ESP_LOGI(TAG, "Se conecto el socket");
     return tcp->sock;
 }
 

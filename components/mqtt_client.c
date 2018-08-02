@@ -18,8 +18,13 @@
 #include "http_parser.h"
 
 #include "elm327.h"
+#include "include/libGSM.h"
+
+#define TASK_SEMAPHORE_WAIT 140000	// time to wait for mutex in miliseconds
 
 static const char *TAG = "MQTT_CLIENT";
+
+QueueHandle_t mqtt_mutex;
 
 typedef struct mqtt_state
 {
@@ -87,6 +92,26 @@ static esp_err_t esp_mqtt_connect(esp_mqtt_client_handle_t client, int timeout_m
 static esp_err_t esp_mqtt_abort_connection(esp_mqtt_client_handle_t client);
 static esp_err_t esp_mqtt_client_ping(esp_mqtt_client_handle_t client);
 static char *create_string(const char *ptr, int len);
+
+char* getClientState(mqtt_client_state_t estado){
+    if (estado == MQTT_STATE_ERROR){
+        return "MQTT_STATE_ERROR";
+    } else
+    if (estado == MQTT_STATE_UNKNOWN){
+        return "MQTT_STATE_UNKNOWN";
+    } else
+    if (estado == MQTT_STATE_INIT){
+        return "MQTT_STATE_INIT";
+    } else
+    if (estado == MQTT_STATE_CONNECTED){
+        return "MQTT_STATE_CONNECTED";
+    } else
+    if (estado == MQTT_STATE_WAIT_TIMEOUT){
+        return "MQTT_STATE_WAIT_TIMEOUT";
+    } else {
+        return "None";
+    }
+}
 
 static esp_err_t esp_mqtt_set_config(esp_mqtt_client_handle_t client, const esp_mqtt_client_config_t *config)
 {
@@ -175,6 +200,7 @@ static esp_err_t esp_mqtt_set_config(esp_mqtt_client_handle_t client, const esp_
 
     return err;
 _mqtt_set_config_failed:
+    ESP_LOGE(TAG, "Fallida configuracion del MQTT en esp_mqtt_set_config");                           
     esp_mqtt_destroy_config(client);
     return err;
 }
@@ -270,20 +296,20 @@ static esp_err_t esp_mqtt_abort_connection(esp_mqtt_client_handle_t client)
 
 esp_mqtt_client_handle_t esp_mqtt_client_init(const esp_mqtt_client_config_t *config, QueueHandle_t queue)
 {
-    ESP_LOGE(TAG, "Creando al cliente");
+    //ESP_LOGE(TAG, "Creando al cliente");
     esp_mqtt_client_handle_t client = calloc(1, sizeof(struct esp_mqtt_client));
     ESP_MEM_CHECK(TAG, client, return NULL);
 
     esp_mqtt_set_config(client, config);
-    ESP_LOGE(TAG, "Aplicada configuracion al cliente");
+    //ESP_LOGE(TAG, "Aplicada configuracion al cliente - Estado del cliente %s", getClientState(client->state));
 
     client->transport_list = transport_list_init();
     ESP_MEM_CHECK(TAG, client->transport_list, goto _mqtt_init_failed);
-    ESP_LOGE(TAG, "transport_list_init");
+    //ESP_LOGE(TAG, "transport_list_init - Estado del cliente %s", getClientState(client->state));
 
     transport_handle_t tcp = transport_tcp_init();
     ESP_MEM_CHECK(TAG, tcp, goto _mqtt_init_failed);
-    ESP_LOGE(TAG, "transport_tcp_init");
+    //ESP_LOGE(TAG, "transport_tcp_init - Estado del cliente %s", getClientState(client->state));
     transport_set_default_port(tcp, MQTT_TCP_DEFAULT_PORT);
     transport_list_add(client->transport_list, tcp, "mqtt");
     if (config->transport == MQTT_TRANSPORT_OVER_TCP) {
@@ -326,19 +352,23 @@ esp_mqtt_client_handle_t esp_mqtt_client_init(const esp_mqtt_client_config_t *co
         ESP_MEM_CHECK(TAG, client->config->scheme, goto _mqtt_init_failed);
     }
 #endif
+    //ESP_LOGE(TAG, "Iniciado el tcp");
     if (client->config->uri) {
         if (esp_mqtt_client_set_uri(client, client->config->uri) != ESP_OK) {
             goto _mqtt_init_failed;
         }
     }
+    //ESP_LOGE(TAG, "seteado el uri - Estado del cliente %s", getClientState(client->state));
 
     if (client->config->scheme == NULL) {
         client->config->scheme = create_string("mqtt", 4);
         ESP_MEM_CHECK(TAG, client->config->scheme, goto _mqtt_init_failed);
     }
+    //ESP_LOGE(TAG, "seteado el scheme - Estado del cliente %s", getClientState(client->state));
 
     client->keepalive_tick = platform_tick_get_ms();
     client->reconnect_tick = platform_tick_get_ms();
+    //ESP_LOGE(TAG, "seteados los *_tick - Estado del cliente %s", getClientState(client->state));
 
     int buffer_size = config->buffer_size;
     if (buffer_size <= 0) {
@@ -347,19 +377,26 @@ esp_mqtt_client_handle_t esp_mqtt_client_init(const esp_mqtt_client_config_t *co
 
     client->mqtt_state.in_buffer = (uint8_t *)malloc(buffer_size);
     ESP_MEM_CHECK(TAG, client->mqtt_state.in_buffer, goto _mqtt_init_failed);
+    //ESP_LOGE(TAG, "seteado el in_buffer - Estado del cliente %s", getClientState(client->state));
     client->mqtt_state.in_buffer_length = buffer_size;
     client->mqtt_state.out_buffer = (uint8_t *)malloc(buffer_size);
     ESP_MEM_CHECK(TAG, client->mqtt_state.out_buffer, goto _mqtt_init_failed);
+    //ESP_LOGE(TAG, "seteado el out_buffer - Estado del cliente %s", getClientState(client->state));
 
     client->mqtt_state.out_buffer_length = buffer_size;
     client->mqtt_state.connect_info = &client->connect_info;
+    //ESP_LOGE(TAG, "seteado el connect_info - Estado del cliente %s", getClientState(client->state));
     client->outbox = outbox_init();
     ESP_MEM_CHECK(TAG, client->outbox, goto _mqtt_init_failed);
+    //ESP_LOGE(TAG, "ejecutado el outbox_init - Estado del cliente %s", getClientState(client->state));
     client->status_bits = xEventGroupCreate();
     ESP_MEM_CHECK(TAG, client->status_bits, goto _mqtt_init_failed);
+    //ESP_LOGE(TAG, "ejecutado el xEventGroupCreate - Estado del cliente %s", getClientState(client->state));
     return client;
 _mqtt_init_failed:
+    //ESP_LOGE(TAG, "ejecutado el _mqtt_init_failed - Estado del cliente %s", getClientState(client->state));
     esp_mqtt_client_destroy(client);
+    //ESP_LOGE(TAG, "Destruido el cliente");
     return NULL;
 }
 
@@ -658,6 +695,11 @@ static esp_err_t mqtt_process_receive(esp_mqtt_client_handle_t client)
 
 static void esp_mqtt_task(void *pv)
 {
+/*    while (!(xSemaphoreTake(mqtt_mutex, TASK_SEMAPHORE_WAIT))) {
+        ESP_LOGE(TAG, "*** ERROR: CANNOT GET MUTEX ***n");
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }
+*/
     char msg[140];
     char msgError[20];
     char strIntento[10];
@@ -679,6 +721,7 @@ static void esp_mqtt_task(void *pv)
 
     if (client->transport == NULL) {
         ESP_LOGE(TAG, "There are no transports valid, stop mqtt client, config scheme = %s", client->config->scheme);
+//        xSemaphoreGive(mqtt_mutex);
         client->run = false;
     }
     //default port
@@ -688,29 +731,40 @@ static void esp_mqtt_task(void *pv)
 
     client->state = MQTT_STATE_INIT;
     xEventGroupClearBits(client->status_bits, STOPPED_BIT);
+//    xSemaphoreGive(mqtt_mutex);
+//        ESP_LOGE(TAG, "Entrando al ciclo");
     while (client->run) {
-
+/*        while (!(xSemaphoreTake(mqtt_mutex, TASK_SEMAPHORE_WAIT))) {
+            ESP_LOGE(TAG, "*** ERROR: CANNOT GET MUTEX ***n");
+            vTaskDelay(10000 / portTICK_PERIOD_MS);
+        }*/
+        if (ppposInit() == 0) {
+            client->state = MQTT_STATE_INIT;
+            client->reconnect_tick = platform_tick_get_ms();
+        }
         switch ((int)client->state) {
             case MQTT_STATE_INIT:
                 ESP_LOGI(TAG, "MQTT_STATE_INIT");
                 if (client->transport == NULL) {
                     ESP_LOGE(TAG, "There are no transport");
+//                    xSemaphoreGive(mqtt_mutex);
                     client->run = false;
                 }
-
                 if (transport_connect(client->transport,
                                       client->config->host,
                                       client->config->port,
                                       client->config->network_timeout_ms) < 0) {
                     ESP_LOGE(TAG, "Error transport connect");
                     esp_mqtt_abort_connection(client);
+//                    xSemaphoreGive(mqtt_mutex);
                     break;
                 }
-                ESP_LOGD(TAG, "Transport connected to %s://%s:%d", client->config->scheme, client->config->host, client->config->port);
+//                ESP_LOGD(TAG, "Transport connected to %s://%s:%d", client->config->scheme, client->config->host, client->config->port);
                 if (esp_mqtt_connect(client, client->config->network_timeout_ms) != ESP_OK) {
                     ESP_LOGI(TAG, "Error MQTT Connected");
                     esp_mqtt_abort_connection(client);
                     num_intento++;
+//                    xSemaphoreGive(mqtt_mutex);
                     break;
                 }
                 client->event.event_id = MQTT_EVENT_CONNECTED;
@@ -719,6 +773,7 @@ static void esp_mqtt_task(void *pv)
 
                 break;
             case MQTT_STATE_CONNECTED:
+  //              ESP_LOGE(TAG, "MQTT_STATE_CONNECTED");
                 if (num_intento == 0){ //Aqui se hace la consulta al lector del can bus, se debe consumir la cola
                     // wait for time to be set
                     // receive and process data
@@ -737,9 +792,9 @@ static void esp_mqtt_task(void *pv)
                     epoch = (long long int)now;
 
 
-                    sprintf(strftime_buf, "%Ld", epoch );
+    /*                sprintf(strftime_buf, "%Ld", epoch );
                     
-                    /*strcpy(msg, "Camioneta_rodrigo,VIN=");
+                    strcpy(msg, "Camioneta_rodrigo,VIN=");
                     strcat(msg, "123456789");
                     strcat(msg, " combustible=");
                     int fuelD = 200;
@@ -759,9 +814,9 @@ static void esp_mqtt_task(void *pv)
                     strcat(msg, strftime_buf);
                     strcat(msg, "000000000");
                     ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
-                    msg_id = esp_mqtt_client_publish(client, "esp32", msg, 0, 0, 0);
-                    ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
-*/
+                    msg_id = esp_mqtt_client_publish(client, "esp32_cnavarro_1974_1482", msg, 0, 0, 0);
+                    ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);*/
+
 
                     //Trabajar con los datos del elm327
                     // Receive a message on the created queue.  Block for 10 ticks if a
@@ -789,7 +844,7 @@ static void esp_mqtt_task(void *pv)
                         strcat(msg, strftime_buf);
                         strcat(msg, "000000000");
                         ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
-                        msg_id = esp_mqtt_client_publish(client, "esp32", msg, 0, 0, 0);
+                        msg_id = esp_mqtt_client_publish(client, "esp32_cnavarro_1974_1482", msg, 0, 0, 0);
                         ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
                     } else {
                         //TODO: Hay que revisar esto
@@ -849,7 +904,7 @@ static void esp_mqtt_task(void *pv)
                     ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
                     //break;
                 } else {
-                    ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
+                    //ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
                     num_intento = 0;
                 }
                 if (num_intento > 0 ){
@@ -883,41 +938,24 @@ static void esp_mqtt_task(void *pv)
 
                 if (!client->config->auto_reconnect) {
                     client->run = false;
+//                    xSemaphoreGive(mqtt_mutex);
                     break;
                 }
                 if (platform_tick_get_ms() - client->reconnect_tick > client->wait_timeout_ms) {
                     client->state = MQTT_STATE_INIT;
                     client->reconnect_tick = platform_tick_get_ms();
+//                    xSemaphoreGive(mqtt_mutex);
                     ESP_LOGD(TAG, "Reconnecting...");
                 }
                 vTaskDelay(client->wait_timeout_ms / 2 / portTICK_RATE_MS);
                 break;
         }
+//        xSemaphoreGive(mqtt_mutex);
     }
     transport_close(client->transport);
     xEventGroupSetBits(client->status_bits, STOPPED_BIT);
 
     vTaskDelete(NULL);
-}
-
-char* getClientState(mqtt_client_state_t estado){
-    if (estado == MQTT_STATE_ERROR){
-        return "MQTT_STATE_ERROR";
-    } else
-    if (estado == MQTT_STATE_UNKNOWN){
-        return "MQTT_STATE_UNKNOWN";
-    } else
-    if (estado == MQTT_STATE_INIT){
-        return "MQTT_STATE_INIT";
-    } else
-    if (estado == MQTT_STATE_CONNECTED){
-        return "MQTT_STATE_CONNECTED";
-    } else
-    if (estado == MQTT_STATE_WAIT_TIMEOUT){
-        return "MQTT_STATE_WAIT_TIMEOUT";
-    } else {
-        return "None";
-    }
 }
 
 static void initialize_sntp(void)
