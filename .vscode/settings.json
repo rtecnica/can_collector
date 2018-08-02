@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "transport.h": "c",
+        "xmemory0": "c",
+        "string.h": "c",
+        "libgsm.h": "c"
+    }
+}

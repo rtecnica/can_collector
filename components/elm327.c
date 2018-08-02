@@ -8,7 +8,6 @@
 
 #include "include/elm327.h"
 
-
 //Función de utilidad para enviar bytestream a través de UART al ELM327
 bool elm327_sendData(const char* logName, unsigned char* data, const int len) {
     union Data{
@@ -91,5 +90,4 @@ void elm327_init(void){
     vTaskDelay(5000/portTICK_PERIOD_MS);
     elm327_setCAN();
     vTaskDelay(3000/portTICK_PERIOD_MS);
-
 }
