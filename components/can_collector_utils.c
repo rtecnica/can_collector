@@ -145,7 +145,7 @@ void collector_parse_task(void *queueStruct){
             if(parse_is_GPS((uint8_t *)(*buff))){
                 ESP_LOGI("PARSE_TASK", "Message Type Received: GPS");
                 parse_GPS((uint8_t *)(*buff),&packet);
-                packet.fields = packet.fields | LAT_FIELD | LONG_FIELD | TIME_FIELD;
+                //packet.fields = packet.fields | LAT_FIELD | LONG_FIELD | TIME_FIELD;
             }
             else if(parse_is_data((uint8_t *)(*buff))){
                 msg_type = parse_check_msg_type((uint8_t *)*buff,6);
@@ -314,10 +314,10 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    //xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
-    //xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
-    //xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
+    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
+    //xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
+    xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
 
 }
