@@ -145,7 +145,6 @@ void collector_parse_task(void *queueStruct){
             if(parse_is_GPS((uint8_t *)(*buff))){
                 ESP_LOGI("PARSE_TASK", "Message Type Received: GPS");
                 parse_GPS((uint8_t *)(*buff),&packet);
-                //packet.fields = packet.fields | LAT_FIELD | LONG_FIELD | TIME_FIELD;
             }
             else if(parse_is_data((uint8_t *)(*buff))){
                 msg_type = parse_check_msg_type((uint8_t *)*buff,6);

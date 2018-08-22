@@ -156,7 +156,11 @@ void parse_GPS(uint8_t *data, elm327_data_t *packet){
             lang[12] = '\0';
             ESP_LOGI("GPS_PARSE", "Longitude: %s", lang);
 
-            index += 12;
+            int i;
+            for (i = 0; i < 2; i++) {
+                for (; *index != ','; index++);
+                index++;
+            }
         }
         else if (*index == ',') {
             int i;
