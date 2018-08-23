@@ -389,7 +389,7 @@ void collector_card_task(void *queueStruct){
 
             fStack_pop(&message);
             stackdepth--;
-            ESP_LOGI("SD_TASK", "Message popped from stack");
+            ESP_LOGI("SD_TASK", "Message popped from stack. Stack Depth: %i",stackdepth);
             xQueueSend(((struct param *) queueStruct)->OutQueue, &message, 100/portTICK_PERIOD_MS);
 
         }
@@ -495,7 +495,7 @@ void collector_SIM_task(void *queueStruct){
 void collector_init(void) {
 
 
-    //elm327_init();
+    elm327_init();
     GPS_init();
     stack_init();
 
@@ -514,10 +514,10 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    //xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
-    //xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
+    xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
 
 }

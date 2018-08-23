@@ -12,7 +12,7 @@
 #define __L80GPS_H__
 
 #ifndef GPS_UART_NUM
-#define GPS_UART_NUM UART_NUM_2
+#define GPS_UART_NUM UART_NUM_0
 #endif
 
 #ifndef GPS_TXD_PIN
