@@ -41,7 +41,7 @@ void GPS_init(void){
     uart_set_pin(GPS_UART_NUM, GPS_TXD_PIN, GPS_RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
     uart_driver_install(GPS_UART_NUM, GPS_RX_BUF_SIZE * 2, 0, 0, NULL, 0);
 
-    char *CMD =  "$PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n";
+    char *CMD =  "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n";
     uint8_t *CMD_data = malloc(strlen(CMD));
     memccpy(CMD_data,CMD,1,strlen(CMD));
     vTaskDelay(1000/portTICK_PERIOD_MS);
