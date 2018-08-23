@@ -65,4 +65,7 @@
 
 #define OUTBOX_EXPIRED_TIMEOUT_MS   (30*1000)
 #define OUTBOX_MAX_SIZE             (4*1024)
+
+#define MQTT_SERVER_URI             CONFIG_MQTT_SERVER_URI
+#define MQTT_TOPIC                  CONFIG_MQTT_TOPIC
 #endif

@@ -62,7 +62,6 @@ bool elm327_query_VIN(void){
 }
 
 void elm327_new_data(elm327_data_t *data){
-
     memcpy(data->VIN, "AAAAAAAAAAAAAAAAA",17);
     memcpy(data->LAT, "00000000", 8);
     memcpy(data->LONG, "00000000", 8);

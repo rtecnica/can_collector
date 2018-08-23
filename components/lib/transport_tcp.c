@@ -48,16 +48,18 @@ static int tcp_connect(transport_handle_t t, const char *host, int port, int tim
         ESP_LOGE(TAG, "No se conecto ppposInit");
         return -1;
     }
-    //ESP_LOGI(TAG, "Se conecto ppposInit");
+    ESP_LOGI(TAG, "Se conecto ppposInit");
 
     //if stream_host is not ip address, resolve it AF_INET,servername,&serveraddr.sin_addr
     if (inet_pton(AF_INET, host, &remote_ip.sin_addr) != 1) {
         if (resolve_dns(host, &remote_ip) < 0) {
+            ESP_LOGI(TAG, "No se resolvio el DNS");
             return -1;
         }
     }
 
     tcp->sock = socket(PF_INET, SOCK_STREAM, 0);
+    ESP_LOGI(TAG, "Se seteo el socket");
 
     if (tcp->sock < 0) {
         ESP_LOGE(TAG, "Error create socket");
@@ -66,6 +68,7 @@ static int tcp_connect(transport_handle_t t, const char *host, int port, int tim
 
     remote_ip.sin_family = AF_INET;
     remote_ip.sin_port = htons(port);
+    ESP_LOGI(TAG, "Se seteo el remote_ip");
 
     ms_to_timeval(timeout_ms, &tv);
 
@@ -76,10 +79,10 @@ static int tcp_connect(transport_handle_t t, const char *host, int port, int tim
     if (connect(tcp->sock, (struct sockaddr *)(&remote_ip), sizeof(struct sockaddr)) != 0) {
         close(tcp->sock);
         tcp->sock = -1;
-        ESP_LOGE(TAG, "No se conecto el socket");
+        ESP_LOGE(TAG, "No se conecto el socket, error %d", errno);
         return -1;
     }
-    //ESP_LOGI(TAG, "Se conecto el socket");
+    ESP_LOGI(TAG, "Se conecto el socket");
     return tcp->sock;
 }
 

@@ -77,6 +77,8 @@ typedef enum {
     ALL_FIELDS      = 0b11111111, /*!< All fields set*/
 } data_fields_t;
 
+void elm327_new_data(elm327_data_t *data);
+
 /**
  * @brief Utility function for sending arbitrary data to the ELM327 via the UART connection
  *
