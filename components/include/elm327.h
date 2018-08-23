@@ -20,10 +20,16 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 
+#include "nvs.h"
+#include "nvs_flash.h"
 #include "esp_log.h"
+#include "esp_event.h"
+#include "esp_event_loop.h"
 
 #include "driver/uart.h"
 #include "soc/uart_struct.h"
+
+#include "mqtt_client.h"
 
 #ifndef ELM_UART_NUM
 #define ELM_UART_NUM UART_NUM_1
