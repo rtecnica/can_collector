@@ -24,10 +24,11 @@
  **/
 #define STACK_FILENAME "/sdcard/stack"
 
+
 /**
- * @brief Initializer for SD card, FAT filsystem and stackFile.
- */
-void stack_init(void);
+ * @brief Global Variable for storing stack depth
+ **/
+volatile int fStack_depth;
 
 /**
  * @brief Pops an item from the fileStack.
@@ -42,5 +43,10 @@ void fStack_pop(elm327_data_t *data);
  *
  */
 void fStack_push(elm327_data_t *data);
+
+/**
+ * @brief Initializer for SD card, FAT filsystem and stackFile.
+ */
+void stack_init(void);
 
 #endif

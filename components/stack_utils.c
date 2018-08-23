@@ -16,7 +16,94 @@
 
 #define MSG_SIZE sizeof(elm327_data_t)
 
-volatile int fStack_depth = 0;
+void fStackFindTop(FILE* file){
+    fseek(file,-1,SEEK_END);
+    char f = fgetc(file);
+    while(f == 0x0){
+        fseek(file,-2,SEEK_CUR);
+        f = fgetc(file);
+    }
+}
+
+void fStackFindDepth(FILE* file){
+    int biteNUM = 0;
+    fStackFindTop(file);
+
+    fseek(file,-1,SEEK_END);
+    char f = fgetc(file);
+    while(f != '#'){
+        fseek(file,-2,SEEK_CUR);
+        f = fgetc(file);
+        biteNUM++;
+    }
+    fStack_depth = biteNUM / MSG_SIZE;
+
+    ESP_LOGI("STACK_UTILS", "Stack Size: %i bytes, Messages: %f", biteNUM, (double)biteNUM/ MSG_SIZE);
+
+    if(((float)biteNUM / MSG_SIZE) != fStack_depth){
+        ESP_LOGI("STACK_UTILS", "Broken Message!");
+        int bytesToDelete = biteNUM - fStack_depth * MSG_SIZE;
+        ESP_LOGI("STACK_UTILS", "Deleting %i bytes...", bytesToDelete);
+
+        fStackFindTop(file);
+        fputc(0x0,file);
+        for(; bytesToDelete >= 0; bytesToDelete--){
+            fseek(file,-2,SEEK_CUR);
+            fputc(0x0,file);
+        }
+
+        fStackFindTop(file);
+        biteNUM = 0;
+        f = fgetc(file);
+        while(f != '#'){
+            biteNUM++;
+            fseek(file,-2,SEEK_CUR);
+            f = fgetc(file);
+        }
+        fStack_depth = biteNUM / MSG_SIZE;
+        if(((float)biteNUM / MSG_SIZE) != fStack_depth) {
+            ESP_LOGI("STACK_UTILS", "Repair Failed!");
+        } else {
+            ESP_LOGI("STACK_UTILS", "Repair Success!");
+        }
+    }
+}
+
+void fStack_pop(elm327_data_t *data){
+
+    FILE *stack_file = fopen(STACK_FILENAME, "r+");
+
+    if(fStack_depth > 0) {
+
+        uint8_t *empty = (uint8_t *) calloc(MSG_SIZE, 1);
+
+        fStackFindTop(stack_file);
+        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
+        fread(data, MSG_SIZE, 1, stack_file);
+        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
+        fwrite(empty, MSG_SIZE, 1, stack_file);
+        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
+
+        fStack_depth--;
+    }
+    else{
+        ESP_LOGE("SD_TASK","File Stack Empty!!");
+    }
+
+    fclose(stack_file);
+
+}
+
+void fStack_push(elm327_data_t *data){
+
+    FILE *stack_file = fopen(STACK_FILENAME, "r+");
+
+    fStackFindTop(stack_file);
+    fwrite(data,MSG_SIZE,1,stack_file);
+    fStack_depth++;
+
+    fclose(stack_file);
+}
 
 void stack_init(void) {
     ESP_LOGI("SD_TASK", "Initializing SD card");
@@ -65,56 +152,16 @@ void stack_init(void) {
     }
     sdmmc_card_print_info(stdout, card);
 
+    FILE* stack_file = fopen(STACK_FILENAME,"r+");
 
-    FILE* stack_file = fopen(STACK_FILENAME,"w+");
-    char f = '#';
+    if(stack_file == NULL) {
+        stack_file = fopen(STACK_FILENAME, "w+");
+        char f = '#';
 
-    fwrite(&f,1,1,stack_file);
-
-    fclose(stack_file);
-}
-
-void fStackFindTop(FILE* file){
-    fseek(file,-1,SEEK_END);
-    char f = fgetc(file);
-    while(f == 0x0){
-        fseek(file,-2,SEEK_CUR);
-        f = fgetc(file);
-    }
-}
-
-void fStack_pop(elm327_data_t *data){
-
-    FILE *stack_file = fopen(STACK_FILENAME, "r+");
-
-    if(fStack_depth > 0) {
-
-        uint8_t *empty = (uint8_t *) calloc(MSG_SIZE, 1);
-
-        fStackFindTop(stack_file);
-        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
-        fread(data, MSG_SIZE, 1, stack_file);
-        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
-        fwrite(empty, MSG_SIZE, 1, stack_file);
-        fseek(stack_file, -MSG_SIZE, SEEK_CUR);
-
-        fStack_depth--;
-    }
-    else{
-        ESP_LOGE("SD_TASK","File Stack Empty!!");
+        fwrite(&f, 1, 1, stack_file);
     }
 
-    fclose(stack_file);
-
-}
-
-void fStack_push(elm327_data_t *data){
-
-    FILE *stack_file = fopen(STACK_FILENAME, "r+");
-
-    fStackFindTop(stack_file);
-    fwrite(data,MSG_SIZE,1,stack_file);
-    fStack_depth++;
+    fStackFindDepth(stack_file);
 
     fclose(stack_file);
 }
