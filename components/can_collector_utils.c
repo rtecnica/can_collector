@@ -121,7 +121,9 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
             msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
             ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
-            msg_id = esp_mqtt_client_subscribe(client, "esp32_cnavarro_1974_1482", 0);
+            esp_mqtt_client_subscribe(client, MQTT_TOPIC, 0);
+
+//            msg_id = esp_mqtt_client_subscribe(client, "esp32_cnavarro_1997_1482", 0);
 
             msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
             ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
@@ -137,7 +139,7 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
             ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
             msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
             ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
-            msg_id = esp_mqtt_client_publish(client, "esp32_cnavarro_1974_1482", "data", 0, 0, 0);
+            msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, "data", 0, 0, 0);
             break;
         case MQTT_EVENT_UNSUBSCRIBED:
             ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
@@ -159,9 +161,16 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 
 static void mqtt_app_start(QueueHandle_t queue)
 {
+    char *uri = (char *)pvPortMalloc(20);
+    char *tmp = (char *)pvPortMalloc(5);
+    strcpy(uri, "mqtt://");
+    strcat(uri, MQTT_SERVER_URI);
+    strcat(uri, ":");
+    sprintf(tmp, "%d", MQTT_TCP_DEFAULT_PORT);
+    strcat(uri, tmp);
     const esp_mqtt_client_config_t mqtt_cfg = {
         //.uri = "mqtt://172.16.127.182:1883",
-        .uri = "mqtt://37.187.106.16:1883",
+        .uri = uri,
         .event_handle = mqtt_event_handler,
         // .user_context = (void *)your_context
     };
@@ -225,8 +234,11 @@ void collector_rx_task(void *queueStruct) {
             //Send through queue to data processing Task
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
             // data will be vPortFreed by receiving function
+        } else {
+                vPortFree(data);
+
         }
-        else {
+        /*else {
             rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 100 / portTICK_RATE_MS);
             if (rxBytes > 0) {
 
@@ -241,7 +253,7 @@ void collector_rx_task(void *queueStruct) {
             } else {
                 vPortFree(data);
             }
-        }
+        }*/
         //vPortFree(data);
         //ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
     }
@@ -304,6 +316,7 @@ void collector_parse_task(void *queueStruct){
     for(;;){
         xStatus = xQueueReceive(((struct param *)queueStruct)->rxQueue, buff, 200 / portTICK_PERIOD_MS);
         if(xStatus == pdPASS) {
+            elm327_new_data(&packet);
             if(parse_is_GPS((uint8_t *)(*buff))){
                 ESP_LOGI("PARSE_TASK", "Message Type Received: GPS");
                 parse_GPS((uint8_t *)(*buff),&packet);
@@ -394,14 +407,27 @@ void collector_card_task(void *queueStruct){
     vTaskDelete(NULL);
 }
 
+static void initialize_sntp(void)
+{
+    ESP_LOGI(TIME_TAG,"OBTAINING TIME");
+    ESP_LOGI(TAG, "Initializing SNTP");
+    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    //sntp_setservername(0, "pool.ntp.org");
+    sntp_setservername(0, "ntp.shoa.cl");
+    sntp_init();
+    ESP_LOGI(TIME_TAG,"SNTP INITIALIZED");
+}
+
 void collector_SIM_task(void *queueStruct){
 
     ESP_LOGI("COLLECTOR_INIT", "SIM Task creation successful");
 
-    if (ppposInit() == 0) {
-        ESP_LOGE("PPPoS EXAMPLE", "ERROR: GSM not initialized, HALTED");
-        while (1) {
+    while (1) {
+        if (ppposInit() == 0) {
+            ESP_LOGE("PPPoS", "ERROR: GSM not initialized, HALTED");
             vTaskDelay(1000 / portTICK_RATE_MS);
+        } else {
+            break;
         }
     }
     //ESP_LOGI("COLLECTOR_INIT", "ppposInit() exitoso");
@@ -411,21 +437,15 @@ void collector_SIM_task(void *queueStruct){
     struct tm timeinfo = { 0 };
     int retry = 0;
     const int retry_count = 10;
-
+    initialize_sntp();
     time(&now);
     localtime_r(&now, &timeinfo);
 
     while (1) {
-        printf("\r\n");
-        ESP_LOGI(TIME_TAG,"OBTAINING TIME");
-        ESP_LOGI(TIME_TAG, "Initializing SNTP");
-        sntp_setoperatingmode(SNTP_OPMODE_POLL);
-        sntp_setservername(0, "south-america.pool.ntp.org");
-        sntp_init();
-        ESP_LOGI(TIME_TAG,"SNTP INITIALIZED");
 
         // wait for time to be set
         now = 0;
+        //now = 1534165208;
         while ((timeinfo.tm_year < (2016 - 1900)) && (++retry < retry_count)) {
             ESP_LOGI(TIME_TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
@@ -449,8 +469,17 @@ void collector_SIM_task(void *queueStruct){
         }
         else {
             ESP_LOGI(TIME_TAG, "ERROR OBTAINING TIME\n");
+            //retry = 0;
+            //sntp_stop();
+            //sntp_init();
+            //continue;
         }
         sntp_stop();
+        //ppposDisconnect(0,0);
+        //retry = 0;
+        //ppposInit();
+        //time(&now);
+        //localtime_r(&now, &timeinfo);
         break;
     }
      // ==== Create PPPoS tasks ====
@@ -469,7 +498,7 @@ void collector_SIM_task(void *queueStruct){
 void collector_init(void) {
 
 
-    //elm327_init();
+    elm327_init();
     //GPS_init();
 
     msgQueues.rxQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(void *));
@@ -487,10 +516,10 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    //xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
-    //xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
-    //xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
+    xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
 
 }

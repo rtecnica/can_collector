@@ -74,7 +74,7 @@ config GSM_SMS_INTERVAL
 
 endmenu
 
-menu "MQTT Application sample"
+menu "MQTT Application"
 
 config WIFI_SSID
     string "WiFi SSID"
@@ -170,4 +170,14 @@ config MQTT_TASK_STACK_SIZE
     help
         MQTT task stack size
 
+config MQTT_SERVER_URI
+    string "MQTT URI (Address or IP)"
+    help
+        MQTT URI (Address or IP)
+
+config MQTT_TOPIC
+    string "MQTT TOPIC to post"
+    help
+        MQTT TOPIC to post
+		
 endmenu

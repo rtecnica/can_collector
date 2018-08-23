@@ -4,6 +4,8 @@
         "transport.h": "c",
         "xmemory0": "c",
         "string.h": "c",
-        "libgsm.h": "c"
+        "libgsm.h": "c",
+        "can_collector_utils.h": "c",
+        "iosfwd": "c"
     }
 }
