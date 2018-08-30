@@ -213,7 +213,7 @@ void collector_card_task(void *queueStruct){
 
             fStack_pop(&message);
             stackdepth--;
-            ESP_LOGI("SD_TASK", "Message popped from stack");
+            ESP_LOGI("SD_TASK", "Message popped from stack. Stack Depth: %i",stackdepth);
             xQueueSend(((struct param *) queueStruct)->OutQueue, &message, 100/portTICK_PERIOD_MS);
 
         }
@@ -259,7 +259,7 @@ void collector_SIM_task(void *queueStruct){
 
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
-
+  
     SIM_init();
     elm327_init();
     GPS_init();

@@ -55,7 +55,6 @@ typedef esp_mqtt_event_t* esp_mqtt_event_handle_t;
 
 typedef esp_err_t (* mqtt_event_callback_t)(esp_mqtt_event_handle_t event);
 
-
 typedef struct {
     mqtt_event_callback_t event_handle;
     const char *host;
@@ -79,6 +78,7 @@ typedef struct {
     const char *cert_pem;
     esp_mqtt_transport_t transport;
 } esp_mqtt_client_config_t;
+
 
 esp_mqtt_client_handle_t esp_mqtt_client_init(const esp_mqtt_client_config_t *config, QueueHandle_t queue);
 esp_err_t esp_mqtt_client_set_uri(esp_mqtt_client_handle_t client, const char *uri);

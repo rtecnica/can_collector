@@ -816,7 +816,6 @@ static void esp_mqtt_task(void *pv)
                     msg_id = esp_mqtt_client_publish(client, "esp32", msg, 0, 0, 0);
                     ESP_LOGI(TAG, "Entro al error: intento %d", num_intento);
 */
-                        
                         strcpy(msg, "Prueba_ESP32,");
                         sprintf(tmp, "VIN=%s", vin);
                         strcat(msg, tmp);
@@ -839,6 +838,7 @@ static void esp_mqtt_task(void *pv)
                         strcat(msg, " ");
                         strcat(msg, strftime_buf);
                         strcat(msg, "000000000");
+
 
 /*                    strcpy(msg, "Prueba_ESP32,VIN=");
 
