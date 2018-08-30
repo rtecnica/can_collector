@@ -29,7 +29,6 @@
 #include "driver/uart.h"
 #include "soc/uart_struct.h"
 
-#include "mqtt_client.h"
 
 #ifndef ELM_UART_NUM
 #define ELM_UART_NUM UART_NUM_1

@@ -15,8 +15,9 @@
 #include "parse_utils.h"
 #include "stack_utils.h"
 #include "elm327.h"
-#include "libGSM.h"
 #include "L80GPS.h"
+#include "SIM_utils.h"
+
 /**
 * @brief Container for VIN string.
 */

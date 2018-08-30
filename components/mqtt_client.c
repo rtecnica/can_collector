@@ -18,7 +18,7 @@
 #include "http_parser.h"
 
 #include "elm327.h"
-#include "include/libGSM.h"
+#include "libGSM.h"
 
 #define TASK_SEMAPHORE_WAIT 140000	// time to wait for mutex in miliseconds
 
