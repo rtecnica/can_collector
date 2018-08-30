@@ -54,7 +54,6 @@
 
 static const int RX_BUF_SIZE = 128;
 volatile uint32_t ulIdleCycleCount = 0UL;
-static const char *TAG = "CAN_COLLECTOR_UTILS";
 
 void vApplicationIdleHook( void ) {
     /* This hook function does nothing but increment a counter. */
@@ -106,10 +105,6 @@ void collector_rx_task(void *queueStruct) {
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
             // data will be vPortFreed by receiving function
         } else {
-                vPortFree(data);
-
-        }
-        /*else {
             rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 100 / portTICK_RATE_MS);
             if (rxBytes > 0) {
 
@@ -124,7 +119,7 @@ void collector_rx_task(void *queueStruct) {
             } else {
                 vPortFree(data);
             }
-        }*/
+        }
         //vPortFree(data);
         //ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
     }
@@ -241,6 +236,7 @@ void collector_SIM_task(void *queueStruct){
     //ESP_LOGI("COLLECTOR_INIT", "ppposInit() exitoso");
 
     // ==== Get time from NTP server =====
+
     time_t now = 0;
     struct tm timeinfo = { 0 };
     int retry = 0;
@@ -265,7 +261,7 @@ void collector_SIM_task(void *queueStruct){
 void collector_init(void) {
   
     SIM_init();
-    //elm327_init();
+    elm327_init();
     GPS_init();
     stack_init();
 
@@ -288,6 +284,6 @@ void collector_init(void) {
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
-    //xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
+    xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
 
 }
