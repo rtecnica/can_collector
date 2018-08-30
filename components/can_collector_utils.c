@@ -43,14 +43,18 @@
 #include <esp_wifi.h>
 #include <../include/elm327.h>
 
+#include "apps/sntp/sntp.h"
+
 #include "../build/include/sdkconfig.h"
 
 
 #define MESSAGE_QUEUE_LENGTH 5
 
+//static const char *TIME_TAG = "[SNTP]";
+
 static const int RX_BUF_SIZE = 128;
 volatile uint32_t ulIdleCycleCount = 0UL;
-
+static const char *TAG = "CAN_COLLECTOR_UTILS";
 
 void vApplicationIdleHook( void ) {
     /* This hook function does nothing but increment a counter. */
@@ -234,6 +238,7 @@ void collector_SIM_task(void *queueStruct){
     ESP_LOGI("COLLECTOR_INIT", "SIM Task creation successful");
 
 
+    //ESP_LOGI("COLLECTOR_INIT", "ppposInit() exitoso");
 
     // ==== Get time from NTP server =====
     time_t now = 0;
@@ -243,50 +248,11 @@ void collector_SIM_task(void *queueStruct){
     initialize_sntp();
     time(&now);
     localtime_r(&now, &timeinfo);
-/*
-    while (1) {
 
-        // wait for time to be set
-        now = 0;
-        //now = 1534165208;
-        while ((timeinfo.tm_year < (2016 - 1900)) && (++retry < retry_count)) {
-            ESP_LOGI(TIME_TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-            time(&now);
-            localtime_r(&now, &timeinfo);
-            if (ppposStatus() != GSM_STATE_CONNECTED) break;
-        }
-        if (ppposStatus() != GSM_STATE_CONNECTED) {
-            sntp_stop();
-            ESP_LOGE(TIME_TAG, "Disconnected, waiting for reconnect");
-            retry = 0;
-            while (ppposStatus() != GSM_STATE_CONNECTED) {
-                vTaskDelay(100 / portTICK_RATE_MS);
-            }
-            continue;
-        }
-
-        if (retry < retry_count) {
-            ESP_LOGI(TIME_TAG, "TIME SET TO %s", asctime(&timeinfo));
-            break;
-        }
-        else {
-            ESP_LOGI(TIME_TAG, "ERROR OBTAINING TIME\n");
-            //retry = 0;
-            //sntp_stop();
-            //sntp_init();
-            //continue;
-        }
-        sntp_stop();
-        //ppposDisconnect(0,0);
-        //retry = 0;
-        //ppposInit();
-        //time(&now);
-        //localtime_r(&now, &timeinfo);
-        break;
-    }*/
      // ==== Create PPPoS tasks ====
     mqtt_app_start(msgQueues.OutQueue);
+    //xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 5, NULL);
+    //xTaskCreate(&https_get_task, "https_get_task", 16384, NULL, 4, NULL);
 
     while(1)
     {
@@ -298,7 +264,7 @@ void collector_SIM_task(void *queueStruct){
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
 
-
+    SIM_init();
     //elm327_init();
     GPS_init();
     stack_init();
@@ -318,7 +284,7 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    //xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
