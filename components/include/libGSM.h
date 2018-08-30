@@ -7,6 +7,8 @@
 #ifndef _LIBGSM_H_
 #define _LIBGSM_H_
 
+#include "freertos/FreeRTOS.h"
+
 #define GSM_STATE_DISCONNECTED	0
 #define GSM_STATE_CONNECTED		1
 #define GSM_STATE_IDLE			89
