@@ -54,6 +54,7 @@
 
 static const int RX_BUF_SIZE = 128;
 volatile uint32_t ulIdleCycleCount = 0UL;
+volatile bool packetREADY;
 
 void vApplicationIdleHook( void ) {
     /* This hook function does nothing but increment a counter. */
@@ -62,16 +63,20 @@ void vApplicationIdleHook( void ) {
 
 void collector_query_task(void *queueStruct){
     ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
+    vTaskDelay(3000/portTICK_PERIOD_MS);
     elm327_query_VIN();
     vTaskDelay(3000/portTICK_PERIOD_MS);
 
     for(;;) {
         elm327_query_fueltank();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
         elm327_query_oiltemp();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
         elm327_query_speed();
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(700 / portTICK_PERIOD_MS);
+        packetREADY = true;
+
+        vTaskDelay(4300 / portTICK_PERIOD_MS);
         ESP_LOGI("HOUSEKEEPING", "Idle task count: %i",ulIdleCycleCount);
         ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
         ulIdleCycleCount = 0UL;
@@ -98,14 +103,14 @@ void collector_rx_task(void *queueStruct) {
 
             data[rxBytes] = 0;
             //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-            ESP_LOGI("RX_TASK", "%s", data);
-            //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+            //ESP_LOGI("RX_TASK", "%s", data);
+            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
             // data will be vPortFreed by receiving function
         } else {
-            rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 100 / portTICK_RATE_MS);
+            rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 500 / portTICK_RATE_MS);
             if (rxBytes > 0) {
 
                 data[rxBytes] = 0;
@@ -180,7 +185,7 @@ void collector_parse_task(void *queueStruct){
             }
             vPortFree(*buff);
 
-            if((packet.fields & (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD)) == (VIN_FIELD | SPEED_FIELD | FUEL_FIELD | TEMP_FIELD | MISC_FIELD) ){
+            if(packetREADY){
                 ESP_LOGI("PARSE_TASK","Packet Ready for Sending");
 
                 if(xQueueSend(((struct param *)queueStruct)->OutQueue,&packet,0) == pdPASS){
@@ -194,7 +199,8 @@ void collector_parse_task(void *queueStruct){
                         ESP_LOGI("PARSE_TASK","Storage Queue Full!");
                     }
                 }
-                packet.fields = VIN_FIELD | MISC_FIELD;
+                packet.fields = MISC_FIELD;// | VIN_FIELD;
+                packetREADY = false;
             }
         }
     }
@@ -260,7 +266,7 @@ void collector_SIM_task(void *queueStruct){
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
   
-    SIM_init();
+    //SIM_init();
     elm327_init();
     GPS_init();
     stack_init();
@@ -282,8 +288,7 @@ void collector_init(void) {
 
     xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
+    //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
+    //xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
     xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
-
 }
