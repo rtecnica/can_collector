@@ -693,6 +693,71 @@ static esp_err_t mqtt_process_receive(esp_mqtt_client_handle_t client)
     return ESP_OK;
 }
 
+static char* msgMQTT(char *msg, elm327_data_t pxRxedMessage, int num_intento, long long int epoch)
+{
+    //ESP_LOGI(TAG, "Iniciando msgMQTT");
+    char *strIntento = (char *)pvPortMalloc(10);
+    char *strftime_buf = (char *)pvPortMalloc(128);
+    char *tmp = (char *)pvPortMalloc(32);
+    char *vin = (char *)pvPortMalloc(18);
+    int size = 0;
+    int i = 0;
+    int j = 0;
+    sprintf(strftime_buf, "%Ld", epoch );
+    size = sizeof(pxRxedMessage.VIN)/sizeof(pxRxedMessage.VIN[0]);
+    j = 0;
+    for (i = 0; i < size ; i++){
+        if (strlen((char *)&pxRxedMessage.VIN[i]) != 0){
+            vin[j++] = (char)pxRxedMessage.VIN[i];
+        }
+    }
+    vin[j] = '\0';
+    //ESP_LOGI(TAG, "msgMQTT : Obtenido el VIN");
+    strcpy(msg, "Prueba_ESP32,");
+    sprintf(tmp, "VIN=%s ", vin);
+    strcat(msg, tmp);
+    if ((FUEL_FIELD & pxRxedMessage.fields) != 0){
+        sprintf(tmp, "combustible=%d", pxRxedMessage.fuel);
+        strcat(msg, tmp);
+    }
+    if ((SPEED_FIELD & pxRxedMessage.fields) != 0){
+        sprintf(tmp, ",velocidad=%d", pxRxedMessage.speed);
+        strcat(msg, tmp);
+    }
+    if ((TEMP_FIELD & pxRxedMessage.fields) != 0){
+        sprintf(tmp, ",temperatura=%d", pxRxedMessage.temp);
+        strcat(msg, tmp);
+    }
+    //ESP_LOGI(TAG, "msgMQTT : Cargados los campos");
+    //if ((VIN_FIELD & pxRxedMessage.fields) != 0){
+    sprintf(tmp, ",VIN=%s", vin);
+    strcat(msg, tmp);
+    //}
+    //ESP_LOGI(TAG, "msgMQTT : Cargados el vin");
+    strcat(msg, ",intento=");
+    itoa(num_intento, strIntento, 10);
+    strcat(msg, strIntento);
+    //ESP_LOGI(TAG, "msgMQTT : Cargados el intento");
+    strcat(msg, " ");
+    strcat(msg, strftime_buf);
+    strcat(msg, "000000000");
+    //ESP_LOGI(TAG, "msgMQTT : Cargados el tiempo");
+    //ESP_LOGI(TAG, "msgMQTT : mensaje %s", msg);
+
+    vPortFree(strIntento);
+    //ESP_LOGI(TAG, "msgMQTT : strIntento");
+    vPortFree(strftime_buf);
+    //ESP_LOGI(TAG, "msgMQTT : strftime_buf");
+    vPortFree(vin);
+    //ESP_LOGI(TAG, "msgMQTT : vin");
+    vPortFree(tmp);
+    //ESP_LOGI(TAG, "msgMQTT : tmp");
+    //ESP_LOGI(TAG, "msgMQTT : Liberada la memo");
+    //ESP_LOGI(TAG, "msgMQTT : mensaje %s", msg);
+
+    return msg;
+}
+
 static void esp_mqtt_task(void *pv)
 {
 /*    while (!(xSemaphoreTake(mqtt_mutex, TASK_SEMAPHORE_WAIT))) {
@@ -701,17 +766,17 @@ static void esp_mqtt_task(void *pv)
     }
 */
     ESP_LOGI(TAG, "Iniciando esp_mqtt_task");
-    char *msg = (char *)pvPortMalloc(140);
-    char *msgError = (char *)pvPortMalloc(20);
-    char *strIntento = (char *)pvPortMalloc(10);
-    char *strftime_buf = (char *)pvPortMalloc(128);
-    char *tmp = (char *)pvPortMalloc(18);
-    char *vin = (char *)pvPortMalloc(18);
+    char *msg = (char *)pvPortMalloc(140);;
+    //char *msgError = (char *)pvPortMalloc(20);
+    //char *strIntento = (char *)pvPortMalloc(10);
+    //char *strftime_buf = (char *)pvPortMalloc(128);
+    //char *tmp = (char *)pvPortMalloc(18);
+    //char *vin = (char *)pvPortMalloc(18);
     int num_intento = 0;
     int msg_id = 0;
-    int size = 0;
-    int i = 0;
-    int j = 0;
+    //int size = 0;
+    //int i = 0;
+    //int j = 0;
     time_t now = 0;
     elm327_data_t pxRxedMessage;
     esp_mqtt_client_handle_t client = (esp_mqtt_client_handle_t) pv;
@@ -790,75 +855,8 @@ static void esp_mqtt_task(void *pv)
                     vTaskDelay(200 / portTICK_RATE_MS);
                     num_intento++;
 
-                    sprintf(strftime_buf, "%Ld", epoch );
-                    //sprintf(strftime_buf, "%d", 1534165208);
+                    msgMQTT(msg, pxRxedMessage, num_intento, epoch);
 
-                    /*strcpy(msg, "Camioneta_rodrigo,VIN=");
-                    strcat(msg, "123456789");
-                    strcat(msg, " combustible=");
-                    int fuelD = 200;
-                    strcat(msg, "200");
-                    strcat(msg, "intento=");
-                    itoa(num_intento, strIntento, 10);
-                    strcat(msg, strIntento);
-                    strcpy(msg, ",velocidad=");
-                    int speedD = 300;
-                    strcat(msg, "300");
-                    strcat(msg, ",VIN=");
-                    strcat(msg, "1234567890");
-                    strcat(msg, ",temperatura=");
-                    int tempD = 400;
-                    strcat(msg, "400");
-                    strcat(msg, " ");
-                    strcat(msg, strftime_buf);
-                    strcat(msg, "000000000");
-                    ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
-                    msg_id = esp_mqtt_client_publish(client, "esp32", msg, 0, 0, 0);
-                    ESP_LOGI(TAG, "Entro al error: intento %d", num_intento);
-*/
-                        strcpy(msg, "Prueba_ESP32,");
-                        sprintf(tmp, "VIN=%s", vin);
-                        strcat(msg, tmp);
-//                        strcat(msg, "123456789");
-                        //strcat(msg, " combustible=");
-                        sprintf(tmp, " combustible=%d", pxRxedMessage.fuel);
-                        strcat(msg, tmp);
-                        strcat(msg, ",intento=");
-                        itoa(num_intento, strIntento, 10);
-                        strcat(msg, strIntento);
-                        sprintf(tmp, ",velocidad=%d", pxRxedMessage.speed);
-                        strcat(msg, tmp);
-                        //sprintf(tmp, ",VIN=%s", pxRxedMessage.VIN);
-                        sprintf(tmp, ",VIN=%s", vin);
-                        strcat(msg, tmp);
-                        //strcat(msg, ",VIN=123456789");
-                        //strcat(msg, tmp);
-                        sprintf(tmp, ",temperatura=%d", pxRxedMessage.temp);
-                        strcat(msg, tmp);
-                        strcat(msg, " ");
-                        strcat(msg, strftime_buf);
-                        strcat(msg, "000000000");
-
-
-/*                    strcpy(msg, "Prueba_ESP32,VIN=");
-
-                    strcat(msg, "123456789");
-                    //strcat(msg, " combustible=");
-                    sprintf(tmp, " combustible=%d", pxRxedMessage.fuel);
-                    strcat(msg, tmp);
-                    strcat(msg, ",intento=");
-                    itoa(num_intento, strIntento, 10);
-                    strcat(msg, strIntento);
-                    sprintf(tmp, ",velocidad=%d", pxRxedMessage.speed);
-                    strcat(msg, tmp);
-                    //sprintf(tmp, ",VIN=%s", pxRxedMessage.VIN);
-                    strcat(msg, ",VIN=123456789");
-                    strcat(msg, tmp);
-                    sprintf(tmp, ",temperatura=%d", pxRxedMessage.temp);
-                    strcat(msg, tmp);
-                    strcat(msg, " ");
-                    strcat(msg, strftime_buf);
-                    strcat(msg, "000000000");*/
                     ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
                     msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, msg, 0, 0, 0);
                     ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
@@ -899,69 +897,13 @@ static void esp_mqtt_task(void *pv)
                     vTaskDelay(200 / portTICK_RATE_MS);
                     epoch = (long long int)now;
 
-
-    /*                sprintf(strftime_buf, "%Ld", epoch );
-                    
-                    strcpy(msg, "Camioneta_rodrigo,VIN=");
-                    strcat(msg, "123456789");
-                    strcat(msg, " combustible=");
-                    int fuelD = 200;
-                    strcat(msg, "200");
-                    strcat(msg, "intento=");
-                    itoa(num_intento, strIntento, 10);
-                    strcat(msg, strIntento);
-                    strcat(msg, ",velocidad=");
-                    int speedD = 300;
-                    strcat(msg, "300");
-                    strcat(msg, ",VIN=");
-                    strcat(msg, "1234567890");
-                    strcat(msg, ",temperatura=");
-                    int tempD = 400;
-                    strcat(msg, "400");
-                    strcat(msg, " ");
-                    strcat(msg, strftime_buf);
-                    strcat(msg, "000000000");
-                    ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
-                    msg_id = esp_mqtt_client_publish(client, "esp32_cnavarro_1997_1482", msg, 0, 0, 0);
-                    ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);*/
-
-
                     //Trabajar con los datos del elm327
                     // Receive a message on the created queue.  Block for 10 ticks if a
                     // message is not immediately available.
                     if( xQueueReceive( client->queue, &( pxRxedMessage ), ( TickType_t ) 10 ))
                     {
-                        sprintf(strftime_buf, "%Ld", epoch );
-                        size = sizeof(pxRxedMessage.VIN)/sizeof(pxRxedMessage.VIN[0]);
-                        j = 0;
-                        for (i = 0; i < size ; i++){
-                            if (strlen((char *)&pxRxedMessage.VIN[i]) != 0){
-                                vin[j++] = (char)pxRxedMessage.VIN[i];
-                            }
-                        }
-                        vin[j] = '\0';
-                        strcpy(msg, "Prueba_ESP32,");
-                        sprintf(tmp, "VIN=%s", vin);
-                        strcat(msg, tmp);
-//                        strcat(msg, "123456789");
-                        //strcat(msg, " combustible=");
-                        sprintf(tmp, " combustible=%d", pxRxedMessage.fuel);
-                        strcat(msg, tmp);
-                        strcat(msg, ",intento=");
-                        itoa(num_intento, strIntento, 10);
-                        strcat(msg, strIntento);
-                        sprintf(tmp, ",velocidad=%d", pxRxedMessage.speed);
-                        strcat(msg, tmp);
-                        //sprintf(tmp, ",VIN=%s", pxRxedMessage.VIN);
-                        sprintf(tmp, ",VIN=%s", vin);
-                        strcat(msg, tmp);
-                        //strcat(msg, ",VIN=123456789");
-                        //strcat(msg, tmp);
-                        sprintf(tmp, ",temperatura=%d", pxRxedMessage.temp);
-                        strcat(msg, tmp);
-                        strcat(msg, " ");
-                        strcat(msg, strftime_buf);
-                        strcat(msg, "000000000");
+                        msgMQTT(msg, pxRxedMessage, num_intento, epoch);
+
                         ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
                         msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, msg, 0, 0, 0);
                         ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
@@ -1018,7 +960,6 @@ esp_err_t esp_mqtt_client_start(esp_mqtt_client_handle_t client)
 {
     if (client->state >= MQTT_STATE_INIT) {
         ESP_LOGE(TAG, "Client has started");
-        ESP_LOGI(TAG, "Client has started");
         return ESP_FAIL;
     } else {
         ESP_LOGI(TAG, "Client has not started %s", getClientState(client->state));
@@ -1026,11 +967,9 @@ esp_err_t esp_mqtt_client_start(esp_mqtt_client_handle_t client)
     //initialize_sntp();
     if (xTaskCreate(esp_mqtt_task, "mqtt_task", client->config->task_stack, client, client->config->task_prio, NULL) != pdTRUE) {
         ESP_LOGE(TAG, "Error create mqtt task");
-        ESP_LOGI(TAG, "Error create mqtt task");
         return ESP_FAIL;
     } else {
         ESP_LOGE(TAG, "Create mqtt task");
-        ESP_LOGI(TAG, "Create mqtt task");
     }
     xEventGroupClearBits(client->status_bits, STOPPED_BIT);
     return ESP_OK;
