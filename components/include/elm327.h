@@ -31,7 +31,8 @@
 
 
 #ifndef ELM_UART_NUM
-#define ELM_UART_NUM UART_NUM_1
+//#define ELM_UART_NUM UART_NUM_1
+#define ELM_UART_NUM UART_NUM_2
 #endif
 
 #ifndef ELM_TXD_PIN
