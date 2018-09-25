@@ -12,15 +12,15 @@
 #define __L80GPS_H__
 
 #ifndef GPS_UART_NUM
-#define GPS_UART_NUM UART_NUM_2
+#define GPS_UART_NUM UART_NUM_1
 #endif
 
 #ifndef GPS_TXD_PIN
-#define  GPS_TXD_PIN GPIO_NUM_32
+#define  GPS_TXD_PIN GPIO_NUM_25
 #endif
 
 #ifndef GPS_RXD_PIN
-#define  GPS_RXD_PIN GPIO_NUM_36
+#define  GPS_RXD_PIN GPIO_NUM_32
 #endif
 
 #ifndef GPS_RX_BUF_SIZE
@@ -33,9 +33,6 @@
  *
  */
 void GPS_init(void);
-
-
-
 
 
 #endif //CAN_COLLECTOR_L80GPS_H

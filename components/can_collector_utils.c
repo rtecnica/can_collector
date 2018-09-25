@@ -85,8 +85,8 @@ void collector_query_task(void *queueStruct){
 }
 
 //Proceso de monitoreo de interfase UART
-void collector_rx_task(void *queueStruct) {
-    ESP_LOGI("COLLECTOR_INIT", "RX Task creation successful");
+void collector_elm_rx_task(void *queueStruct) {
+    ESP_LOGI("COLLECTOR_INIT", "ELM RX Task creation successful");
 
     uint8_t* data;
     for(;;) {
@@ -94,7 +94,7 @@ void collector_rx_task(void *queueStruct) {
         data = (uint8_t*) pvPortMalloc(ELM_RX_BUF_SIZE+1);
         while(data == NULL){
             ESP_LOGI("RX_TASK","Waiting for available heap space...");
-            vTaskDelay(100/portTICK_PERIOD_MS);
+            vTaskDelay(200/portTICK_PERIOD_MS);
             data = (uint8_t*) pvPortMalloc(ELM_RX_BUF_SIZE+1);
         }
 
@@ -104,33 +104,56 @@ void collector_rx_task(void *queueStruct) {
             data[rxBytes] = 0;
             //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
             //ESP_LOGI("RX_TASK", "%s", data);
-            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+            //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
             // data will be vPortFreed by receiving function
         } else {
-            rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 500 / portTICK_RATE_MS);
-            if (rxBytes > 0) {
-
-                data[rxBytes] = 0;
-                //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-                ESP_LOGI("RX_TASK", "%s", data);
-                //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
-
-                //Send through queue to data processing Task
-                xQueueSend(((struct param *) queueStruct)->rxQueue, (void *) (&data), 0);
-                // data will be vPortFreed by receiving function
-            } else {
                 vPortFree(data);
             }
-        }
         //vPortFree(data);
         //ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
     }
     //vPortFree(data);
     vTaskDelete(NULL);
 }
+
+//Proceso de monitoreo de interfase UART
+void collector_gps_rx_task(void *queueStruct) {
+    ESP_LOGI("COLLECTOR_INIT", "GPS RX Task creation successful");
+
+    uint8_t* data;
+    for(;;) {
+
+        data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
+        while(data == NULL){
+            ESP_LOGI("RX_TASK","Waiting for available heap space...");
+            vTaskDelay(500/portTICK_PERIOD_MS);
+            data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
+        }
+
+        int rxBytes = uart_read_bytes(GPS_UART_NUM, data, GPS_RX_BUF_SIZE, 100 / portTICK_RATE_MS);
+        if (rxBytes > 0) {
+
+            data[rxBytes] = 0;
+            //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            //ESP_LOGI("RX_TASK", "%s", data);
+            //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+
+            //Send through queue to data processing Task
+            xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
+            // data will be vPortFreed by receiving function
+        } else {
+                vPortFree(data);
+            }
+        //vPortFree(data);
+        //ESP_LOGI("HOUSEKEEPING", "Available Heap Size: %i bytes",esp_get_free_heap_size());
+    }
+    //vPortFree(data);
+    vTaskDelete(NULL);
+}
+
 
 void collector_parse_task(void *queueStruct){
     ESP_LOGI("COLLECTOR_INIT", "Parse Task creation successful");
@@ -283,9 +306,10 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    xTaskCreate(collector_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    //xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    xTaskCreate(collector_gps_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
+    //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
     xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
 }
