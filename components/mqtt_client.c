@@ -693,17 +693,43 @@ static esp_err_t mqtt_process_receive(esp_mqtt_client_handle_t client)
     return ESP_OK;
 }
 
-static char* msgMQTT(char *msg, elm327_data_t pxRxedMessage, int num_intento, long long int epoch)
+void substringFunc(char s[], char sub[], int p, int l) {
+   int c = 0;
+ 
+   while (c < l) {
+      sub[c] = s[p+c-1];
+      c++;
+   }
+   sub[c] = '\0';
+}
+
+char* replace_char(char* str, char find, char replace){
+    char *current_pos = strchr(str,find);
+    while (current_pos){
+        *current_pos = replace;
+        current_pos = strchr(current_pos,find);
+    }
+    return str;
+}
+
+static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int num_intento, long long int epoch)
 {
     //ESP_LOGI(TAG, "Iniciando msgMQTT");
     char *strIntento = (char *)pvPortMalloc(10);
     char *strftime_buf = (char *)pvPortMalloc(128);
     char *tmp = (char *)pvPortMalloc(32);
     char *vin = (char *)pvPortMalloc(18);
+    char *lat = (char *)pvPortMalloc(13);
+    char *lon = (char *)pvPortMalloc(13);
+    char *tim = (char *)pvPortMalloc(13);
+    time_t fecha;
+    char dato[2];
+    struct tm tiempo;
+    int cuenta = 0;
     int size = 0;
     int i = 0;
     int j = 0;
-    sprintf(strftime_buf, "%Ld", epoch );
+    long long int epoch_l = 0;
     size = sizeof(pxRxedMessage.VIN)/sizeof(pxRxedMessage.VIN[0]);
     j = 0;
     for (i = 0; i < size ; i++){
@@ -713,34 +739,114 @@ static char* msgMQTT(char *msg, elm327_data_t pxRxedMessage, int num_intento, lo
     }
     vin[j] = '\0';
     //ESP_LOGI(TAG, "msgMQTT : Obtenido el VIN");
-    strcpy(msg, "Prueba_ESP32,");
+    strcpy(msg->msg, "Prueba_ESP32,");
+    strcpy(msg->msgGPS, "Prueba_ESP32,");
     sprintf(tmp, "VIN=%s ", vin);
-    strcat(msg, tmp);
+    strcat(msg->msg, tmp);
+    strcat(msg->msgGPS, tmp);
     if ((FUEL_FIELD & pxRxedMessage.fields) != 0){
         sprintf(tmp, "combustible=%d", pxRxedMessage.fuel);
-        strcat(msg, tmp);
+        strcat(msg->msg, tmp);
+        strcat(msg->msgGPS, tmp);
     }
     if ((SPEED_FIELD & pxRxedMessage.fields) != 0){
         sprintf(tmp, ",velocidad=%d", pxRxedMessage.speed);
-        strcat(msg, tmp);
+        strcat(msg->msg, tmp);
+        strcat(msg->msgGPS, tmp);
     }
     if ((TEMP_FIELD & pxRxedMessage.fields) != 0){
         sprintf(tmp, ",temperatura=%d", pxRxedMessage.temp);
-        strcat(msg, tmp);
+        strcat(msg->msg, tmp);
+        strcat(msg->msgGPS, tmp);
+    }
+    if ((LONG_FIELD & pxRxedMessage.fields) != 0){
+        cuenta++;
+        size = sizeof(pxRxedMessage.LONG)/sizeof(pxRxedMessage.LONG[0]);
+        j = 0;
+        for (i = 0; i < size ; i++){
+            if (strlen((char *)&pxRxedMessage.LONG[i]) != 0){
+                lon[j++] = (char)pxRxedMessage.LONG[i];
+            }
+        }
+        lon[j] = '\0';
+        sprintf(tmp, ",longitud=%s", replace_char(lon,',',';'));
+        strcat(msg->msgGPS, tmp);
+    }
+    if ((LAT_FIELD & pxRxedMessage.fields) != 0){
+        cuenta++;
+        size = sizeof(pxRxedMessage.LAT)/sizeof(pxRxedMessage.LAT[0]);
+        j = 0;
+        for (i = 0; i < size ; i++){
+            if (strlen((char *)&pxRxedMessage.LAT[i]) != 0){
+                lat[j++] = (char)pxRxedMessage.LAT[i];
+            }
+        }
+        lat[j] = '\0';
+        sprintf(tmp, ",latitud=%s", replace_char(lat,',',';'));
+        strcat(msg->msgGPS, tmp);
+    }
+    if ((TIME_FIELD & pxRxedMessage.fields) != 0){
+        cuenta++;
+        size = sizeof(pxRxedMessage.TIME)/sizeof(pxRxedMessage.TIME[0]);
+        j = 0;
+        for (i = 0; i < size ; i++){
+            if (strlen((char *)&pxRxedMessage.TIME[i]) != 0){
+                tim[j++] = (char)pxRxedMessage.TIME[i];
+            }
+        }
+        tim[j] = '\0';
+        substringFunc(tim,dato,0,2);
+        tiempo.tm_hour = atoi(dato);
+
+        substringFunc(tim,dato,2,2);
+        tiempo.tm_min = atoi(dato);
+
+        substringFunc(tim,dato,4,2);
+        tiempo.tm_sec = atoi(dato);
+
+        substringFunc(tim,dato,6,2);
+        tiempo.tm_mday = atoi(dato);
+
+        substringFunc(tim,dato,8,2);
+        tiempo.tm_mon = atoi(dato) - 1;
+
+        substringFunc(tim,dato,10,2);
+        tiempo.tm_year = atoi(dato) + 100;
+
+        fecha = mktime(&tiempo);        
+        epoch_l = (long long int)fecha;
+        
+        sprintf(tmp,",tiempo=%Ld", epoch_l);
+        strcat(msg->msgGPS,tmp);
+        strcat(msg->msgGPS,"000000000");
+    }
+    msg->GPS = false;
+    if (cuenta == 3){
+        msg->GPS = true;
     }
     //ESP_LOGI(TAG, "msgMQTT : Cargados los campos");
     //if ((VIN_FIELD & pxRxedMessage.fields) != 0){
     sprintf(tmp, ",VIN=%s", vin);
-    strcat(msg, tmp);
+    strcat(msg->msg, tmp);
+    strcat(msg->msgGPS, tmp);
     //}
     //ESP_LOGI(TAG, "msgMQTT : Cargados el vin");
-    strcat(msg, ",intento=");
+    strcat(msg->msg,",intento=");
+    strcat(msg->msgGPS,",intento=");
     itoa(num_intento, strIntento, 10);
-    strcat(msg, strIntento);
+    strcat(msg->msg, strIntento);
+    strcat(msg->msgGPS, strIntento);
     //ESP_LOGI(TAG, "msgMQTT : Cargados el intento");
-    strcat(msg, " ");
-    strcat(msg, strftime_buf);
-    strcat(msg, "000000000");
+    strcat(msg->msg, " ");
+    strcat(msg->msgGPS, " ");
+    sprintf(strftime_buf, "%Ld", epoch );
+    strcat(msg->msg, strftime_buf);
+    strcat(msg->msg, "000000000");
+    if (cuenta == 3){
+        sprintf(strftime_buf, "%Ld", epoch_l );
+        strcat(msg->msgGPS, strftime_buf);
+        strcat(msg->msgGPS, "000000000");
+    }
     //ESP_LOGI(TAG, "msgMQTT : Cargados el tiempo");
     //ESP_LOGI(TAG, "msgMQTT : mensaje %s", msg);
 
@@ -766,7 +872,7 @@ static void esp_mqtt_task(void *pv)
     }
 */
     ESP_LOGI(TAG, "Iniciando esp_mqtt_task");
-    char *msg = (char *)pvPortMalloc(140);;
+    message_MQTT mensaje;
     //char *msgError = (char *)pvPortMalloc(20);
     //char *strIntento = (char *)pvPortMalloc(10);
     //char *strftime_buf = (char *)pvPortMalloc(128);
@@ -774,6 +880,7 @@ static void esp_mqtt_task(void *pv)
     //char *vin = (char *)pvPortMalloc(18);
     int num_intento = 0;
     int msg_id = 0;
+    int msg_id2 = 0;
     //int size = 0;
     //int i = 0;
     //int j = 0;
@@ -855,11 +962,14 @@ static void esp_mqtt_task(void *pv)
                     vTaskDelay(200 / portTICK_RATE_MS);
                     num_intento++;
 
-                    msgMQTT(msg, pxRxedMessage, num_intento, epoch);
+                    //msgMQTT(&mensaje, pxRxedMessage, num_intento, epoch);
 
-                    ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
-                    msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, msg, 0, 0, 0);
-                    ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
+                    //ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
+                    msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, mensaje.msg, 0, 0, 0);
+                    if (mensaje.GPS){
+                        msg_id2 = esp_mqtt_client_publish(client, MQTT_TOPIC_GPS, mensaje.msgGPS, 0, 0, 0);
+                    }
+                    //ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
                     if (mqtt_process_receive(client) == ESP_FAIL) {
                         esp_mqtt_abort_connection(client);
                         break;
@@ -878,6 +988,37 @@ static void esp_mqtt_task(void *pv)
                     //
                     outbox_cleanup(client->outbox, OUTBOX_MAX_SIZE);
                     //break;
+                } else if (msg_id2 < 0){
+                    vTaskDelay(200 / portTICK_RATE_MS);
+                    num_intento++;
+
+                    //msgMQTT(&mensaje, pxRxedMessage, num_intento, epoch);
+
+                    //ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
+                    msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, mensaje.msg, 0, 0, 0);
+                    if (mensaje.GPS){
+                        msg_id2 = esp_mqtt_client_publish(client, MQTT_TOPIC_GPS, mensaje.msgGPS, 0, 0, 0);
+                    }
+                    //ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
+                    if (mqtt_process_receive(client) == ESP_FAIL) {
+                        esp_mqtt_abort_connection(client);
+                        break;
+                    }
+
+                    if (platform_tick_get_ms() - client->keepalive_tick > client->connect_info.keepalive * 1000 / 2) {
+                        if (esp_mqtt_client_ping(client) == ESP_FAIL) {
+                            esp_mqtt_abort_connection(client);
+                            break;
+                        }
+                        client->keepalive_tick = platform_tick_get_ms();
+                    }
+
+                    //Delete mesaage after 30 senconds
+                    outbox_delete_expired(client->outbox, platform_tick_get_ms(), OUTBOX_EXPIRED_TIMEOUT_MS);
+                    //
+                    outbox_cleanup(client->outbox, OUTBOX_MAX_SIZE);
+                    //break;
+
                 } else {
                     //Aqui se hace la consulta al lector del can bus, se debe consumir la cola
                     num_intento = 0;
@@ -902,11 +1043,14 @@ static void esp_mqtt_task(void *pv)
                     // message is not immediately available.
                     if( xQueueReceive( client->queue, &( pxRxedMessage ), ( TickType_t ) 10 ))
                     {
-                        msgMQTT(msg, pxRxedMessage, num_intento, epoch);
+                        msgMQTT(&mensaje, pxRxedMessage, num_intento, epoch);
 
-                        ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
-                        msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, msg, 0, 0, 0);
-                        ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
+                        //ESP_LOGI(TAG, "Publicacion MQTT %s mqtt_msg_task", msg);
+                        msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, mensaje.msg, 0, 0, 0);
+                        if (mensaje.GPS){
+                            msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC_GPS, mensaje.msgGPS, 0, 0, 0);
+                        }
+                        //ESP_LOGI(TAG, "Mensaje publicado. El id del mensaje es:[%d] mqtt_msg_task", msg_id);
                         if (mqtt_process_receive(client) == ESP_FAIL) {
                             esp_mqtt_abort_connection(client);
                             break;

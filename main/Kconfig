@@ -180,4 +180,9 @@ config MQTT_TOPIC
     help
         MQTT TOPIC to post
 		
+config MQTT_TOPIC_GPS
+    string "MQTT TOPIC GPS to post"
+    help
+        MQTT TOPIC GPS to post
+
 endmenu

@@ -51,6 +51,12 @@ typedef struct {
     int msg_id;
 } esp_mqtt_event_t;
 
+typedef struct {
+    char msg[200];
+    char msgGPS[200];
+    bool GPS;
+} message_MQTT;
+
 typedef esp_mqtt_event_t* esp_mqtt_event_handle_t;
 
 typedef esp_err_t (* mqtt_event_callback_t)(esp_mqtt_event_handle_t event);

@@ -68,4 +68,6 @@
 
 #define MQTT_SERVER_URI             CONFIG_MQTT_SERVER_URI
 #define MQTT_TOPIC                  CONFIG_MQTT_TOPIC
+#define MQTT_TOPIC_GPS              CONFIG_MQTT_TOPIC_GPS
+
 #endif
