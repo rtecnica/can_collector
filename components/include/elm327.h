@@ -53,8 +53,8 @@ typedef struct {
     uint8_t temp;  /*!< Motor Oil temperature*/
     uint8_t fuel;  /*!< Remaining Fuel in primary Tank*/
     uint8_t speed; /*!< Current Ground Speed*/
-    uint8_t LONG[12];  /*!< Longitud*/
-    uint8_t LAT[11];   /*!< Latitude*/
+    uint8_t LONG[11];  /*!< Longitud*/
+    uint8_t LAT[10];   /*!< Latitude*/
     uint8_t TIME[12];  /*!< GPS time & date*/
     uint8_t VIN[17];  /*!< VIN: Unique Vehicle Identification Number*/
     uint8_t fields;/*!< Byte with bitmapped available fields*/

@@ -113,8 +113,8 @@ bool parse_is_GPS(uint8_t *data){
 void parse_GPS(uint8_t *data, elm327_data_t *packet){
 
     uint8_t blankTIME[12];
-    uint8_t blankLAT[11];
-    uint8_t blankLONG[12];
+    uint8_t blankLAT[10];
+    uint8_t blankLONG[11];
 
     uint8_t *index = data;
 
@@ -135,25 +135,27 @@ void parse_GPS(uint8_t *data, elm327_data_t *packet){
         index++;
 
         if (*index != ',') {
-            memcpy(blankLAT, index, 11);
+            memcpy(blankLAT, index, 4);
+            memcpy(blankLAT+4, index+5, 6);
             index += 12;
-            memcpy(blankLONG, index, 12);
+            memcpy(blankLONG, index, 5);
+            memcpy(blankLONG+5, index+6, 6);
             index += 13;
 
-            memcpy(packet->LAT, blankLAT, 11);
+            memcpy(packet->LAT, blankLAT, 10);
             packet->fields = packet->fields | LAT_FIELD;
 
-            uint8_t lat[12];
-            memcpy(lat, blankLAT, 11);
-            lat[11] = '\0';
+            uint8_t lat[11];
+            memcpy(lat, blankLAT, 10);
+            lat[10] = '\0';
             ESP_LOGI("GPS_PARSE", "Latitude: %s", lat);
 
-            memcpy(packet->LONG, blankLONG, 12);
+            memcpy(packet->LONG, blankLONG, 11);
             packet->fields = packet->fields | LONG_FIELD;
 
-            uint8_t lang[13];
-            memcpy(lang, blankLONG, 12);
-            lang[12] = '\0';
+            uint8_t lang[12];
+            memcpy(lang, blankLONG, 11);
+            lang[11] = '\0';
             ESP_LOGI("GPS_PARSE", "Longitude: %s", lang);
 
             int i;

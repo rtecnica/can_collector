@@ -97,8 +97,8 @@ void elm327_print(elm327_data_t packet){
     ESP_LOGI("ELM327_DATAPRINT", "Oil Temp: %i", packet.temp);
     ESP_LOGI("ELM327_DATAPRINT", "Fuel Level: %i", packet.fuel);
     ESP_LOGI("ELM327_DATAPRINT", "Speed: %i", packet.speed);
-    ESP_LOGI("ELM327_DATAPRINT", "Longitude: %s", uint_arr2str(packet.LONG,12));
-    ESP_LOGI("ELM327_DATAPRINT", "Latitude: %s", uint_arr2str(packet.LAT,11));
+    ESP_LOGI("ELM327_DATAPRINT", "Longitude: %s", uint_arr2str(packet.LONG,11));
+    ESP_LOGI("ELM327_DATAPRINT", "Latitude: %s", uint_arr2str(packet.LAT,10));
     ESP_LOGI("ELM327_DATAPRINT", "Time: %s", uint_arr2str(packet.TIME,12));
     ESP_LOGI("ELM327_DATAPRINT", "VIN: %s", uint_arr2str(packet.VIN,17));
 }
