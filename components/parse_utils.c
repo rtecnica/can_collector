@@ -190,3 +190,13 @@ void parse_GPS(uint8_t *data, elm327_data_t *packet){
     }
 
 }
+
+char *uint_arr2str(uint8_t *buff, uint8_t size){
+
+    char *tmp = pvPortMalloc(size + 1);
+    memcpy(tmp, buff, size);
+
+    tmp[size] = '\0';
+
+    return tmp;
+}

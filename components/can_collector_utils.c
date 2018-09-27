@@ -138,7 +138,7 @@ void collector_gps_rx_task(void *queueStruct) {
 
             data[rxBytes] = 0;
             //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-            //ESP_LOGI("RX_TASK", "%s", data);
+            ESP_LOGI("RX_TASK", "%s", data);
             //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
@@ -222,6 +222,7 @@ void collector_parse_task(void *queueStruct){
                         ESP_LOGI("PARSE_TASK","Storage Queue Full!");
                     }
                 }
+                //elm327_print(packet);
                 packet.fields = MISC_FIELD;// | VIN_FIELD;
                 packetREADY = false;
             }

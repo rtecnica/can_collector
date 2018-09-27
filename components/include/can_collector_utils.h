@@ -44,7 +44,14 @@ void collector_query_task(void *queueStruct);
  *
  * @param queueStruct : Pointer to intertask messaging handle struct
  */
-void collector_rx_task(void *queueStruct);
+void collector_elm_rx_task(void *queueStruct);
+
+/**
+ * @brief Task for recieving data from GPS.
+ *
+ * @param queueStruct : Pointer to intertask messaging handle struct
+ */
+void collector_gps_rx_task(void *queueStruct);
 
 /**
  * @brief Task for parsing and assembling data struct from sensor and GPS data.

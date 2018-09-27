@@ -7,6 +7,7 @@
  */
 
 #include "include/elm327.h"
+#include "include/parse_utils.h"
 
 //Función de utilidad para enviar bytestream a través de UART al ELM327
 bool elm327_sendData(const char* logName, unsigned char* data, const int len) {
@@ -63,9 +64,9 @@ bool elm327_query_VIN(void){
 
 void elm327_new_data(elm327_data_t *data){
     memcpy(data->VIN, "AAAAAAAAAAAAAAAAA",17);
-    memcpy(data->LAT, "00000000", 8);
-    memcpy(data->LONG, "00000000", 8);
-    memcpy(data->TIME, "0000", 8);
+    memcpy(data->LAT,  "000000000000", 12);
+    memcpy(data->LONG, "00000000000", 11);
+    memcpy(data->TIME, "000000000000", 12);
     data->temp = 0x46;
     data->fuel = 0x46;
     data->speed = 0x46;
@@ -89,4 +90,15 @@ void elm327_init(void){
     vTaskDelay(5000/portTICK_PERIOD_MS);
     elm327_setCAN();
     vTaskDelay(3000/portTICK_PERIOD_MS);
+}
+
+void elm327_print(elm327_data_t packet){
+
+    ESP_LOGI("ELM327_DATAPRINT", "Oil Temp: %i", packet.temp);
+    ESP_LOGI("ELM327_DATAPRINT", "Fuel Level: %i", packet.fuel);
+    ESP_LOGI("ELM327_DATAPRINT", "Speed: %i", packet.speed);
+    ESP_LOGI("ELM327_DATAPRINT", "Longitude: %s", uint_arr2str(packet.LONG,12));
+    ESP_LOGI("ELM327_DATAPRINT", "Latitude: %s", uint_arr2str(packet.LAT,11));
+    ESP_LOGI("ELM327_DATAPRINT", "Time: %s", uint_arr2str(packet.TIME,12));
+    ESP_LOGI("ELM327_DATAPRINT", "VIN: %s", uint_arr2str(packet.VIN,17));
 }
