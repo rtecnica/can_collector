@@ -754,7 +754,7 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         strcat(msg->msgGPS, tmp);
     }
     if ((LONG_FIELD & pxRxedMessage.fields) != 0){
-        size = sizeof(pxRxedMessage.LONG)/sizeof(pxRxedMessage.LONG[0]);
+        size = 11; //sizeof(pxRxedMessage.LONG)/sizeof(pxRxedMessage.LONG[0]);
         j = 0;
         for (i = 0; i < size ; i++){
             lon[j++] = (char)pxRxedMessage.LONG[i];
@@ -788,7 +788,7 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         msg->GPS = false;
     }
     if ((LAT_FIELD & pxRxedMessage.fields) != 0){
-        size = sizeof(pxRxedMessage.LAT)/sizeof(pxRxedMessage.LAT[0]);
+        size = 10; //sizeof(pxRxedMessage.LAT)/sizeof(pxRxedMessage.LAT[0]);
         j = 0;
         for (i = 0; i < size ; i++){
             lat[j++] = (char)pxRxedMessage.LAT[i];
