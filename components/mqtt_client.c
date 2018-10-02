@@ -703,24 +703,6 @@ void substringFunc(char *s, char *sub, int p, int l) {
    //sub[c] = '\0';
 }
 
-char* replace_char(char* str, char find, char replace){
-    char *current_pos = strchr(str,find);
-    while (current_pos){
-        *current_pos = replace;
-        current_pos = strchr(current_pos,find);
-    }
-    return str;
-}
-
-char* insert_char(char* str, int pos, char insert){
-    char *current_pos = strchr(str,find);
-    while (current_pos){
-        *current_pos = replace;
-        current_pos = strchr(current_pos,find);
-    }
-    return str;
-}
-
 static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int num_intento, long long int epoch)
 {
     //ESP_LOGI(TAG, "Iniciando msgMQTT");
@@ -814,7 +796,7 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         lat[j] = '\0';
         plat = strtok(lat,",");
         if (plat != NULL){
-            sscanf( plan, "%2s%4s", tmp, tmp2 );
+            sscanf( plat, "%2s%4s", tmp, tmp2 );
         } else {
             msg->GPS = false;
         }

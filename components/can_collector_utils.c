@@ -62,10 +62,14 @@ void vApplicationIdleHook( void ) {
 }
 
 void collector_query_task(void *queueStruct){
+    is_vin = false;
     ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
     vTaskDelay(3000/portTICK_PERIOD_MS);
-    elm327_query_VIN();
-    vTaskDelay(3000/portTICK_PERIOD_MS);
+
+    while(!is_vin) {
+        elm327_query_VIN();
+        vTaskDelay(3000 / portTICK_PERIOD_MS);
+    }
 
     for(;;) {
         elm327_query_fueltank();
@@ -104,7 +108,7 @@ void collector_elm_rx_task(void *queueStruct) {
             data[rxBytes] = 0;
             //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
             //ESP_LOGI("RX_TASK", "%s", data);
-            //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
@@ -154,7 +158,6 @@ void collector_gps_rx_task(void *queueStruct) {
     vTaskDelete(NULL);
 }
 
-
 void collector_parse_task(void *queueStruct){
     ESP_LOGI("COLLECTOR_INIT", "Parse Task creation successful");
 
@@ -168,7 +171,7 @@ void collector_parse_task(void *queueStruct){
     for(;;){
         xStatus = xQueueReceive(((struct param *)queueStruct)->rxQueue, buff, 200 / portTICK_PERIOD_MS);
         if(xStatus == pdPASS) {
-            elm327_new_data(&packet);
+            //elm327_new_data(&packet);
             if(parse_is_GPS((uint8_t *)(*buff))){
                 ESP_LOGI("PARSE_TASK", "Message Type Received: GPS");
                 parse_GPS((uint8_t *)(*buff),&packet);
@@ -197,6 +200,7 @@ void collector_parse_task(void *queueStruct){
                         parse_vin(VIN,*buff);
                         memcpy(packet.VIN,VIN,17);
                         packet.fields = packet.fields | VIN_FIELD;
+                        is_vin = true;
                         ESP_LOGI("VIN_MSG","VIN = %s",VIN);
                         break;
                     case UNKNOWN_MSG:
@@ -287,10 +291,10 @@ void collector_SIM_task(void *queueStruct){
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
   
-    SIM_init();
-    //elm327_init();
+    //SIM_init();
+    elm327_init();
     GPS_init();
-    stack_init();
+    //stack_init();
 
     msgQueues.rxQueue = xQueueCreate(MESSAGE_QUEUE_LENGTH, sizeof(void *));
     if(msgQueues.rxQueue != (NULL)){
@@ -307,10 +311,10 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    //xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_gps_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
+    //xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
     xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
 }

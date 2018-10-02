@@ -22,6 +22,7 @@
 * @brief Container for VIN string.
 */
 uint8_t VIN[17];
+volatile bool is_vin;
 
 /**
 * @brief Data struct containing intertask messaging handles.
