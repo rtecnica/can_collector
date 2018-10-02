@@ -712,12 +712,22 @@ char* replace_char(char* str, char find, char replace){
     return str;
 }
 
+char* insert_char(char* str, int pos, char insert){
+    char *current_pos = strchr(str,find);
+    while (current_pos){
+        *current_pos = replace;
+        current_pos = strchr(current_pos,find);
+    }
+    return str;
+}
+
 static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int num_intento, long long int epoch)
 {
     //ESP_LOGI(TAG, "Iniciando msgMQTT");
     char *strIntento = (char *)pvPortMalloc(10);
     char *strftime_buf = (char *)pvPortMalloc(128);
     char *tmp = (char *)pvPortMalloc(32);
+    char *tmp2 = (char *)pvPortMalloc(32);
     char *vin = (char *)pvPortMalloc(18);
     char *lat = (char *)pvPortMalloc(13);
     char *plat;
@@ -747,17 +757,17 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     strcat(msg->msg, tmp);
     strcat(msg->msgGPS, tmp);
     if ((FUEL_FIELD & pxRxedMessage.fields) != 0){
-        sprintf(tmp, "combustible=%d", pxRxedMessage.fuel);
+        sprintf(tmp, "combustible=%d,", pxRxedMessage.fuel);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((SPEED_FIELD & pxRxedMessage.fields) != 0){
-        sprintf(tmp, ",velocidad=%d", pxRxedMessage.speed);
+        sprintf(tmp, "velocidad=%d,", pxRxedMessage.speed);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((TEMP_FIELD & pxRxedMessage.fields) != 0){
-        sprintf(tmp, ",temperatura=%d", pxRxedMessage.temp);
+        sprintf(tmp, "temperatura=%d,", pxRxedMessage.temp);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
@@ -770,18 +780,24 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         lon[j] = '\0';
         plon = strtok(lon,",");
         if (plon != NULL){
-            sprintf(tmp, "%d", atoi(plon) );            
+            sscanf( plon, "%3s%4s", tmp, tmp2 );
         } else {
             msg->GPS = false;
         }
         plon = strtok(NULL, ",");
         if (plon != NULL){
             if (strcmp(plon,"W") == 0){
-                strcat(msg->msgGPS, ",longitud=-");
-                strcat(msg->msgGPS, tmp);
+                strcat(msg->msgGPS, "longitud=-");
+                strcat(msg->msgGPS, atoi(tmp));
+                strcat(msg->msgGPS, ".");
+                strcat(msg->msgGPS, tmp2);
+                strcat(msg->msgGPS, ",");
             } else {
-                strcat(msg->msgGPS, ",longitud=");
-                strcat(msg->msgGPS, tmp);
+                strcat(msg->msgGPS, "longitud=");
+                strcat(msg->msgGPS, atoi(tmp));
+                strcat(msg->msgGPS, ".");
+                strcat(msg->msgGPS, tmp2);
+                strcat(msg->msgGPS, ",");
             }
         } else {
            msg->GPS = false;
@@ -798,18 +814,24 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         lat[j] = '\0';
         plat = strtok(lat,",");
         if (plat != NULL){
-            sprintf(tmp, "%d", atoi(plat) );            
+            sscanf( plan, "%2s%4s", tmp, tmp2 );
         } else {
             msg->GPS = false;
         }
         plat = strtok(NULL, ",");
         if (plat != NULL){
             if (strcmp(plat,"S") == 0){
-                strcat(msg->msgGPS, ",latitud=-");
-                strcat(msg->msgGPS, tmp);
+                strcat(msg->msgGPS, "latitud=-");
+                strcat(msg->msgGPS, atoi(tmp));
+                strcat(msg->msgGPS, ".");
+                strcat(msg->msgGPS, tmp2);
+                strcat(msg->msgGPS, ",");
             } else {
-                strcat(msg->msgGPS, ",latitud=");
-                strcat(msg->msgGPS, tmp);
+                strcat(msg->msgGPS, "latitud=");
+                strcat(msg->msgGPS, atoi(tmp));
+                strcat(msg->msgGPS, ".");
+                strcat(msg->msgGPS, tmp2);
+                strcat(msg->msgGPS, ",");
             }
         } else {
            msg->GPS = false;
@@ -857,28 +879,28 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         fecha = mktime(&tiempo);        
         epoch_l = (unsigned long long int)fecha;
         
-        sprintf(tmp,",tiempo=%Li", epoch_l);
+        sprintf(tmp,"tiempo=%Li", epoch_l);
         strcat(msg->msgGPS,tmp);
-        strcat(msg->msgGPS,"000000000");
+        strcat(msg->msgGPS,"000000000,");
     } else {
         msg->GPS = false;
     }
     //ESP_LOGI(TAG, "msgMQTT : Cargados los campos");
     //if ((VIN_FIELD & pxRxedMessage.fields) != 0){
-    sprintf(tmp, ",VIN=%s", vin);
+    sprintf(tmp, "VIN=%s,", vin);
     strcat(msg->msg, tmp);
     strcat(msg->msgGPS, tmp);
     //}
     //ESP_LOGI(TAG, "msgMQTT : Cargados el vin");
-    strcat(msg->msg,",intento=");
-    strcat(msg->msgGPS,",intento=");
+    strcat(msg->msg,"intento=");
+    strcat(msg->msgGPS,"intento=");
     itoa(num_intento, strIntento, 10);
     strcat(msg->msg, strIntento);
     strcat(msg->msgGPS, strIntento);
     //ESP_LOGI(TAG, "msgMQTT : Cargados el intento");
     strcat(msg->msg, " ");
     strcat(msg->msgGPS, " ");
-    sprintf(strftime_buf, "%Ld", epoch );
+    sprintf(strftime_buf, "%Li", epoch );
     strcat(msg->msg, strftime_buf);
     strcat(msg->msg, "000000000");
     if (msg->GPS){
@@ -886,20 +908,11 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         strcat(msg->msgGPS, strftime_buf);
         strcat(msg->msgGPS, "000000000");
     }
-    //ESP_LOGI(TAG, "msgMQTT : Cargados el tiempo");
-    //ESP_LOGI(TAG, "msgMQTT : mensaje %s", msg);
-
     vPortFree(strIntento);
-    //ESP_LOGI(TAG, "msgMQTT : strIntento");
     vPortFree(strftime_buf);
-    //ESP_LOGI(TAG, "msgMQTT : strftime_buf");
     vPortFree(vin);
-    //ESP_LOGI(TAG, "msgMQTT : vin");
     vPortFree(tmp);
-    //ESP_LOGI(TAG, "msgMQTT : tmp");
-    //ESP_LOGI(TAG, "msgMQTT : Liberada la memo");
-    //ESP_LOGI(TAG, "msgMQTT : mensaje %s", msg);
-
+    vPortFree(tmp2);
     return msg;
 }
 
