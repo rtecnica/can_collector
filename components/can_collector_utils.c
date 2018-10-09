@@ -62,7 +62,7 @@ void vApplicationIdleHook( void ) {
 }
 
 void collector_query_task(void *queueStruct){
-    is_vin = true;//false;
+    is_vin = false;
     ESP_LOGI("COLLECTOR_INIT", "Query Task creation successful");
     vTaskDelay(3000/portTICK_PERIOD_MS);
 
@@ -166,12 +166,12 @@ void collector_parse_task(void *queueStruct){
     can_msg_t msg_type;
 
     elm327_data_t packet;
+    elm327_new_data(&packet);
     packet.fields = MISC_FIELD;
 
     for(;;){
         xStatus = xQueueReceive(((struct param *)queueStruct)->rxQueue, buff, 200 / portTICK_PERIOD_MS);
         if(xStatus == pdPASS) {
-            elm327_new_data(&packet);
             if(parse_is_GPS((uint8_t *)(*buff))){
                 ESP_LOGI("PARSE_TASK", "Message Type Received: GPS");
                 parse_GPS((uint8_t *)(*buff),&packet);
@@ -292,7 +292,7 @@ void collector_SIM_task(void *queueStruct){
 void collector_init(void) {
   
     SIM_init();
-    //elm327_init();
+    elm327_init();
     GPS_init();
     //stack_init();
 
@@ -311,7 +311,7 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    //xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_gps_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);

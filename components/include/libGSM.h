@@ -14,6 +14,9 @@
 #define GSM_STATE_IDLE			89
 #define GSM_STATE_FIRSTINIT		98
 
+#ifndef GSM_UART_NUM
+#define GSM_UART_NUM UART_NUM_2
+#endif
 
 typedef struct
 {

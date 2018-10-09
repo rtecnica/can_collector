@@ -734,7 +734,7 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     //ESP_LOGI(TAG, "msgMQTT : Obtenido el VIN");
     msg->GPS = true;
     strcpy(msg->msg, "Camioneta_ESP32,");
-    strcpy(msg->msgGPS, "Camioneta_ESP32,");
+    strcpy(msg->msgGPS, "Camioneta_ESP32_GPS,");
     sprintf(tmp, "VIN=\"%s\" ", vin);
     strcat(msg->msg, tmp);
     strcat(msg->msgGPS, tmp);
