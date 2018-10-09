@@ -1043,7 +1043,7 @@ static void esp_mqtt_task(void *pv)
 
                         msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, mensaje.msg, 0, 0, 0);
                         if (mensaje.GPS){
-                            msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC_GPS, mensaje.msgGPS, 0, 0, 0);
+                            msg_id2 = esp_mqtt_client_publish(client, MQTT_TOPIC_GPS, mensaje.msgGPS, 0, 0, 0);
                         }
                         if (mqtt_process_receive(client) == ESP_FAIL) {
                             esp_mqtt_abort_connection(client);
