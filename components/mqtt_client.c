@@ -710,12 +710,14 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     char *strftime_buf = (char *)pvPortMalloc(128);
     char *tmp = (char *)pvPortMalloc(32);
     char *tmp2 = (char *)pvPortMalloc(32);
+    char *tmp3 = (char *)pvPortMalloc(32);
     char *vin = (char *)pvPortMalloc(18);
     char *lat = (char *)pvPortMalloc(13);
     char *plat;
     char *lon = (char *)pvPortMalloc(13);
     char *plon;
     char *tim = (char *)pvPortMalloc(13);
+    double coord, aux1, aux2;
     time_t fecha;
     char dato[2];
     struct tm tiempo;
@@ -762,7 +764,10 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         lon[j] = '\0';
         plon = strtok(lon,",");
         if (plon != NULL){
-            sscanf( plon, "%3s%4s", tmp, tmp2 );
+            sscanf( plon, "%3s%2s%2s", tmp, tmp2, tmp3 );
+            coord = atof(tmp);
+            sprintf(lon,"%i.%i", atoi(tmp2), atoi(tmp3));
+            coord += atof(lon)/60;
         } else {
             msg->GPS = false;
         }
@@ -773,10 +778,8 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
             } else {
                 strcat(msg->msgGPS, "longitud=");
             }
-            sprintf(lon,"%i",atoi(tmp));
+            sprintf(lon,"%f",coord);
             strcat(msg->msgGPS, lon);
-            strcat(msg->msgGPS, ".");
-            strcat(msg->msgGPS, tmp2);
             strcat(msg->msgGPS, ",");
         } else {
            msg->GPS = false;
@@ -793,7 +796,10 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         lat[j] = '\0';
         plat = strtok(lat,",");
         if (plat != NULL){
-            sscanf( plat, "%2s%4s", tmp, tmp2 );
+            sscanf( plat, "%2s%2s%2s", tmp, tmp2, tmp3 );
+            coord = atof(tmp);
+            sprintf(lat,"%i.%i", atoi(tmp2), atoi(tmp3));
+            coord += atof(lat)/60;
         } else {
             msg->GPS = false;
         }
@@ -804,10 +810,8 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
             } else {
                 strcat(msg->msgGPS, "latitud=");
             }
-            sprintf(lat,"%i",atoi(tmp));
+            sprintf(lat,"%f",coord);
             strcat(msg->msgGPS, lat);
-            strcat(msg->msgGPS, ".");
-            strcat(msg->msgGPS, tmp2);
             strcat(msg->msgGPS, ",");
         } else {
            msg->GPS = false;
@@ -963,6 +967,7 @@ static void esp_mqtt_task(void *pv)
                     vTaskDelay(200 / portTICK_RATE_MS);
                     num_intento++;
 
+                    msgMQTT(&mensaje, pxRxedMessage, num_intento, epoch);
                     msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, mensaje.msg, 0, 0, 0);
                     msg_id2 = esp_mqtt_client_publish(client, MQTT_TOPIC_GPS, mensaje.msgGPS, 0, 0, 0);
                     if (mqtt_process_receive(client) == ESP_FAIL) {
@@ -984,6 +989,7 @@ static void esp_mqtt_task(void *pv)
                     vTaskDelay(200 / portTICK_RATE_MS);
                     num_intento++;
 
+                    msgMQTT(&mensaje, pxRxedMessage, num_intento, epoch);
                     msg_id2 = esp_mqtt_client_publish(client, MQTT_TOPIC_GPS, mensaje.msgGPS, 0, 0, 0);
                     if (mqtt_process_receive(client) == ESP_FAIL) {
                         esp_mqtt_abort_connection(client);
@@ -1004,6 +1010,8 @@ static void esp_mqtt_task(void *pv)
                 } else if (msg_id < 0){
                     vTaskDelay(200 / portTICK_RATE_MS);
                     num_intento++;
+
+                    msgMQTT(&mensaje, pxRxedMessage, num_intento, epoch);
                     msg_id = esp_mqtt_client_publish(client, MQTT_TOPIC, mensaje.msg, 0, 0, 0);
                     if (mqtt_process_receive(client) == ESP_FAIL) {
                         esp_mqtt_abort_connection(client);
@@ -1022,7 +1030,7 @@ static void esp_mqtt_task(void *pv)
                     outbox_cleanup(client->outbox, OUTBOX_MAX_SIZE);
 
                 } else {
-                    num_intento = 0;
+                    num_intento = 1;
                     now = 0;
                     struct tm timeinfo = { 0 };
                     int retry = 0;
