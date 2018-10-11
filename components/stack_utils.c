@@ -152,16 +152,22 @@ void stack_init(void) {
     }
     sdmmc_card_print_info(stdout, card);
 
+
     FILE* stack_file = fopen(STACK_FILENAME,"r+");
 
-    if(stack_file == NULL) {
+    struct stat st;
+    stat(STACK_FILENAME, &st);
+
+    if(stack_file == NULL || (int)st.st_size > 2000000000) {
         stack_file = fopen(STACK_FILENAME, "w+");
         char f = '#';
-
         fwrite(&f, 1, 1, stack_file);
+        ESP_LOGE("STACK", "File nonexistent or corrupt, creating new file...");
     }
 
     fStackFindDepth(stack_file);
+    stat(STACK_FILENAME, &st);
+    ESP_LOGI("STACK", "FileSize: %i ", (int)st.st_size);
 
     fclose(stack_file);
 }

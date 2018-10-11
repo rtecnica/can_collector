@@ -26,6 +26,8 @@ static const char *TAG = "MQTT_CLIENT";
 
 QueueHandle_t mqtt_mutex;
 
+volatile long long int epoch;
+
 typedef struct mqtt_state
 {
     mqtt_connect_info_t *connect_info;
@@ -717,7 +719,8 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     char *lon = (char *)pvPortMalloc(13);
     char *plon;
     char *tim = (char *)pvPortMalloc(13);
-    double coord, aux1, aux2;
+    double coord = 0;
+    double aux1, aux2;
     time_t fecha;
     char dato[2];
     struct tm tiempo;
@@ -906,7 +909,6 @@ static void esp_mqtt_task(void *pv)
     time_t now = 0;
     elm327_data_t pxRxedMessage;
     esp_mqtt_client_handle_t client = (esp_mqtt_client_handle_t) pv;
-    long long int epoch;
     if (client->run){
         ESP_LOGI(TAG, "El cliente esta corriendo esp_mqtt_task");
     }

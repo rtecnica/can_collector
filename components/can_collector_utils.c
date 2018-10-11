@@ -97,7 +97,7 @@ void collector_elm_rx_task(void *queueStruct) {
 
         data = (uint8_t*) pvPortMalloc(ELM_RX_BUF_SIZE+1);
         while(data == NULL){
-            ESP_LOGI("RX_TASK","Waiting for available heap space...");
+            ESP_LOGI("ELM_RX_TASK","Waiting for available heap space...");
             vTaskDelay(200/portTICK_PERIOD_MS);
             data = (uint8_t*) pvPortMalloc(ELM_RX_BUF_SIZE+1);
         }
@@ -106,9 +106,9 @@ void collector_elm_rx_task(void *queueStruct) {
         if (rxBytes > 0) {
 
             data[rxBytes] = 0;
-            //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-            //ESP_LOGI("RX_TASK", "%s", data);
-            ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+            //ESP_LOGI("ELM_RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            //ESP_LOGI("ELM_RX_TASK", "%s", data);
+            ESP_LOG_BUFFER_HEXDUMP("ELM_RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
@@ -132,7 +132,7 @@ void collector_gps_rx_task(void *queueStruct) {
 
         data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
         while(data == NULL){
-            ESP_LOGI("RX_TASK","Waiting for available heap space...");
+            ESP_LOGI("ELM_RX_TASK","Waiting for available heap space...");
             vTaskDelay(500/portTICK_PERIOD_MS);
             data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
         }
@@ -141,9 +141,9 @@ void collector_gps_rx_task(void *queueStruct) {
         if (rxBytes > 0) {
 
             data[rxBytes] = 0;
-            //ESP_LOGI("RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-            ESP_LOGI("RX_TASK", "%s", data);
-            //ESP_LOG_BUFFER_HEXDUMP("RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
+            //ESP_LOGI("ELM_RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
+            ESP_LOGI("ELM_RX_TASK", "%s", data);
+            //ESP_LOG_BUFFER_HEXDUMP("ELM_RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
             xQueueSend(((struct param *)queueStruct)->rxQueue,(void *)(&data),0);
