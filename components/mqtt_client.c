@@ -695,19 +695,8 @@ static esp_err_t mqtt_process_receive(esp_mqtt_client_handle_t client)
     return ESP_OK;
 }
 
-void substringFunc(char *s, char *sub, int p, int l) {
-   int c = 0;
- 
-   while (c < 2) {
-      *(sub+c) = *(s+p+c-1);
-      c++;
-   }
-   //sub[c] = '\0';
-}
-
 static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int num_intento, long long int epoch)
 {
-    //ESP_LOGI(TAG, "Iniciando msgMQTT");
     char *strIntento = (char *)pvPortMalloc(10);
     char *strftime_buf = (char *)pvPortMalloc(128);
     char *tmp = (char *)pvPortMalloc(32);
@@ -721,7 +710,6 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     char *tim = (char *)pvPortMalloc(13);
     double coord = 0;
     double aux1 = 0;
-    double aux2 = 0;
     time_t fecha;
     char dato[2];
     struct tm tiempo;
@@ -737,7 +725,6 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         }
     }
     vin[j] = '\0';
-    //ESP_LOGI(TAG, "msgMQTT : Obtenido el VIN");
     msg->GPS = true;
     strcpy(msg->msg, "Camioneta_ESP32,");
     strcpy(msg->msgGPS, "Camioneta_ESP32_GPS,");
@@ -745,17 +732,20 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     strcat(msg->msg, tmp);
     strcat(msg->msgGPS, tmp);
     if ((FUEL_FIELD & pxRxedMessage.fields) != 0){
-        sprintf(tmp, "combustible=%d,", pxRxedMessage.fuel);
+        aux1 = atof((char *)&pxRxedMessage.fuel)/2.55;
+        sprintf(tmp, "combustible=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((SPEED_FIELD & pxRxedMessage.fields) != 0){
-        sprintf(tmp, "velocidad=%d,", pxRxedMessage.speed);
+        aux1 = atof((char *)&pxRxedMessage.speed);
+        sprintf(tmp, "velocidad=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((TEMP_FIELD & pxRxedMessage.fields) != 0){
-        sprintf(tmp, "temperatura=%d,", pxRxedMessage.temp);
+        aux1 = atof((char *)&pxRxedMessage.temp) - 40;
+        sprintf(tmp, "temperatura=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
@@ -830,32 +820,26 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
             tim[j++] = (char)pxRxedMessage.TIME[i];
         }
         tim[j] = '\0';
-        //substringFunc(tim,dato,0,2);
         dato[0] = tim[0];
         dato[1] = tim[1];
         tiempo.tm_hour = atoi(dato);
 
-        //substringFunc(tim,dato,2,2);
         dato[0] = tim[2];
         dato[1] = tim[3];
         tiempo.tm_min = atoi(dato);
 
-        //substringFunc(tim,dato,4,2);
         dato[0] = tim[4];
         dato[1] = tim[5];
         tiempo.tm_sec = atoi(dato);
 
-        //substringFunc(tim,dato,6,2);
         dato[0] = tim[6];
         dato[1] = tim[7];
         tiempo.tm_mday = atoi(dato);
 
-        //substringFunc(tim,dato,8,2);
         dato[0] = tim[8];
         dato[1] = tim[9];
         tiempo.tm_mon = atoi(dato) - 1;
 
-        //substringFunc(tim,dato,10,2);
         dato[0] = tim[10];
         dato[1] = tim[11];
         tiempo.tm_year = atoi(dato) + 100;
@@ -869,19 +853,14 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     } else {
         msg->GPS = false;
     }
-    //ESP_LOGI(TAG, "msgMQTT : Cargados los campos");
-    //if ((VIN_FIELD & pxRxedMessage.fields) != 0){
     sprintf(tmp, "VIN=\"%s\",", vin);
     strcat(msg->msg, tmp);
     strcat(msg->msgGPS, tmp);
-    //}
-    //ESP_LOGI(TAG, "msgMQTT : Cargados el vin");
     strcat(msg->msg,"intento=");
     strcat(msg->msgGPS,"intento=");
     itoa(num_intento, strIntento, 10);
     strcat(msg->msg, strIntento);
     strcat(msg->msgGPS, strIntento);
-    //ESP_LOGI(TAG, "msgMQTT : Cargados el intento");
     strcat(msg->msg, " ");
     strcat(msg->msgGPS, " ");
     sprintf(strftime_buf, "%Li", epoch );
@@ -894,9 +873,13 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     }
     vPortFree(strIntento);
     vPortFree(strftime_buf);
-    vPortFree(vin);
     vPortFree(tmp);
     vPortFree(tmp2);
+    vPortFree(tmp3);
+    vPortFree(vin);
+    vPortFree(lat);
+    vPortFree(lon);
+    vPortFree(tim);
     return msg;
 }
 
