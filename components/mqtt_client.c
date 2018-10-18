@@ -847,11 +847,8 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         fecha = mktime(&tiempo);        
         epoch_l = (unsigned long long int)fecha;
         
-        //sprintf(tmp,"tiempo=%Li", epoch_l);
-
         strftime(tmp,32,"tiempo=\"%H:%M:%S %d-%m-%Y\"", epoch_l);
         strcat(msg->msgGPS,tmp);
-        strcat(msg->msgGPS,"000000000,");
     } else {
         msg->GPS = false;
     }
