@@ -17,7 +17,6 @@
 #include "elm327.h"
 #include "L80GPS.h"
 #include "SIM_utils.h"
-
 /**
 * @brief Container for VIN string.
 */

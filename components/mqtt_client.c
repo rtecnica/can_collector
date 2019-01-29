@@ -732,19 +732,19 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     strcat(msg->msg, tmp);
     strcat(msg->msgGPS, tmp);
     if ((FUEL_FIELD & pxRxedMessage.fields) != 0){
-        aux1 = atof((char *)&pxRxedMessage.fuel)/2.55;
+        aux1 = (float)pxRxedMessage.fuel/2.55;
         sprintf(tmp, "combustible=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((SPEED_FIELD & pxRxedMessage.fields) != 0){
-        aux1 = atof((char *)&pxRxedMessage.speed);
+        aux1 = (float)pxRxedMessage.speed;
         sprintf(tmp, "velocidad=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((TEMP_FIELD & pxRxedMessage.fields) != 0){
-        aux1 = atof((char *)&pxRxedMessage.temp) - 40;
+        aux1 = (float)pxRxedMessage.temp - 40;
         sprintf(tmp, "temperatura=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);

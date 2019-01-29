@@ -1,0 +1,3 @@
+/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir
+/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/edit_cache.dir

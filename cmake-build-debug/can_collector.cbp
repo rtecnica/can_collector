@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="can_collector"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/viki/CLionProjects/can_collector/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/viki/CLionProjects/can_collector/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="can_collector">
+				<Option output="/home/viki/CLionProjects/can_collector/cmake-build-debug/can_collector" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/viki/CLionProjects/can_collector/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/api"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/api/include/api"/>
+					<Add directory="/home/viki/esp/esp-idf/components/lwip/api"/>
+					<Add directory="/home/viki/esp/esp-idf/components/app_trace/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/app_update/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/integration/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/unit/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bootloader_support/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/api/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/ar/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/av/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/dm/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/gatt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/hf_client/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/hh/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/jv/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/sdp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/sys/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/esp/blufi/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/esp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/a2dp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/battery/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/dis/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/hid/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/smp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/common/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/device/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/external/sbc/decoder/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/external/sbc/encoder/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/hci/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/osi/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/a2dp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/avct/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/avdt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/avrc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/btm/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/gap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/gatt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/l2cap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/rfcomm/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/sdp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/smp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/coap/libcoap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/coap/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/driver/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp32/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_adc_cal/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_http_client/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_http_client/lib/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/ethernet/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/expat/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/expat/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/freertos/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/heap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/idf_test/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/jsmn/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/libsodium/libsodium/src/libsodium/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/log/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/lwip/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/lwip/include/lwip"/>
+					<Add directory="/home/viki/esp/esp-idf/components/mbedtls/mbedtls/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/mbedtls/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/mdns/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/newlib/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nvs_flash/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/openssl/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/pthread/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/sdmmc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/smartconfig_ack/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/soc/esp32/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/soc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/spiffs/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/spi_flash/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/tcpip_adapter/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/ulp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/vfs/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wear_levelling/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/xtensa-debug-module/include"/>
+					<Add directory="/home/viki/esp/esp-idf/examples/mesh/internal_transceiver/main/include"/>
+					<Add directory="/home/viki/esp/esp-idf/examples/mesh/manual_networking/main/include"/>
+					<Add directory="/home/viki/esp/esp-idf/tools/unit-test-app/components/unity/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/integration/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/unit/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bootloader_support/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/coap/libcoap/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/fatfs/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/jsmn/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/examples/example_1/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/examples/example_2/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/examples/example_3/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/extras/fixture/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/libsodium/libsodium/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/examples/mrbgems/c_and_ruby_extension_example/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/examples/mrbgems/c_extension_example/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-array-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-error/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-eval/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-exit/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-fiber/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-hash-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-kernel-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-math/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-numeric-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-object-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-objectspace/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-print/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-proc-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-random/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-range-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-sprintf/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-string-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-struct/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-symbol-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-time/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nvs_flash/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/spiffs/spiffs/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON"/>
+					<Add directory="/home/viki/CLionProjects/can_collector/build/include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 can_collector"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="can_collector/fast">
+				<Option output="/home/viki/CLionProjects/can_collector/cmake-build-debug/can_collector" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/viki/CLionProjects/can_collector/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/api"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/api/include/api"/>
+					<Add directory="/home/viki/esp/esp-idf/components/lwip/api"/>
+					<Add directory="/home/viki/esp/esp-idf/components/app_trace/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/app_update/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/integration/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/unit/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bootloader_support/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/api/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/ar/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/av/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/dm/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/gatt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/hf_client/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/hh/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/jv/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/sdp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/bta/sys/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/esp/blufi/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/esp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/a2dp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/battery/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/dis/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/hid/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/btc/profile/std/smp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/common/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/device/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/external/sbc/decoder/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/external/sbc/encoder/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/hci/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/osi/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/a2dp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/avct/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/avdt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/avrc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/btm/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/gap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/gatt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/l2cap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/rfcomm/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/sdp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/bluedroid/stack/smp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bt/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/coap/libcoap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/coap/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/driver/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp32/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_adc_cal/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_http_client/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_http_client/lib/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/ethernet/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/expat/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/expat/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/freertos/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/heap/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/idf_test/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/jsmn/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/libsodium/libsodium/src/libsodium/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/log/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/lwip/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/lwip/include/lwip"/>
+					<Add directory="/home/viki/esp/esp-idf/components/mbedtls/mbedtls/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/mbedtls/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/mdns/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/newlib/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nvs_flash/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/openssl/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/pthread/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/sdmmc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/smartconfig_ack/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/soc/esp32/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/soc/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/spiffs/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/spi_flash/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/tcpip_adapter/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/ulp/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/vfs/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wear_levelling/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/port/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/xtensa-debug-module/include"/>
+					<Add directory="/home/viki/esp/esp-idf/examples/mesh/internal_transceiver/main/include"/>
+					<Add directory="/home/viki/esp/esp-idf/examples/mesh/manual_networking/main/include"/>
+					<Add directory="/home/viki/esp/esp-idf/tools/unit-test-app/components/unity/include"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/integration/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/aws_iot/aws-iot-device-sdk-embedded-C/tests/unit/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/bootloader_support/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/coap/libcoap/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/fatfs/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/jsmn/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/examples/example_1/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/examples/example_2/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/examples/example_3/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/extras/fixture/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON/tests/unity/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/libsodium/libsodium/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/examples/mrbgems/c_and_ruby_extension_example/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/examples/mrbgems/c_extension_example/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-array-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-error/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-eval/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-exit/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-fiber/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-hash-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-kernel-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-math/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-numeric-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-object-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-objectspace/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-print/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-proc-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-random/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-range-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-sprintf/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-string-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-struct/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-symbol-ext/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/mrbgems/mruby-time/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nghttp/nghttp2/third-party/mruby/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/nvs_flash/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/spiffs/spiffs/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/src"/>
+					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON"/>
+					<Add directory="/home/viki/CLionProjects/can_collector/build/include"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 can_collector/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/viki/CLionProjects/can_collector/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/viki/CLionProjects/can_collector/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeCache.txt">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/L80GPS.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/SIM_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/can_collector_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/elm327.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/L80GPS.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/SIM_utils.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/can_collector_utils.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/elm327.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/libGSM.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/mqtt_client.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/mqtt_config.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/parse_utils.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/stack_utils.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/mqtt_msg.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/mqtt_outbox.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/platform.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/platform_esp32_idf.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/transport.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/transport_ssl.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/transport_tcp.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/include/transport_ws.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/mqtt_msg.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/mqtt_outbox.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/platform_esp32_idf.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/transport.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/transport_ssl.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/transport_tcp.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/lib/transport_ws.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/libGSM.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/mqtt_client.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/parse_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/stack_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

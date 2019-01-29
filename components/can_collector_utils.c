@@ -16,6 +16,8 @@
 #include "esp_wifi.h"
 #include "esp_event_loop.h"
 #include "esp_log.h"
+#include "esp_ota_ops.h"
+#include "nvs.h"
 #include "nvs_flash.h"
 #include "freertos/semphr.h"
 
@@ -41,6 +43,7 @@
 
 #include <esp_event.h>
 #include <esp_wifi.h>
+
 #include <../include/elm327.h>
 
 #include "apps/sntp/sntp.h"
@@ -290,9 +293,31 @@ void collector_SIM_task(void *queueStruct){
 
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
-  
-    SIM_init();
-    elm327_init();
+
+    // Initialize NVS.
+    esp_err_t err = nvs_flash_init();
+    if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
+        // OTA app partition table has a smaller NVS partition size than the non-OTA
+        // partition table. This size mismatch may cause NVS initialization to fail.
+        // If this happens, we erase NVS partition and initialize NVS again.
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        err = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( err );
+
+    const esp_partition_t *configured = esp_ota_get_boot_partition();
+    const esp_partition_t *running = esp_ota_get_running_partition();
+
+    ESP_LOGI("OTA", "Configured OTA boot partition at offset 0x%08x, but running from offset 0x%08x",
+             configured->address, running->address);
+    ESP_LOGI("OTA", "Configured OTA boot partition labeled %s, but running from partition labeled %s",
+             configured->label, running->label);
+    ESP_LOGI("OTA", "Running partition type %d subtype %d (offset 0x%08x)",
+             running->type, running->subtype, running->address);
+
+
+    //SIM_init();
+    //elm327_init();
     GPS_init();
     //stack_init();
 
@@ -311,10 +336,13 @@ void collector_init(void) {
         ESP_LOGI("STORE_QUEUE", "storeQueue creation successful");
     }
 
-    xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
+    //xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_gps_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
     //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
-    xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
+    //xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
+    //xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
+
+    //vTaskDelay(10000);
+    //esp_restart();
 }
