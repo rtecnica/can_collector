@@ -358,6 +358,9 @@
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/L80GPS.c">
 			<Option target="can_collector"/>
 		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/OTA_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/SIM_utils.c">
 			<Option target="can_collector"/>
 		</Unit>
@@ -368,6 +371,9 @@
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/L80GPS.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/OTA_utils.h">
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/SIM_utils.h">
@@ -449,6 +455,9 @@
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/stack_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/main/can_collector.c">
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/CMakeLists.txt">

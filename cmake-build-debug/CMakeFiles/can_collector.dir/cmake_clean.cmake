@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/can_collector.dir/main/can_collector.c.o"
   "CMakeFiles/can_collector.dir/components/can_collector_utils.c.o"
   "CMakeFiles/can_collector.dir/components/elm327.c.o"
   "CMakeFiles/can_collector.dir/components/L80GPS.c.o"
@@ -14,6 +15,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/can_collector.dir/components/lib/platform_esp32_idf.c.o"
   "CMakeFiles/can_collector.dir/components/lib/mqtt_outbox.c.o"
   "CMakeFiles/can_collector.dir/components/lib/mqtt_msg.c.o"
+  "CMakeFiles/can_collector.dir/components/OTA_utils.c.o"
   "can_collector.pdb"
   "can_collector"
 )

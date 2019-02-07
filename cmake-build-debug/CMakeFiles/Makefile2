@@ -71,7 +71,7 @@ CMAKE_BINARY_DIR = /home/viki/CLionProjects/can_collector/cmake-build-debug
 CMakeFiles/can_collector.dir/all:
 	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/depend
 	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 "Built target can_collector"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 "Built target can_collector"
 .PHONY : CMakeFiles/can_collector.dir/all
 
 # Include target in all.
@@ -81,7 +81,7 @@ all: CMakeFiles/can_collector.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/can_collector.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles 16
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles 18
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/can_collector.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/can_collector.dir/rule

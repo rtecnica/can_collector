@@ -3,7 +3,9 @@ project(can_collector)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(can_collector components/include/stack_utils.h
+add_executable(can_collector
+        main/can_collector.c
+        components/include/stack_utils.h
         components/include/can_collector_utils.h
         components/include/mqtt_client.h
         cmake-build-debug/CMakeCache.txt
@@ -35,7 +37,7 @@ add_executable(can_collector components/include/stack_utils.h
         components/lib/include/platform_esp32_idf.h
         components/lib/include/transport_ssl.h
         components/lib/include/transport_tcp.h
-        components/lib/include/transport_ws.h)
+        components/lib/include/transport_ws.h components/OTA_utils.c components/include/OTA_utils.h)
 
 include_directories(
         /home/viki/esp/esp-idf/components/bt/bluedroid/api
