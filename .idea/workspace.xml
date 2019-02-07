@@ -11,42 +11,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77ced559-c5a0-4ae6-b369-22b63c7ac121" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/can_collector.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/DependInfo.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/build.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/cmake_clean.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/depend.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/flags.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/link.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/progress.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cmake.check_cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.cxx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/Project.cbp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/can_collector.cbp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/L80GPS.c" beforeDir="false" afterPath="$PROJECT_DIR$/components/L80GPS.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/can_collector_utils.c" beforeDir="false" afterPath="$PROJECT_DIR$/components/can_collector_utils.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/include/can_collector_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/components/include/can_collector_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/mqtt_client.c" beforeDir="false" afterPath="$PROJECT_DIR$/components/mqtt_client.c" afterDir="false" />
+    <list default="true" id="7526c394-c405-446a-b153-5a2fb9866b2d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/can_collector.dir/build.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sdkconfig" beforeDir="false" afterPath="$PROJECT_DIR$/sdkconfig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sdkconfig.old" beforeDir="false" afterPath="$PROJECT_DIR$/sdkconfig.old" afterDir="false" />
     </list>
@@ -57,20 +30,6 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DatabaseView">
-    <option name="SHOW_INTERMEDIATE" value="true" />
-    <option name="GROUP_DATA_SOURCES" value="true" />
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-    <option name="HIDDEN_KINDS">
-      <set />
-    </option>
-    <expand />
-    <select />
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <splitter split-orientation="horizontal" split-proportion="0.42529348">
@@ -79,10 +38,11 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/components/include/can_collector_utils.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="559">
-                  <caret line="84" column="6" selection-start-line="84" selection-start-column="6" selection-end-line="84" selection-end-column="6" />
+                <state relative-caret-position="325">
+                  <caret line="45" column="3" lean-forward="true" selection-start-line="45" selection-start-column="3" selection-end-line="45" selection-end-column="3" />
                   <folding>
                     <element signature="e#404#428#0" expanded="true" />
+                    <element signature="e#2144#2219#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -93,10 +53,6 @@
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="507">
                   <caret line="39" selection-start-line="39" selection-end-line="39" />
-                  <folding>
-                    <element signature="e#292#311#0" expanded="true" />
-                    <element signature="e#3050#3190#0" expanded="true" />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -153,11 +109,20 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/components/can_collector_utils.c">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="447">
-                  <caret line="319" column="20" selection-start-line="319" selection-start-column="20" selection-end-line="319" selection-end-column="20" />
+                <state relative-caret-position="4134">
+                  <caret line="318" column="6" selection-start-line="318" selection-start-column="6" selection-end-line="318" selection-end-column="6" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="260">
+                  <caret line="132" column="76" selection-start-line="132" selection-start-column="76" selection-end-line="132" selection-end-column="76" />
                 </state>
               </provider>
             </entry>
@@ -201,27 +166,6 @@
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="117">
                   <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-                  <folding>
-                    <element signature="e#585#998#0" />
-                    <element signature="e#1022#1267#0" />
-                    <element signature="e#1300#1439#0" />
-                    <element signature="e#1462#1940#1" />
-                    <element signature="e#2530#3051#0" />
-                    <element signature="e#3053#6484#0" />
-                    <element signature="e#6486#6954#0" />
-                    <element signature="e#6956#9984#0" />
-                    <element signature="e#9986#10439#0" />
-                    <element signature="e#10441#15461#0" />
-                    <element signature="e#15463#15854#0" />
-                    <element signature="e#15856#16089#0" />
-                    <element signature="e#16091#17907#0" />
-                    <element signature="e#17909#18536#0" />
-                    <element signature="e#18538#18949#0" />
-                    <element signature="e#18953#21120#0" />
-                    <element signature="e#21122#21774#0" />
-                    <element signature="e#21776#22442#0" />
-                    <element signature="e#22444#26672#0" />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -233,7 +177,6 @@
                   <caret line="112" selection-start-line="112" selection-end-line="112" />
                   <folding>
                     <element signature="e#0#61#0" expanded="true" />
-                    <element signature="e#119#146#0" expanded="true" />
                     <element signature="e#245#1150#0" />
                     <element signature="e#1810#3414#0" />
                     <element signature="e#5903#6063#0" />
@@ -264,98 +207,40 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>(char)</find>
-      <find>free</find>
-      <find>/log/include</find>
-      <find>stub</find>
-      <find>elm327</find>
-      <find>tx</find>
-      <find>xtask</find>
-      <find>vParams</find>
-      <find>pvParameters</find>
-      <find>[in]</find>
-      <find>data</find>
-      <find>*data</find>
-      <find>house</find>
-      <find>GPS</find>
-      <find>callo</find>
-      <find>coord</find>
-      <find>epoch</find>
+      <find>gsm</find>
+      <find>pppos_</find>
+      <find>ppposInit</find>
     </findStrings>
-    <replaceStrings>
-      <replace>collector</replace>
-      <replace>msgQueues</replace>
-      <replace>queueStruct</replace>
-      <replace>ELM</replace>
-    </replaceStrings>
   </component>
   <component name="Git.Settings">
-    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="bd2c9f9e6f32e8f626abc064ddd6998bc553da96" />
+        <entry key="$PROJECT_DIR$" value="OTA" />
       </map>
     </option>
-    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/components/include/card_utils.h" />
-        <option value="$PROJECT_DIR$/components/card_utils.c" />
-        <option value="$PROJECT_DIR$/components/component.mk" />
-        <option value="$USER_HOME$/esp/esp-idf/components/lwip/include/lwip/lwip/opt.h" />
-        <option value="$PROJECT_DIR$/components/include/L80_GPS.h" />
-        <option value="$PROJECT_DIR$/main/can_collector.c" />
-        <option value="$PROJECT_DIR$/components/include/stack_utils.h" />
-        <option value="$PROJECT_DIR$/components/lib/mqtt_client.c" />
-        <option value="$PROJECT_DIR$/components/include/component.mk" />
-        <option value="$PROJECT_DIR$/components/include/SIM_utils.h" />
-        <option value="$PROJECT_DIR$/components/SIM_utils.c" />
-        <option value="$PROJECT_DIR$/components/include/parse_utils.h" />
-        <option value="$PROJECT_DIR$/components/parse_utils.c" />
-        <option value="$PROJECT_DIR$/components/elm327.c" />
-        <option value="$PROJECT_DIR$/components/include/libGSM.h" />
-        <option value="$PROJECT_DIR$/components/libGSM.c" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/components/stack_utils.c" />
-        <option value="$PROJECT_DIR$/components/include/L80GPS.h" />
-        <option value="$PROJECT_DIR$/components/include/elm327.h" />
-        <option value="$PROJECT_DIR$/components/mqtt_client.c" />
-        <option value="$PROJECT_DIR$/components/L80GPS.c" />
-        <option value="$PROJECT_DIR$/components/include/mqtt_client.h" />
-        <option value="$PROJECT_DIR$/components/include/can_collector_utils.h" />
+        <option value="$PROJECT_DIR$/main/Kconfig" />
+        <option value="$PROJECT_DIR$/main/can_collector.c" />
+        <option value="$PROJECT_DIR$/sdkconfig" />
+        <option value="$PROJECT_DIR$/components/SIM_utils.c" />
+        <option value="$PROJECT_DIR$/components/libGSM.c" />
+        <option value="$PROJECT_DIR$/components/include/libGSM.h" />
         <option value="$PROJECT_DIR$/components/can_collector_utils.c" />
+        <option value="$PROJECT_DIR$/components/mqtt_client.c" />
+        <option value="$PROJECT_DIR$/components/include/SIM_utils.h" />
       </list>
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1629" />
-    <option name="y" value="390" />
-    <option name="width" value="882" />
-    <option name="height" value="508" />
-  </component>
-  <component name="ProjectInspectionProfilesVisibleTreeState">
-    <entry key="Project Default">
-      <profile-state>
-        <expanded-state>
-          <State />
-          <State>
-            <id>C/C++</id>
-          </State>
-          <State>
-            <id>Data flow analysisC/C++</id>
-          </State>
-        </expanded-state>
-        <selected-state>
-          <State>
-            <id>EndlessLoop</id>
-          </State>
-        </selected-state>
-      </profile-state>
-    </entry>
+    <option name="x" value="1822" />
+    <option name="width" value="1272" />
+    <option name="height" value="716" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -373,11 +258,6 @@
               <item name="can_collector" type="b2602c69:ProjectViewProjectNode" />
               <item name="can_collector" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="can_collector" type="b2602c69:ProjectViewProjectNode" />
-              <item name="can_collector" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -386,22 +266,14 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="js.buildTools.grunt.grunt-cli.package" value="" />
-    <property name="last_opened_file_path" value="$USER_HOME$/esp/esp-idf/examples/system/ota" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.folding" />
+    <property name="last_opened_file_path" value="$USER_HOME$/esp/esp-idf/examples/system/ota/simple_ota_example" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/components/include" />
-      <recent name="$PROJECT_DIR$" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/components" />
       <recent name="$PROJECT_DIR$/components/include" />
-      <recent name="$PROJECT_DIR$/components/lib" />
-      <recent name="$PROJECT_DIR$/components/lib/include" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/components" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -439,7 +311,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="77ced559-c5a0-4ae6-b369-22b63c7ac121" name="Default" comment="" />
+      <changelist id="7526c394-c405-446a-b153-5a2fb9866b2d" name="Default Changelist" comment="" />
       <created>1529184634763</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -517,6 +389,10 @@
       <workItem from="1548335168797" duration="1960000" />
       <workItem from="1548341013716" duration="5158000" />
       <workItem from="1548768887608" duration="597000" />
+      <workItem from="1548940877267" duration="3600000" />
+      <workItem from="1548948261167" duration="591000" />
+      <workItem from="1548950163060" duration="11798000" />
+      <workItem from="1549545512964" duration="1740000" />
     </task>
     <task id="LOCAL-00001" summary="Reorded some stuff for easier stack method writing&#10;&#10;also, switched char type for uint8_t in message struct to avoid file problems">
       <created>1529352994939</created>
@@ -728,19 +604,18 @@
       <option name="project" value="LOCAL" />
       <updated>1539279370150</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="310058000" />
+    <option name="totallyTimeSpent" value="24666000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1366" y="0" width="1920" height="1080" extended-state="6" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49430525" visible="true" weight="0.12113127" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49430525" visible="true" weight="0.100853786" />
       <window_info id="Structure" order="2" sideWeight="0.50569475" weight="0.16434109" />
-      <window_info anchor="bottom" id="CMake" order="0" weight="0.16256684" />
+      <window_info anchor="bottom" id="CMake" order="0" weight="0.24398074" />
       <window_info anchor="bottom" id="Messages" order="1" weight="0.32890365" />
       <window_info anchor="bottom" id="Message" order="2" />
       <window_info anchor="bottom" id="Find" order="3" weight="0.32915717" />
@@ -752,100 +627,46 @@
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.32915717" />
       <window_info anchor="bottom" id="Version Control" order="10" weight="0.32801822" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Thumbnails" order="12" weight="0.32941177" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Terminal" order="3" weight="0.2534685" />
-      <window_info anchor="right" id="Database" order="4" weight="0.32901135" />
+      <window_info anchor="right" id="Database" order="3" weight="0.32901135" />
+      <window_info anchor="right" x="34" y="29" width="1328" height="739" id="Terminal" maximized="true" order="4" type="WINDOWED" visible="true" weight="0.1248666" />
     </layout>
     <layout-to-restore>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49430525" visible="true" weight="0.13643411" />
-      <window_info id="Structure" order="2" sideWeight="0.50569475" weight="0.16450568" />
-      <window_info anchor="bottom" id="CMake" order="0" weight="0.39179954" />
-      <window_info anchor="bottom" id="Messages" order="1" weight="0.32890365" />
-      <window_info anchor="bottom" id="Message" order="2" />
-      <window_info anchor="bottom" id="Find" order="3" weight="0.32915717" />
-      <window_info anchor="bottom" id="Run" order="4" />
-      <window_info anchor="bottom" id="Debug" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="6" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="7" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.32915717" />
-      <window_info anchor="bottom" id="Version Control" order="10" weight="0.32801822" />
-      <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49430525" visible="true" weight="0.09978655" />
+      <window_info id="Structure" order="2" sideWeight="0.50569475" weight="0.16434109" />
+      <window_info anchor="bottom" id="Thumbnails" order="0" weight="0.32941177" />
+      <window_info anchor="bottom" id="CMake" order="1" weight="0.24398074" />
+      <window_info anchor="bottom" id="Messages" order="2" weight="0.32890365" />
+      <window_info anchor="bottom" id="Message" order="3" />
+      <window_info anchor="bottom" id="Find" order="4" weight="0.32915717" />
+      <window_info anchor="bottom" id="Run" order="5" />
+      <window_info anchor="bottom" id="Debug" order="6" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32915717" />
+      <window_info anchor="bottom" id="Version Control" order="11" weight="0.32801822" />
+      <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Terminal" order="3" weight="0.49457365" />
-      <window_info anchor="right" id="Database" order="4" weight="0.32901135" />
+      <window_info anchor="right" id="Database" order="3" weight="0.32901135" />
+      <window_info active="true" anchor="right" x="30" y="29" width="1336" height="739" id="Terminal" order="4" type="WINDOWED" visible="true" weight="0.1248666" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="master" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-              <option name="COLUMN_ORDER">
-                <list>
-                  <option value="0" />
-                  <option value="1" />
-                  <option value="2" />
-                  <option value="3" />
-                </list>
-              </option>
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
     <option name="RECENT_FILTERS">
       <map>
         <entry key="Branch">
           <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="SegFaultFix" />
-                </option>
-              </RecentGroup>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="LectorELM327" />
-                </option>
-              </RecentGroup>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="master" />
-                </option>
-              </RecentGroup>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="origin/Test_SIM" />
-                </option>
-              </RecentGroup>
-            </list>
+            <list />
           </value>
         </entry>
         <entry key="User">
@@ -885,204 +706,126 @@
     <MESSAGE value="Fix in case of corrupted stack file" />
     <option name="LAST_COMMIT_MESSAGE" value="Fix in case of corrupted stack file" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/components/include/can_collector_utils.h</url>
+          <line>62</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/lwip/include/lwip/netif/ppp/pppos.h">
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/lwip/lwip/src/include/netif/ppp/pppapi.h" />
+    <entry file="file://$PROJECT_DIR$/main/Kconfig">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="33" column="19" lean-forward="true" selection-start-line="33" selection-start-column="19" selection-end-line="33" selection-end-column="19" />
+        <state relative-caret-position="108">
+          <caret line="183" selection-start-line="183" selection-end-line="183" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/lwip/include/lwip/lwip/opt.h">
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/log/include/esp_log.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="44" column="17" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
+        <state relative-caret-position="252">
+          <caret line="226" selection-start-line="226" selection-end-line="226" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/lwip/include/lwip/port/lwipopts.h">
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/freertos/tasks.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+        <state relative-caret-position="252">
+          <caret line="3536" selection-start-line="3536" selection-end-line="3536" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/lwip/include/lwip/lwip/pppapi.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="115" column="5" selection-start-line="115" selection-start-column="5" selection-end-line="115" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/freertos/include/freertos/portable.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="146" column="8" selection-start-line="146" selection-start-column="8" selection-end-line="146" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GPGGA" />
-    <entry file="file://$PROJECT_DIR$/grep" />
-    <entry file="file://$PROJECT_DIR$/asdf_g.h" />
-    <entry file="file://$PROJECT_DIR$/asdf_G.h" />
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/esp32/include/esp_wifi.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="131">
-          <caret line="44" column="34" selection-start-line="44" selection-start-column="34" selection-end-line="44" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/L80_GPS.h" />
-    <entry file="file://$PROJECT_DIR$/components/include/dfghj.h" />
-    <entry file="file://$PROJECT_DIR$/components/L80.c" />
     <entry file="file://$PROJECT_DIR$/main/can_collector.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="27" column="1" lean-forward="true" selection-start-line="27" selection-start-column="1" selection-end-line="27" selection-end-column="1" />
+        <state relative-caret-position="286">
+          <caret line="26" column="21" selection-start-line="26" selection-start-column="21" selection-end-line="26" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#60#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/driver/include/driver/uart_select.h">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build/include/sdkconfig.h">
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/app_update/include/esp_ota_ops.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12">
-          <caret line="158" column="8" selection-start-line="158" selection-start-column="8" selection-end-line="158" selection-end-column="8" />
+        <state relative-caret-position="296">
+          <caret line="51" selection-start-line="51" selection-end-line="51" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/freertos/include/freertos/FreeRTOSConfig.h">
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/app_update/esp_ota_ops.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="165" column="57" selection-start-line="165" selection-start-column="57" selection-end-line="165" selection-end-column="57" />
+        <state relative-caret-position="104">
+          <caret line="29" column="30" selection-start-line="29" selection-start-column="30" selection-end-line="29" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/freertos/include/freertos/portmacro.h">
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/app_update/esp_app_desc.c" />
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/bootloader_support/src/bootloader_common.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="294" column="63" selection-start-line="294" selection-start-column="63" selection-end-line="294" selection-end-column="63" />
+        <state relative-caret-position="338">
+          <caret line="26" column="29" selection-start-line="26" selection-start-column="29" selection-end-line="26" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/Kconfig">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/bootloader_support/src/bootloader_flash.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="16" column="20" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
+          <folding>
+            <element signature="e#819#882#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/bootloader_support/src/bootloader_init.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="433">
+          <caret line="51" selection-start-line="51" selection-end-line="51" />
+          <folding>
+            <element signature="e#2431#2518#0" expanded="true" />
+            <element signature="e#2807#3275#0" expanded="true" />
+            <element signature="e#4007#4346#0" expanded="true" />
+            <element signature="e#5316#5345#0" expanded="true" />
+            <element signature="e#7099#7215#0" expanded="true" />
+            <element signature="e#8268#8626#0" expanded="true" />
+            <element signature="e#8964#9109#0" expanded="true" />
+            <element signature="e#13165#13843#0" expanded="true" />
+            <element signature="e#13958#14011#0" expanded="true" />
+            <element signature="e#14248#15433#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sdkconfig">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="52">
-          <caret line="22" column="37" lean-forward="true" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
+        <state relative-caret-position="153">
+          <caret line="436" lean-forward="true" selection-start-line="436" selection-end-line="436" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/nghttp/port/include/http_parser.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3663" />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/driver/include/driver/uart.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="547">
-          <caret line="462" column="3" lean-forward="true" selection-start-line="462" selection-start-column="3" selection-end-line="462" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/freertos/include/freertos/queue.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1131">
-          <caret line="87" column="15" selection-start-line="87" selection-start-column="15" selection-end-line="87" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/mqtt_config.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/freertos/include/freertos/FreeRTOS.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9515">
-          <caret line="824" column="46" lean-forward="true" selection-start-line="824" selection-start-column="46" selection-end-line="824" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/component.mk">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/component.mk" />
-    <entry file="file://$PROJECT_DIR$/components/include/SIM_utils.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="25" column="34" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/build/components/libcomponents.a.sections_info" />
     <entry file="file://$PROJECT_DIR$/components/SIM_utils.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1391">
-          <caret line="109" column="47" selection-start-line="109" selection-start-column="47" selection-end-line="109" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///var/lib/snapd/desktop/applications/gitkraken_gitkraken.desktop">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file:///usr/share/applications/org.kde.konsole.desktop">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/elm327_tests/log.txt" />
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/newlib/include/sys/stat.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="34" column="3" lean-forward="true" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/newlib/include/sys/types.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="183" column="16" selection-start-line="183" selection-start-column="16" selection-end-line="183" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/newlib/include/string.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="650">
-          <caret line="54" column="6" selection-start-line="54" selection-start-column="6" selection-end-line="54" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/partitions.csv">
-      <provider selected="true" editor-type-id="csv-text-editor">
-        <state relative-caret-position="65">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
-      <provider editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="32" column="26" selection-start-line="32" selection-start-column="26" selection-end-line="32" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/can_collector_utils.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="84" column="6" selection-start-line="84" selection-start-column="6" selection-end-line="84" selection-end-column="6" />
+        <state relative-caret-position="130">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
           <folding>
-            <element signature="e#404#428#0" expanded="true" />
+            <element signature="e#0#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/pppos/libGSM.c" />
+    <entry file="file://$PROJECT_DIR$/components/include/SIM_utils.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="e#0#55#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1091,10 +834,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="507">
           <caret line="39" selection-start-line="39" selection-end-line="39" />
-          <folding>
-            <element signature="e#292#311#0" expanded="true" />
-            <element signature="e#3050#3190#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1138,8 +877,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/components/can_collector_utils.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="319" column="20" selection-start-line="319" selection-start-column="20" selection-end-line="319" selection-end-column="20" />
+        <state relative-caret-position="4134">
+          <caret line="318" column="6" selection-start-line="318" selection-start-column="6" selection-end-line="318" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -1175,27 +914,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="117">
           <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-          <folding>
-            <element signature="e#585#998#0" />
-            <element signature="e#1022#1267#0" />
-            <element signature="e#1300#1439#0" />
-            <element signature="e#1462#1940#1" />
-            <element signature="e#2530#3051#0" />
-            <element signature="e#3053#6484#0" />
-            <element signature="e#6486#6954#0" />
-            <element signature="e#6956#9984#0" />
-            <element signature="e#9986#10439#0" />
-            <element signature="e#10441#15461#0" />
-            <element signature="e#15463#15854#0" />
-            <element signature="e#15856#16089#0" />
-            <element signature="e#16091#17907#0" />
-            <element signature="e#17909#18536#0" />
-            <element signature="e#18538#18949#0" />
-            <element signature="e#18953#21120#0" />
-            <element signature="e#21122#21774#0" />
-            <element signature="e#21776#22442#0" />
-            <element signature="e#22444#26672#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1205,7 +923,6 @@
           <caret line="112" selection-start-line="112" selection-end-line="112" />
           <folding>
             <element signature="e#0#61#0" expanded="true" />
-            <element signature="e#119#146#0" expanded="true" />
             <element signature="e#245#1150#0" />
             <element signature="e#1810#3414#0" />
             <element signature="e#5903#6063#0" />
@@ -1217,6 +934,27 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1989">
           <caret line="153" selection-start-line="153" selection-end-line="153" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/component.mk">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="132" column="76" selection-start-line="132" selection-start-column="76" selection-end-line="132" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/include/can_collector_utils.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="45" column="3" lean-forward="true" selection-start-line="45" selection-start-column="3" selection-end-line="45" selection-end-column="3" />
+          <folding>
+            <element signature="e#404#428#0" expanded="true" />
+            <element signature="e#2144#2219#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
