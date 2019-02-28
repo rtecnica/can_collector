@@ -11,7 +11,8 @@
 
 void app_main()
 {
-    SIM_init();
+    OTA_vars_init();
+    //SIM_init();
     //collector_init();
-    ota_example_task();
+    //ota_example_task();
 }
