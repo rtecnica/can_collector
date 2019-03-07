@@ -13,7 +13,25 @@
 
 #include "esp_ota_ops.h"
 
-int16_t OTA_state;
+#define VERSION_LENGTH 6
+
+//#include "freertos/FreeRTOS.h"
+
+
+typedef enum {
+    ESP_OTA_IMG_VALID           = 0xAA,
+    ESP_OTA_IMG_UNDEFINED       = 0xBB,
+    ESP_OTA_IMG_INVALID         = 0xCC,
+    ESP_OTA_IMG_ABORTED         = 0xDD,
+    ESP_OTA_IMG_NEW             = 0xEE,
+    ESP_OTA_IMG_PENDING_VERIFY  = 0xFF,
+} OTA_state_t;
+
+OTA_state_t OTA_state;
+
+void OTA_set_state(OTA_state_t state);
+
+OTA_state_t OTA_get_state();
 
 void ota_example_task();
 

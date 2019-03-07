@@ -19,14 +19,22 @@
 #include "nvs.h"
 #include "nvs_flash.h"
 
+#include "string.h"
+
 #define EXAMPLE_SERVER_URL CONFIG_FIRMWARE_UPG_URL
 #define BUFFSIZE 1024
+
+#define VERSION_LENGTH 10
+
+char* running_version = "0.0.0";
 
 static const char *TAG = "OTA";
 /*an ota data write buffer ready to write to the flash*/
 static char ota_write_data[BUFFSIZE + 1] = { 0 };
 extern const uint8_t server_cert_pem_start[] asm("_binary_ca_cert_pem_start");
 extern const uint8_t server_cert_pem_end[] asm("_binary_ca_cert_pem_end");
+
+static const char *OTA_STATE_NVS_KEY = "OTA_app_state";
 
 nvs_handle app_version_nvs_handle;
 nvs_handle OTA_app_state_nvs_handle;
@@ -39,8 +47,7 @@ static EventGroupHandle_t wifi_event_group;
    to the AP with an IP? */
 const int CONNECTED_BIT = BIT0;
 
-static esp_err_t event_handler(void *ctx, system_event_t *event)
-{
+static esp_err_t event_handler(void *ctx, system_event_t *event){
     switch (event->event_id) {
         case SYSTEM_EVENT_STA_START:
             esp_wifi_connect();
@@ -60,14 +67,12 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     return ESP_OK;
 }
 
-static void http_cleanup(esp_http_client_handle_t client)
-{
+static void http_cleanup(esp_http_client_handle_t client){
     esp_http_client_close(client);
     esp_http_client_cleanup(client);
 }
 
-static void __attribute__((noreturn)) task_fatal_error()
-{
+static void __attribute__((noreturn)) task_fatal_error(){
     ESP_LOGE(TAG, "Exiting task due to fatal error...");
     (void)vTaskDelete(NULL);
 
@@ -76,9 +81,57 @@ static void __attribute__((noreturn)) task_fatal_error()
     }
 }
 
-void ota_example_task()
-{
-    esp_err_t err;
+esp_err_t err;
+
+//------------------------------------------------//
+
+void OTA_set_state(OTA_state_t state){
+    if(state == 0)
+        nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", 1);
+    else
+        nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", 0);
+};
+
+OTA_state_t OTA_get_state(){
+
+    err = nvs_get_i16(OTA_app_state_nvs_handle, OTA_STATE_NVS_KEY, &OTA_state);
+    switch (err) {
+        case ESP_OK:
+            ESP_LOGI("OTA_NVS","App state recovered");
+            break;
+        case ESP_ERR_NVS_NOT_FOUND:
+            printf("The value is not initialized yet!\n");
+            nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", 0);
+            break;
+        default :
+            printf("Error (%s) reading!\n", esp_err_to_name(err));
+    }
+    return OTA_state;
+};
+
+void OTA_update(){
+
+};
+
+bool OTA_latest_version(){
+    char *current_version = malloc(VERSION_LENGTH);
+
+    // Connect
+    // Check Version
+
+    if(strcmp(current_version, running_version) == 0){
+        return true;
+    } else
+        return false;
+};
+
+void OTA_download_latest_version(){
+
+};
+
+//------------------------------------------------/*/
+
+void ota_example_task(){
     /* update handle : set by esp_ota_begin(), must be freed via esp_ota_end() */
     esp_ota_handle_t update_handle = 0 ;
     const esp_partition_t *update_partition = NULL;
@@ -166,11 +219,11 @@ void ota_example_task()
     esp_restart();
 }
 
-void OTA_vars_init()
-{
-    OTA_state = 0;
+void OTA_vars_init(){
     // Initialize NVS.
-    esp_err_t err = nvs_flash_init();
+
+    err = nvs_flash_init();
+
     if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
         // OTA app partition table has a smaller NVS partition size than the non-OTA
         // partition table. This size mismatch may cause NVS initialization to fail.
@@ -180,41 +233,11 @@ void OTA_vars_init()
     }
     ESP_ERROR_CHECK( err );
 
-    const esp_partition_t *configured = esp_ota_get_boot_partition();
-    const esp_partition_t *running = esp_ota_get_running_partition();
-
-    ESP_LOGI("OTA", "Configured OTA boot partition at offset 0x%08x, but running from offset 0x%08x",
-             configured->address, running->address);
-    ESP_LOGI("OTA", "Configured OTA boot partition labeled %s, but running from partition labeled %s",
-             configured->label, running->label);
-    ESP_LOGI("OTA", "Running partition type %d subtype %d (offset 0x%08x)",
-             running->type, running->subtype, running->address);
-
-    // Open
-
-    ESP_LOGI("OTA_NVS","Opening Non-Volatile Storage (NVS) handle... ");
-    err = nvs_open("app_version", NVS_READWRITE, &app_version_nvs_handle);
+    err = nvs_open(OTA_STATE_NVS_KEY, NVS_READWRITE, &OTA_app_state_nvs_handle);
     if (err != ESP_OK) {
-        printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
+        printf("Error (%s) opening NVS handle %s!\n", esp_err_to_name(err), OTA_STATE_NVS_KEY);
     }
 
-
-    err = nvs_open("OTA_app_state", NVS_READWRITE, &OTA_app_state_nvs_handle);
-    if (err != ESP_OK) {
-        printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
-    }
-    else{
-        err = nvs_get_i16(OTA_app_state_nvs_handle, "restart_counter", &OTA_state);
-        switch (err) {
-            case ESP_OK:
-                ESP_LOGI("OTA_NVS","App state recovered");
-                break;
-            case ESP_ERR_NVS_NOT_FOUND:
-                printf("The value is not initialized yet!\n");
-                break;
-            default :
-                printf("Error (%s) reading!\n", esp_err_to_name(err));
-        }
-    }
+    ESP_LOGI("NVS","OTA_app_state = %i", OTA_state);
 
 }

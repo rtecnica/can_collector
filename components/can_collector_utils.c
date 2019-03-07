@@ -92,7 +92,7 @@ void collector_gps_rx_task(void *queueStruct) {
 
         data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
         while(data == NULL){
-            ESP_LOGI("ELM_RX_TASK","Waiting for available heap space...");
+            ESP_LOGI("GPS_RX_TASK","Waiting for available heap space...");
             vTaskDelay(500/portTICK_PERIOD_MS);
             data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
         }
@@ -102,7 +102,7 @@ void collector_gps_rx_task(void *queueStruct) {
 
             data[rxBytes] = 0;
             //ESP_LOGI("ELM_RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-            ESP_LOGI("ELM_RX_TASK", "%s", data);
+            ESP_LOGI("GPS_RX_TASK", "%s", data);
             //ESP_LOG_BUFFER_HEXDUMP("ELM_RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
@@ -249,7 +249,6 @@ void collector_SIM_task(void *queueStruct){
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
 
-    SIM_init();
     //elm327_init();
     GPS_init();
     //stack_init();
