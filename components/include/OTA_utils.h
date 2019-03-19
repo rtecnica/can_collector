@@ -35,6 +35,8 @@ OTA_state_t OTA_get_state();
 
 void ota_example_task();
 
-void OTA_vars_init();
+void OTA_init();
+
+void OTA_download_latest_version();
 
 #endif //CAN_COLLECTOR_OTA_UTILS_H

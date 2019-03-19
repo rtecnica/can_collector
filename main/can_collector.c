@@ -11,17 +11,17 @@
 
 void app_main()
 {
-    OTA_vars_init();
+    OTA_init();
 
-    //SIM_init();
+    SIM_init();
 
-    //collector_init();
-
-    //ota_example_task();
+    collector_init();
 
     OTA_set_state(OTA_get_state());
 
-    ESP_LOGI("NVS","OTA_STATE = %i", OTA_get_state());
+    ESP_LOGI("NVS","OTA_STATE = %0x", OTA_get_state());
 
-    esp_restart();
+    //OTA_download_latest_version();
+
+    //esp_restart();
 }

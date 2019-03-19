@@ -167,6 +167,7 @@
 					<Add directory="/home/viki/esp/esp-idf/components/spiffs/spiffs/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_https_ota/include"/>
 					<Add directory="/home/viki/CLionProjects/can_collector/build/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
@@ -324,6 +325,7 @@
 					<Add directory="/home/viki/esp/esp-idf/components/spiffs/spiffs/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_https_ota/include"/>
 					<Add directory="/home/viki/CLionProjects/can_collector/build/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>

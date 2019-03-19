@@ -159,6 +159,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "/home/viki/esp/esp-idf/components/spiffs/spiffs/src"
   "/home/viki/esp/esp-idf/components/wpa_supplicant/src"
   "/home/viki/esp/esp-idf/components/json/cJSON"
+  "/home/viki/esp/esp-idf/components/esp_https_ota/include"
   "../build/include"
   )
 
