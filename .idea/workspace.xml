@@ -12,9 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7526c394-c405-446a-b153-5a2fb9866b2d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/include/L80GPS.h" beforeDir="false" afterPath="$PROJECT_DIR$/components/include/L80GPS.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/include/parse_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/components/include/parse_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/mqtt_client.c" beforeDir="false" afterPath="$PROJECT_DIR$/components/mqtt_client.c" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,10 +26,10 @@
     <splitter split-orientation="horizontal" split-proportion="0.40747437">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/components/include/can_collector_utils.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-100">
+                <state relative-caret-position="-86">
                   <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
                   <folding>
                     <element signature="e#0#61#0" expanded="true" />
@@ -50,11 +48,11 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="404">
-                  <caret line="39" selection-start-line="39" selection-end-line="39" selection-end-column="20" />
+                <state relative-caret-position="170">
+                  <caret line="39" column="20" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
                 </state>
               </provider>
             </entry>
@@ -145,11 +143,11 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/components/can_collector_utils.c">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="473">
-                  <caret line="52" selection-start-line="52" selection-end-line="52" />
+                <state relative-caret-position="239">
+                  <caret line="34" column="29" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
                   <folding>
                     <element signature="e#1242#1370#0" />
                     <element signature="e#1372#2202#0" />
@@ -233,11 +231,11 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/components/mqtt_client.c">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="117">
-                  <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
+                <state relative-caret-position="-4271">
+                  <caret line="734" selection-start-line="734" selection-end-line="734" />
                 </state>
               </provider>
             </entry>
@@ -307,10 +305,10 @@
         <option value="$PROJECT_DIR$/components/libGSM.c" />
         <option value="$PROJECT_DIR$/components/include/libGSM.h" />
         <option value="$PROJECT_DIR$/components/can_collector_utils.c" />
-        <option value="$PROJECT_DIR$/components/mqtt_client.c" />
         <option value="$PROJECT_DIR$/components/include/SIM_utils.h" />
         <option value="$PROJECT_DIR$/components/include/parse_utils.h" />
         <option value="$PROJECT_DIR$/components/include/L80GPS.h" />
+        <option value="$PROJECT_DIR$/components/mqtt_client.c" />
       </list>
     </option>
   </component>
@@ -488,12 +486,12 @@
       <workItem from="1548950163060" duration="11798000" />
       <workItem from="1549545512964" duration="1740000" />
     </task>
-    <task id="LOCAL-00001" summary="Reorded some stuff for easier stack method writing&#10;&#10;also, switched char type for uint8_t in message struct to avoid file problems">
-      <created>1529352994939</created>
+    <task id="LOCAL-00001" summary="completed documentation for include files">
+      <created>1553008146255</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1529352994939</updated>
+      <updated>1553008146255</updated>
     </task>
     <task id="LOCAL-00002" summary="Added File Stack Methods, skeleton for card_task">
       <created>1529364135561</created>
@@ -698,17 +696,17 @@
       <option name="project" value="LOCAL" />
       <updated>1539279370150</updated>
     </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30067000" />
+    <option name="totallyTimeSpent" value="30326000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1366" y="0" width="1920" height="1080" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49430525" visible="true" weight="0.114727855" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49430525" visible="true" weight="0.114727855" />
       <window_info id="Structure" order="2" sideWeight="0.50569475" weight="0.16434109" />
       <window_info anchor="bottom" id="CMake" order="0" weight="0.24398074" />
       <window_info anchor="bottom" id="Messages" order="1" weight="0.32890365" />
@@ -719,15 +717,15 @@
       <window_info anchor="bottom" id="Cvs" order="6" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="7" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.32915717" />
-      <window_info anchor="bottom" id="Version Control" order="10" weight="0.32801822" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50053364" side_tool="true" visible="true" weight="0.3272727" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="10" sideWeight="0.4994664" visible="true" weight="0.3272727" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Thumbnails" order="12" weight="0.32941177" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Database" order="3" weight="0.32901135" />
-      <window_info anchor="right" x="30" y="29" width="1336" height="735" id="Terminal" order="4" weight="0.41782284" />
+      <window_info anchor="right" x="30" y="29" width="1336" height="735" id="Terminal" order="4" visible="true" weight="0.3569904" />
     </layout>
     <layout-to-restore>
       <window_info id="Favorites" order="0" side_tool="true" />
@@ -774,7 +772,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="Finished Card Task" />
     <MESSAGE value="Card Task Tested and Working" />
     <MESSAGE value="Refactored Code&#10;&#10;Moved tasks to can_collector_utils.c" />
     <MESSAGE value="Minor Refactor" />
@@ -799,7 +796,8 @@
     <MESSAGE value="Fixed Compile errors &amp; added VIN confirmation" />
     <MESSAGE value="Segfault fix &amp; testing config" />
     <MESSAGE value="Fix in case of corrupted stack file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix in case of corrupted stack file" />
+    <MESSAGE value="completed documentation for include files" />
+    <option name="LAST_COMMIT_MESSAGE" value="completed documentation for include files" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/esp/esp-idf/components/lwip/lwip/src/include/netif/ppp/pppapi.h" />
@@ -934,13 +932,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/mqtt_client.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/components/stack_utils.c">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1989">
@@ -1038,23 +1029,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/can_collector_utils.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="473">
-          <caret line="52" selection-start-line="52" selection-end-line="52" />
-          <folding>
-            <element signature="e#1242#1370#0" />
-            <element signature="e#1372#2202#0" />
-            <element signature="e#2204#3494#0" />
-            <element signature="e#3496#4786#0" />
-            <element signature="e#4788#7842#0" />
-            <element signature="e#7844#8724#0" />
-            <element signature="e#8726#9286#0" />
-            <element signature="e#9288#11871#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/components/include/mqtt_client.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
@@ -1118,9 +1092,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="39" column="20" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/components/include/can_collector_utils.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-100">
+        <state relative-caret-position="-86">
           <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
           <folding>
             <element signature="e#0#61#0" expanded="true" />
@@ -1138,10 +1119,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+    <entry file="file://$PROJECT_DIR$/components/can_collector_utils.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="39" selection-start-line="39" selection-end-line="39" selection-end-column="20" />
+        <state relative-caret-position="239">
+          <caret line="34" column="29" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
+          <folding>
+            <element signature="e#1242#1370#0" />
+            <element signature="e#1372#2202#0" />
+            <element signature="e#2204#3494#0" />
+            <element signature="e#3496#4786#0" />
+            <element signature="e#4788#7842#0" />
+            <element signature="e#7844#8724#0" />
+            <element signature="e#8726#9286#0" />
+            <element signature="e#9288#11871#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/mqtt_client.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4271">
+          <caret line="734" selection-start-line="734" selection-end-line="734" />
         </state>
       </provider>
     </entry>
