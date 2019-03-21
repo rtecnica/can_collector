@@ -97,11 +97,11 @@ void OTA_set_state(OTA_state_t state){
     else
         nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", ESP_OTA_IMG_INVALID);
     */
-    nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", state);
+    nvs_set_i16(OTA_app_state_nvs_handle, OTA_STATE_NVS_KEY, (int16_t)state);
+    ESP_LOGI("OTA_NVS","OTA state set to = %i", state);
      };
 
 OTA_state_t OTA_get_state(){
-
     err = nvs_get_i16(OTA_app_state_nvs_handle, OTA_STATE_NVS_KEY, &OTA_state);
     switch (err) {
         case ESP_OK:
@@ -109,17 +109,17 @@ OTA_state_t OTA_get_state(){
             break;
         case ESP_ERR_NVS_NOT_FOUND:
             ESP_LOGI("OTA_NVS","The value is not initialized yet!\n");
-            nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", 0);
+            nvs_set_i16(OTA_app_state_nvs_handle, OTA_STATE_NVS_KEY, 0);
             break;
         default :
-            printf("Error (%s) reading!\n", esp_err_to_name(err));
+            ESP_LOGE("NVS","Error (%s) reading!", esp_err_to_name(err));
     }
     return OTA_state;
 };
 
 void OTA_init(){
     // Initialize NVS.
-    err = nvs_flash_init();
+    err = nvs_flash_init_partition("OTAcfg");
 
     if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
         // OTA app partition table has a smaller NVS partition size than the non-OTA
@@ -129,15 +129,20 @@ void OTA_init(){
         err = nvs_flash_init();
     }
     ESP_ERROR_CHECK( err );
+    ESP_LOGI("NVS","Partition Initialized...");
 
-    err = nvs_open(OTA_STATE_NVS_KEY, NVS_READWRITE, &OTA_app_state_nvs_handle);
+    err = nvs_open_from_partition("OTAcfg",OTA_STATE_NVS_KEY, NVS_READWRITE, &OTA_app_state_nvs_handle);
     if (err != ESP_OK) {
-        printf("Error (%s) opening NVS handle %s!\n", esp_err_to_name(err), OTA_STATE_NVS_KEY);
+        ESP_LOGE("NVS","Error (%s) opening NVS handle %s!", esp_err_to_name(err), OTA_STATE_NVS_KEY);
     }
 
-    ESP_LOGI("NVS","OTA_app_state = %i", OTA_state);
+    ESP_LOGI("NVS","OTA_app_state = %i", OTA_get_state());
 
-    //OTA_set_state(ESP_OTA_IMG_NEW);
+    if(OTA_get_state() == 0){
+        OTA_set_state(ESP_OTA_IMG_VALID);
+    }
+
+    ESP_LOGI("NVS","OTA_app_state = %i", OTA_get_state());
 
     if(OTA_get_state() == ESP_OTA_IMG_PENDING_VERIFY)
     {

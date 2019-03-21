@@ -27,7 +27,7 @@ typedef enum {
     ESP_OTA_IMG_PENDING_VERIFY  = 0xFF,
 } OTA_state_t;
 
-OTA_state_t OTA_state;
+int16_t OTA_state;
 
 void OTA_set_state(OTA_state_t state);
 

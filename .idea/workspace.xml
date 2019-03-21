@@ -14,7 +14,8 @@
     <list default="true" id="7526c394-c405-446a-b153-5a2fb9866b2d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/OTA_utils.c" beforeDir="false" afterPath="$PROJECT_DIR$/components/OTA_utils.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/can_collector.c" beforeDir="false" afterPath="$PROJECT_DIR$/main/can_collector.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/include/OTA_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/components/include/OTA_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/partitions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/partitions.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sdkconfig" beforeDir="false" afterPath="$PROJECT_DIR$/sdkconfig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sdkconfig.old" beforeDir="false" afterPath="$PROJECT_DIR$/sdkconfig.old" afterDir="false" />
     </list>
@@ -31,8 +32,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main/can_collector.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="21" column="18" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+            <state relative-caret-position="299">
+              <caret line="23" lean-forward="true" selection-start-line="23" selection-end-line="23" />
               <folding>
                 <element signature="e#0#60#0" expanded="true" />
                 <element signature="e#61#116#0" expanded="true" />
@@ -44,9 +45,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/components/can_collector_utils.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="26">
-              <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
+            <state relative-caret-position="351">
+              <caret line="224" column="42" selection-start-line="224" selection-start-column="42" selection-end-line="224" selection-end-column="42" />
               <folding>
+                <element signature="e#0#61#0" expanded="true" />
                 <element signature="e#339#467#0" />
                 <element signature="e#469#1299#0" />
                 <element signature="e#1301#2591#0" />
@@ -63,7 +65,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/esp/esp-idf/components/app_update/include/esp_ota_ops.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
+            <state relative-caret-position="195">
               <caret line="46" column="41" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
               <folding>
                 <element signature="e#4831#5585#0" expanded="true" />
@@ -76,12 +78,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/components/OTA_utils.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="231" column="28" lean-forward="true" selection-start-line="231" selection-start-column="28" selection-end-line="231" selection-end-column="28" />
+            <state relative-caret-position="481">
+              <caret line="159" selection-start-line="159" selection-end-line="159" />
               <folding>
                 <element signature="e#1380#2018#0" />
                 <element signature="e#2020#2152#0" />
                 <element signature="e#2154#2332#0" />
+                <element signature="e#2404#2811#0" />
+                <element signature="e#2814#3348#0" />
+                <element signature="e#5592#5821#0" />
+                <element signature="e#5824#8479#0" />
+                <element signature="e#8537#11885#0" />
               </folding>
             </state>
           </provider>
@@ -90,11 +97,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/components/include/OTA_utils.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="38" selection-start-line="38" selection-end-line="38" />
-              <folding>
-                <element signature="e#0#61#0" expanded="true" />
-              </folding>
+            <state>
+              <caret column="2" selection-start-column="2" selection-end-column="2" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/partitions.csv">
+          <provider editor-type-id="csv-table-editor">
+            <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+          </provider>
+          <provider selected="true" editor-type-id="csv-text-editor">
+            <state relative-caret-position="104">
+              <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -113,10 +129,7 @@
       <find>gsm</find>
       <find>pppos_</find>
       <find>ppposInit</find>
-      <find>nvs</find>
-      <find>OTA_state</find>
-      <find>Waiting</find>
-      <find>esp_ota_ops</find>
+      <find>OTA_app_state_nvs_handle</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -130,20 +143,21 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/main/Kconfig" />
+        <option value="$PROJECT_DIR$/sdkconfig" />
         <option value="$PROJECT_DIR$/components/SIM_utils.c" />
         <option value="$PROJECT_DIR$/components/libGSM.c" />
         <option value="$PROJECT_DIR$/components/include/libGSM.h" />
-        <option value="$PROJECT_DIR$/components/include/SIM_utils.h" />
-        <option value="$PROJECT_DIR$/sdkconfig" />
-        <option value="$PROJECT_DIR$/components/include/can_collector_utils.h" />
-        <option value="$PROJECT_DIR$/main/Kconfig" />
         <option value="$PROJECT_DIR$/components/can_collector_utils.c" />
+        <option value="$PROJECT_DIR$/components/include/SIM_utils.h" />
+        <option value="$PROJECT_DIR$/components/include/parse_utils.h" />
+        <option value="$PROJECT_DIR$/components/include/L80GPS.h" />
         <option value="$PROJECT_DIR$/components/mqtt_client.c" />
         <option value="$PROJECT_DIR$/components/include/OTA_utils.h" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/components/include/L80GPS.h" />
-        <option value="$PROJECT_DIR$/main/can_collector.c" />
+        <option value="$PROJECT_DIR$/partitions.csv" />
         <option value="$PROJECT_DIR$/components/OTA_utils.c" />
+        <option value="$PROJECT_DIR$/main/can_collector.c" />
       </list>
     </option>
   </component>
@@ -192,16 +206,14 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../esp32-ota" />
+    <property name="last_opened_file_path" value="$USER_HOME$/esp/esp-idf/examples/system/ota/simple_ota_example" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/main" />
-      <recent name="$PROJECT_DIR$/components" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/components/include" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/components" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -320,37 +332,28 @@
       <workItem from="1548940877267" duration="3600000" />
       <workItem from="1548948261167" duration="591000" />
       <workItem from="1548950163060" duration="11798000" />
-      <workItem from="1549545512964" duration="16695000" />
-      <workItem from="1551362334362" duration="4477000" />
-      <workItem from="1551790920934" duration="597000" />
-      <workItem from="1551792122264" duration="17019000" />
-      <workItem from="1551967349193" duration="18571000" />
-      <workItem from="1552395937998" duration="15149000" />
-      <workItem from="1552422007968" duration="2766000" />
-      <workItem from="1552566034261" duration="4786000" />
-      <workItem from="1552998668527" duration="374000" />
-      <workItem from="1553173514878" duration="1754000" />
+      <workItem from="1549545512964" duration="1740000" />
     </task>
-    <task id="LOCAL-00001" summary="Commmmmit">
-      <created>1549547363107</created>
+    <task id="LOCAL-00001" summary="completed documentation for include files">
+      <created>1553008146255</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1549547363107</updated>
+      <updated>1553008146255</updated>
     </task>
-    <task id="LOCAL-00002" summary="OTA framework Dev">
-      <created>1549571983440</created>
+    <task id="LOCAL-00002" summary="Added File Stack Methods, skeleton for card_task">
+      <created>1529364135561</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1549571983440</updated>
+      <updated>1529364135562</updated>
     </task>
-    <task id="LOCAL-00003" summary="Added OTA_utils">
-      <created>1551366098103</created>
+    <task id="LOCAL-00003" summary="Finished Card Task">
+      <created>1529374965234</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1551366098103</updated>
+      <updated>1529374965234</updated>
     </task>
     <task id="LOCAL-00004" summary="Card Task Tested and Working">
       <created>1529421314770</created>
@@ -541,11 +544,11 @@
       <option name="project" value="LOCAL" />
       <updated>1539279370150</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="117274000" />
+    <option name="totallyTimeSpent" value="43646000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1366" y="0" width="1920" height="1080" extended-state="6" />
@@ -553,8 +556,8 @@
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49430525" visible="true" weight="0.11579509" />
-      <window_info id="Structure" order="2" sideWeight="0.50569475" weight="0.13127" />
-      <window_info anchor="bottom" id="CMake" order="0" weight="0.24385026" />
+      <window_info id="Structure" order="2" sideWeight="0.50569475" weight="0.16434109" />
+      <window_info anchor="bottom" id="CMake" order="0" weight="0.24398074" />
       <window_info anchor="bottom" id="Messages" order="1" weight="0.32890365" />
       <window_info anchor="bottom" id="Message" order="2" />
       <window_info anchor="bottom" id="Find" order="3" weight="0.32915717" />
@@ -563,15 +566,15 @@
       <window_info anchor="bottom" id="Cvs" order="6" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="7" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.32915717" />
-      <window_info anchor="bottom" id="Version Control" order="10" weight="0.32801822" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50053364" side_tool="true" weight="0.3272727" />
+      <window_info anchor="bottom" id="Version Control" order="10" sideWeight="0.4994664" visible="true" weight="0.3272727" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Thumbnails" order="12" weight="0.32941177" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Database" order="3" weight="0.32901135" />
-      <window_info active="true" anchor="right" x="2318" y="29" width="964" height="1047" id="Terminal" order="4" visible="true" weight="0.41302028" />
+      <window_info active="true" anchor="right" x="30" y="29" width="1336" height="735" id="Terminal" order="4" visible="true" weight="0.5613661" />
     </layout>
     <layout-to-restore>
       <window_info id="Favorites" order="0" side_tool="true" />
@@ -618,6 +621,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <MESSAGE value="Card Task Tested and Working" />
+    <MESSAGE value="Refactored Code&#10;&#10;Moved tasks to can_collector_utils.c" />
     <MESSAGE value="Minor Refactor" />
     <MESSAGE value="Filled in documentation" />
     <MESSAGE value="Added Author" />
@@ -640,10 +645,8 @@
     <MESSAGE value="Fixed Compile errors &amp; added VIN confirmation" />
     <MESSAGE value="Segfault fix &amp; testing config" />
     <MESSAGE value="Fix in case of corrupted stack file" />
-    <MESSAGE value="Commmmmit" />
-    <MESSAGE value="OTA framework Dev" />
-    <MESSAGE value="Added OTA_utils" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added OTA_utils" />
+    <MESSAGE value="completed documentation for include files" />
+    <option name="LAST_COMMIT_MESSAGE" value="completed documentation for include files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -658,6 +661,13 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/esp/esp-idf/components/lwip/lwip/src/include/netif/ppp/pppapi.h" />
+    <entry file="file://$PROJECT_DIR$/main/Kconfig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="183" selection-start-line="183" selection-end-line="183" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$USER_HOME$/esp/esp-idf/components/log/include/esp_log.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
@@ -716,76 +726,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build/components/libcomponents.a.sections_info" />
-    <entry file="file://$PROJECT_DIR$/components/pppos/libGSM.c" />
-    <entry file="file://$PROJECT_DIR$/components/parse_utils.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="194" selection-start-line="194" selection-end-line="194" />
-          <folding>
-            <element signature="e#245#1150#0" />
-            <element signature="e#1152#1808#0" />
-            <element signature="e#1810#3414#0" />
-            <element signature="e#3416#3577#0" />
-            <element signature="e#3583#3741#0" />
-            <element signature="e#3747#3805#0" />
-            <element signature="e#3807#5901#0" />
-            <element signature="e#5903#6063#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/stack_utils.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1989">
-          <caret line="153" selection-start-line="153" selection-end-line="153" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/component.mk">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/freertos/event_groups.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="349" selection-start-line="349" selection-end-line="349" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/make/component_wrapper.mk">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="284" selection-start-line="284" selection-end-line="284" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/elm327.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="64" column="41" selection-start-line="64" selection-start-column="41" selection-end-line="64" selection-end-column="41" />
-          <folding>
-            <element signature="e#78#105#0" expanded="true" />
-            <element signature="e#216#618#0" />
-            <element signature="e#296#369#1" />
-            <element signature="e#624#750#0" />
-            <element signature="e#756#910#0" />
-            <element signature="e#917#1061#0" />
-            <element signature="e#1067#1213#0" />
-            <element signature="e#1219#1359#0" />
-            <element signature="e#1365#1500#0" />
-            <element signature="e#1502#1825#0" />
-            <element signature="e#1827#2459#0" />
-            <element signature="e#2461#3009#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sdkconfig">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="760">
-          <caret line="68" column="35" lean-forward="true" selection-start-line="68" selection-start-column="35" selection-end-line="68" selection-end-column="35" />
+        <state relative-caret-position="153">
+          <caret line="436" lean-forward="true" selection-start-line="436" selection-end-line="436" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build/components/libcomponents.a.sections_info" />
+    <entry file="file://$PROJECT_DIR$/components/SIM_utils.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="e#0#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/pppos/libGSM.c" />
+    <entry file="file://$PROJECT_DIR$/components/component.mk">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/components/include/SIM_utils.h">
       <provider selected="true" editor-type-id="text-editor">
@@ -797,33 +758,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/Kconfig">
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2301">
-          <caret line="177" column="17" lean-forward="true" selection-start-line="177" selection-start-column="17" selection-end-line="177" selection-end-column="17" />
+        <state relative-caret-position="170">
+          <caret line="39" column="20" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/newlib/include/stdint.h">
+    <entry file="file://$PROJECT_DIR$/components/include/elm327.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="31" column="18" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
+        <state relative-caret-position="65">
+          <caret line="13" selection-start-line="13" selection-end-line="13" />
+          <folding>
+            <element signature="e#62#247#0" expanded="true" />
+            <element signature="e#956#1376#0" />
+            <element signature="e#1533#2281#0" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/secure_boot_signing_key.pem">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/nvs_flash/src/nvs_api.cpp">
+    <entry file="file://$PROJECT_DIR$/components/include/L80GPS.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="457" column="21" selection-start-line="457" selection-start-column="21" selection-end-line="457" selection-end-column="21" />
+        <state relative-caret-position="104">
+          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#61#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/include/mqtt_client.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="22" column="14" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
+          <folding>
+            <element signature="e#218#237#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/components/include/parse_utils.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
+        <state relative-caret-position="117">
           <caret line="21" column="14" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
           <folding>
             <element signature="e#0#61#0" expanded="true" />
@@ -849,36 +825,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/component.mk">
+    <entry file="file://$PROJECT_DIR$/components/elm327.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/SIM_utils.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="18" column="59" selection-start-line="18" selection-start-column="59" selection-end-line="18" selection-end-column="59" />
+        <state relative-caret-position="832">
+          <caret line="64" column="41" selection-start-line="64" selection-start-column="41" selection-end-line="64" selection-end-column="41" />
           <folding>
-            <element signature="e#340#1921#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/mqtt_client.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="22" column="14" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
-          <folding>
-            <element signature="e#218#237#0" expanded="true" />
+            <element signature="e#78#105#0" expanded="true" />
+            <element signature="e#216#618#0" />
+            <element signature="e#296#369#1" />
+            <element signature="e#624#750#0" />
+            <element signature="e#756#910#0" />
+            <element signature="e#917#1061#0" />
+            <element signature="e#1067#1213#0" />
+            <element signature="e#1219#1359#0" />
+            <element signature="e#1365#1500#0" />
+            <element signature="e#1502#1825#0" />
+            <element signature="e#1827#2459#0" />
+            <element signature="e#2461#3009#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/components/libGSM.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="624">
+        <state relative-caret-position="975">
           <caret line="75" column="23" selection-start-line="75" selection-start-column="23" selection-end-line="75" selection-end-column="23" />
           <folding>
             <element signature="e#1716#1839#0" />
@@ -906,94 +876,127 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/L80GPS.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
-          <folding>
-            <element signature="e#218#613#0" />
-            <element signature="e#295#368#1" />
-            <element signature="e#616#1849#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/elm327.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <element signature="e#62#247#0" expanded="true" />
-            <element signature="e#956#1376#0" />
-            <element signature="e#1533#2281#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/components/mqtt_client.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13">
+        <state relative-caret-position="9529">
           <caret line="733" column="1" selection-start-line="733" selection-start-column="1" selection-end-line="733" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/esp32/include/esp_err.h">
+    <entry file="file://$PROJECT_DIR$/components/stack_utils.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="57" column="12" selection-start-line="57" selection-start-column="12" selection-end-line="57" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/esp_http_client/include/esp_http_client.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="41" column="20" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/libGSM.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+        <state relative-caret-position="1989">
+          <caret line="153" selection-start-line="153" selection-end-line="153" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/components/include/can_collector_utils.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="84" column="2" selection-start-line="84" selection-start-column="2" selection-end-line="84" selection-end-column="2" />
+        <state relative-caret-position="13">
+          <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
           <folding>
             <element signature="e#0#61#0" expanded="true" />
-            <element signature="e#404#428#0" expanded="true" />
-            <element signature="e#623#690#0" expanded="true" />
+            <element signature="e#62#333#0" expanded="true" />
+            <element signature="e#517#558#0" expanded="true" />
+            <element signature="e#599#666#0" expanded="true" />
+            <element signature="e#921#1053#0" expanded="true" />
+            <element signature="e#1101#1232#0" expanded="true" />
+            <element signature="e#1281#1404#0" expanded="true" />
+            <element signature="e#1453#1613#0" expanded="true" />
+            <element signature="e#1661#1854#0" expanded="true" />
+            <element signature="e#1901#2098#0" expanded="true" />
+            <element signature="e#2144#2219#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/L80GPS.h">
+    <entry file="file://$PROJECT_DIR$/components/L80GPS.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="34" column="20" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="20" />
+        <state relative-caret-position="390">
+          <caret line="61" column="1" selection-start-line="61" selection-start-column="1" selection-end-line="61" selection-end-column="1" />
           <folding>
             <element signature="e#0#61#0" expanded="true" />
+            <element signature="e#218#613#0" />
+            <element signature="e#295#368#1" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/include/libGSM.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="37" column="30" selection-start-line="37" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/parse_utils.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="195" column="45" selection-start-line="195" selection-start-column="45" selection-end-line="195" selection-end-column="45" />
+          <folding>
+            <element signature="e#245#1150#0" />
+            <element signature="e#1152#1808#0" />
+            <element signature="e#1810#3414#0" />
+            <element signature="e#3416#3577#0" />
+            <element signature="e#3583#3741#0" />
+            <element signature="e#3747#3805#0" />
+            <element signature="e#3807#5901#0" />
+            <element signature="e#5903#6063#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/esp/esp-idf/components/app_update/include/esp_ota_ops.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="46" column="41" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
+          <folding>
+            <element signature="e#4831#5585#0" expanded="true" />
+            <element signature="e#7624#8355#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/include/OTA_utils.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="2" selection-start-column="2" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/OTA_utils.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="481">
+          <caret line="159" selection-start-line="159" selection-end-line="159" />
+          <folding>
+            <element signature="e#1380#2018#0" />
+            <element signature="e#2020#2152#0" />
+            <element signature="e#2154#2332#0" />
+            <element signature="e#2404#2811#0" />
+            <element signature="e#2814#3348#0" />
+            <element signature="e#5592#5821#0" />
+            <element signature="e#5824#8479#0" />
+            <element signature="e#8537#11885#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/partitions.csv">
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+      </provider>
+      <provider selected="true" editor-type-id="csv-text-editor">
+        <state relative-caret-position="104">
+          <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/components/can_collector_utils.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="26">
-          <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
+        <state relative-caret-position="351">
+          <caret line="224" column="42" selection-start-line="224" selection-start-column="42" selection-end-line="224" selection-end-column="42" />
           <folding>
+            <element signature="e#0#61#0" expanded="true" />
             <element signature="e#339#467#0" />
             <element signature="e#469#1299#0" />
             <element signature="e#1301#2591#0" />
@@ -1006,43 +1009,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/esp/esp-idf/components/app_update/include/esp_ota_ops.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="46" column="41" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
-          <folding>
-            <element signature="e#4831#5585#0" expanded="true" />
-            <element signature="e#7624#8355#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/include/OTA_utils.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="38" selection-start-line="38" selection-end-line="38" />
-          <folding>
-            <element signature="e#0#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/OTA_utils.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="231" column="28" lean-forward="true" selection-start-line="231" selection-start-column="28" selection-end-line="231" selection-end-column="28" />
-          <folding>
-            <element signature="e#1380#2018#0" />
-            <element signature="e#2020#2152#0" />
-            <element signature="e#2154#2332#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main/can_collector.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="21" column="18" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+        <state relative-caret-position="299">
+          <caret line="23" lean-forward="true" selection-start-line="23" selection-end-line="23" />
           <folding>
             <element signature="e#0#60#0" expanded="true" />
             <element signature="e#61#116#0" expanded="true" />
