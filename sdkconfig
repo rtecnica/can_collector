@@ -469,7 +469,7 @@ CONFIG_MQTT_TOPIC_GPS="esp32_cnavarro_1997_1974_GPS"
 #
 # Example Configuration
 #
-CONFIG_FIRMWARE_UPG_URL="http://www.verbux.com/flash/hello-world.bin"
+CONFIG_FIRMWARE_UPG_URL="https://www.newfield.cl/flash/hello-world.bin"
 
 #
 # mbedTLS

@@ -15,13 +15,9 @@ void app_main()
 
     SIM_init();
 
-    collector_init();
+    //collector_init();
 
-    OTA_set_state(OTA_get_state());
+    OTA_download_latest_version();
 
-    ESP_LOGI("NVS","OTA_STATE = %0x", OTA_get_state());
-
-    //OTA_download_latest_version();
-
-    //esp_restart();
+    esp_restart();
 }

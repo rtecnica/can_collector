@@ -91,11 +91,14 @@ esp_err_t err;
 //------------------------------------------------//
 
 void OTA_set_state(OTA_state_t state){
+    /*
     if(state == ESP_OTA_IMG_INVALID)
         nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", ESP_OTA_IMG_VALID);
     else
         nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", ESP_OTA_IMG_INVALID);
-};
+    */
+    nvs_set_i16(OTA_app_state_nvs_handle, "OTA_app_state", state);
+     };
 
 OTA_state_t OTA_get_state(){
 
@@ -116,7 +119,6 @@ OTA_state_t OTA_get_state(){
 
 void OTA_init(){
     // Initialize NVS.
-
     err = nvs_flash_init();
 
     if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
@@ -135,7 +137,24 @@ void OTA_init(){
 
     ESP_LOGI("NVS","OTA_app_state = %i", OTA_state);
 
+    //OTA_set_state(ESP_OTA_IMG_NEW);
 
+    if(OTA_get_state() == ESP_OTA_IMG_PENDING_VERIFY)
+    {
+        ESP_LOGE("OTA", "Unexpected reset! Rolling back update...");
+
+        update_partition = esp_ota_get_next_update_partition(NULL);
+
+        err = esp_ota_set_boot_partition(update_partition);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "esp_ota_set_boot_partition failed (%s)!", esp_err_to_name(err));
+            task_fatal_error();
+        }
+
+        OTA_set_state(ESP_OTA_IMG_VALID);
+
+        esp_restart();
+    }
     /* update handle : set by esp_ota_begin(), must be freed via esp_ota_end() */
 
     ESP_LOGI(TAG, "Starting OTA example...");
@@ -151,6 +170,11 @@ void OTA_init(){
     ESP_LOGI(TAG, "Running partition type %d subtype %d (offset 0x%08x)",
              running->type, running->subtype, running->address);
 
+    if(OTA_get_state() == ESP_OTA_IMG_NEW)
+    {
+        ESP_LOGI("OTA","New partition loaded, pending verify.");
+        OTA_set_state(ESP_OTA_IMG_PENDING_VERIFY);
+    }
 
 };
 
@@ -235,6 +259,8 @@ void OTA_download_latest_version(){
         http_cleanup(client);
         task_fatal_error();
     }
+    OTA_set_state(ESP_OTA_IMG_NEW);
+    ESP_LOGI(TAG, "Setting OTA state to ESP_OTA_IMG_NEW");
 
 };
 
