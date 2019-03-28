@@ -7,53 +7,10 @@
  *
  */
 #include "include/can_collector_utils.h"
-
-#include <string.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_system.h"
-#include "esp_wifi.h"
-#include "esp_event_loop.h"
-#include "esp_log.h"
-#include "esp_ota_ops.h"
-#include "nvs.h"
-#include "nvs_flash.h"
-#include "freertos/semphr.h"
-
-#include "driver/uart.h"
-
-#include "netif/ppp/pppos.h"
-#include "netif/ppp/ppp.h"
-#include "lwip/err.h"
-#include "lwip/sockets.h"
-#include "lwip/sys.h"
-#include "lwip/netdb.h"
-#include "lwip/dns.h"
-#include "lwip/pppapi.h"
-
-#include "mbedtls/platform.h"
-#include "mbedtls/net.h"
-#include "mbedtls/esp_debug.h"
-#include "mbedtls/ssl.h"
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/error.h"
-#include "mbedtls/certs.h"
-
-#include <esp_event.h>
-#include <esp_wifi.h>
-
-#include <../include/elm327.h>
-
-#include "apps/sntp/sntp.h"
-
 #include "../build/include/sdkconfig.h"
 
 
 #define MESSAGE_QUEUE_LENGTH 5
-
-//static const char *TIME_TAG = "[SNTP]";
 
 static const int RX_BUF_SIZE = 128;
 volatile uint32_t ulIdleCycleCount = 0UL;
@@ -135,7 +92,7 @@ void collector_gps_rx_task(void *queueStruct) {
 
         data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
         while(data == NULL){
-            ESP_LOGI("ELM_RX_TASK","Waiting for available heap space...");
+            ESP_LOGI("GPS_RX_TASK","Waiting for available heap space...");
             vTaskDelay(500/portTICK_PERIOD_MS);
             data = (uint8_t*) pvPortMalloc(GPS_RX_BUF_SIZE+1);
         }
@@ -145,7 +102,7 @@ void collector_gps_rx_task(void *queueStruct) {
 
             data[rxBytes] = 0;
             //ESP_LOGI("ELM_RX_TASK", "Read %d bytes: '%s'", rxBytes, data);
-            ESP_LOGI("ELM_RX_TASK", "%s", data);
+            ESP_LOGI("GPS_RX_TASK", "%s", data);
             //ESP_LOG_BUFFER_HEXDUMP("ELM_RX_TASK_HEXDUMP", data, rxBytes, ESP_LOG_INFO);
 
             //Send through queue to data processing Task
@@ -276,8 +233,6 @@ void collector_SIM_task(void *queueStruct){
 
     time_t now = 0;
     struct tm timeinfo = { 0 };
-    int retry = 0;
-    const int retry_count = 10;
     initialize_sntp();
     time(&now);
     localtime_r(&now, &timeinfo);
@@ -294,29 +249,6 @@ void collector_SIM_task(void *queueStruct){
 // Inicializa el módulo UART #0 que está conectalo a la interfase USB-UART
 void collector_init(void) {
 
-    // Initialize NVS.
-    esp_err_t err = nvs_flash_init();
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
-        // OTA app partition table has a smaller NVS partition size than the non-OTA
-        // partition table. This size mismatch may cause NVS initialization to fail.
-        // If this happens, we erase NVS partition and initialize NVS again.
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        err = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK( err );
-
-    const esp_partition_t *configured = esp_ota_get_boot_partition();
-    const esp_partition_t *running = esp_ota_get_running_partition();
-
-    ESP_LOGI("OTA", "Configured OTA boot partition at offset 0x%08x, but running from offset 0x%08x",
-             configured->address, running->address);
-    ESP_LOGI("OTA", "Configured OTA boot partition labeled %s, but running from partition labeled %s",
-             configured->label, running->label);
-    ESP_LOGI("OTA", "Running partition type %d subtype %d (offset 0x%08x)",
-             running->type, running->subtype, running->address);
-
-
-    //SIM_init();
     //elm327_init();
     GPS_init();
     //stack_init();
@@ -339,10 +271,7 @@ void collector_init(void) {
     //xTaskCreate(collector_elm_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_gps_rx_task, "collector_rx_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES -1, NULL);
     xTaskCreate(collector_parse_task, "collector_parse_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    //xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
-    //xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
+    xTaskCreate(collector_card_task, "collector_card_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(collector_SIM_task, "collector_SIM_task", 1024 * 2, (void *)&msgQueues, configMAX_PRIORITIES, NULL);
     //xTaskCreate(collector_query_task, "collector_query_task", 2 * 1024, NULL, configMAX_PRIORITIES - 3, NULL);
-
-    //vTaskDelay(10000);
-    //esp_restart();
 }

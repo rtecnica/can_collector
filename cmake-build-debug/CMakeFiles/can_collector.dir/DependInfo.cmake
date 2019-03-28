@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/home/viki/CLionProjects/can_collector/components/L80GPS.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/L80GPS.c.o"
+  "/home/viki/CLionProjects/can_collector/components/OTA_utils.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/OTA_utils.c.o"
   "/home/viki/CLionProjects/can_collector/components/SIM_utils.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/SIM_utils.c.o"
   "/home/viki/CLionProjects/can_collector/components/can_collector_utils.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/can_collector_utils.c.o"
   "/home/viki/CLionProjects/can_collector/components/elm327.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/elm327.c.o"
@@ -19,6 +20,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/viki/CLionProjects/can_collector/components/mqtt_client.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/mqtt_client.c.o"
   "/home/viki/CLionProjects/can_collector/components/parse_utils.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/parse_utils.c.o"
   "/home/viki/CLionProjects/can_collector/components/stack_utils.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/components/stack_utils.c.o"
+  "/home/viki/CLionProjects/can_collector/main/can_collector.c" "/home/viki/CLionProjects/can_collector/cmake-build-debug/CMakeFiles/can_collector.dir/main/can_collector.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
@@ -157,6 +159,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "/home/viki/esp/esp-idf/components/spiffs/spiffs/src"
   "/home/viki/esp/esp-idf/components/wpa_supplicant/src"
   "/home/viki/esp/esp-idf/components/json/cJSON"
+  "/home/viki/esp/esp-idf/components/esp_https_ota/include"
   "../build/include"
   )
 

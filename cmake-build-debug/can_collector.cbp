@@ -167,6 +167,7 @@
 					<Add directory="/home/viki/esp/esp-idf/components/spiffs/spiffs/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_https_ota/include"/>
 					<Add directory="/home/viki/CLionProjects/can_collector/build/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
@@ -324,6 +325,7 @@
 					<Add directory="/home/viki/esp/esp-idf/components/spiffs/spiffs/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/wpa_supplicant/src"/>
 					<Add directory="/home/viki/esp/esp-idf/components/json/cJSON"/>
+					<Add directory="/home/viki/esp/esp-idf/components/esp_https_ota/include"/>
 					<Add directory="/home/viki/CLionProjects/can_collector/build/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
@@ -358,6 +360,9 @@
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/L80GPS.c">
 			<Option target="can_collector"/>
 		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/OTA_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/SIM_utils.c">
 			<Option target="can_collector"/>
 		</Unit>
@@ -368,6 +373,9 @@
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/L80GPS.h">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/OTA_utils.h">
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/include/SIM_utils.h">
@@ -449,6 +457,9 @@
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/components/stack_utils.c">
+			<Option target="can_collector"/>
+		</Unit>
+		<Unit filename="/home/viki/CLionProjects/can_collector/main/can_collector.c">
 			<Option target="can_collector"/>
 		</Unit>
 		<Unit filename="/home/viki/CLionProjects/can_collector/CMakeLists.txt">

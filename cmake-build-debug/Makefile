@@ -150,6 +150,33 @@ components/L80GPS.c.s:
 	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/components/L80GPS.c.s
 .PHONY : components/L80GPS.c.s
 
+components/OTA_utils.o: components/OTA_utils.c.o
+
+.PHONY : components/OTA_utils.o
+
+# target to build an object file
+components/OTA_utils.c.o:
+	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/components/OTA_utils.c.o
+.PHONY : components/OTA_utils.c.o
+
+components/OTA_utils.i: components/OTA_utils.c.i
+
+.PHONY : components/OTA_utils.i
+
+# target to preprocess a source file
+components/OTA_utils.c.i:
+	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/components/OTA_utils.c.i
+.PHONY : components/OTA_utils.c.i
+
+components/OTA_utils.s: components/OTA_utils.c.s
+
+.PHONY : components/OTA_utils.s
+
+# target to generate assembly for a file
+components/OTA_utils.c.s:
+	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/components/OTA_utils.c.s
+.PHONY : components/OTA_utils.c.s
+
 components/SIM_utils.o: components/SIM_utils.c.o
 
 .PHONY : components/SIM_utils.o
@@ -528,6 +555,33 @@ components/stack_utils.c.s:
 	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/components/stack_utils.c.s
 .PHONY : components/stack_utils.c.s
 
+main/can_collector.o: main/can_collector.c.o
+
+.PHONY : main/can_collector.o
+
+# target to build an object file
+main/can_collector.c.o:
+	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/main/can_collector.c.o
+.PHONY : main/can_collector.c.o
+
+main/can_collector.i: main/can_collector.c.i
+
+.PHONY : main/can_collector.i
+
+# target to preprocess a source file
+main/can_collector.c.i:
+	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/main/can_collector.c.i
+.PHONY : main/can_collector.c.i
+
+main/can_collector.s: main/can_collector.c.s
+
+.PHONY : main/can_collector.s
+
+# target to generate assembly for a file
+main/can_collector.c.s:
+	$(MAKE) -f CMakeFiles/can_collector.dir/build.make CMakeFiles/can_collector.dir/main/can_collector.c.s
+.PHONY : main/can_collector.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -540,6 +594,9 @@ help:
 	@echo "... components/L80GPS.o"
 	@echo "... components/L80GPS.i"
 	@echo "... components/L80GPS.s"
+	@echo "... components/OTA_utils.o"
+	@echo "... components/OTA_utils.i"
+	@echo "... components/OTA_utils.s"
 	@echo "... components/SIM_utils.o"
 	@echo "... components/SIM_utils.i"
 	@echo "... components/SIM_utils.s"
@@ -582,6 +639,9 @@ help:
 	@echo "... components/stack_utils.o"
 	@echo "... components/stack_utils.i"
 	@echo "... components/stack_utils.s"
+	@echo "... main/can_collector.o"
+	@echo "... main/can_collector.i"
+	@echo "... main/can_collector.s"
 .PHONY : help
 
 

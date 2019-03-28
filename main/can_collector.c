@@ -7,22 +7,17 @@
  *
  */
 
-#include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdio.h>
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-
-#include "esp_log.h"
-
 #include "../components/include/can_collector_utils.h"
 
+void app_main()
+{
+    OTA_init();
 
-void app_main() {
+    SIM_init();
 
-    esp_log_level_set("*",ESP_LOG_VERBOSE);
+    //collector_init();
 
-    collector_init();
+    OTA_download_latest_version();
+
+    esp_restart();
 }
