@@ -121,6 +121,14 @@ bool parse_is_GPS(uint8_t *data);
  */
 void parse_GPS(uint8_t *data, elm327_data_t *packet);
 
+/**
+ * @brief Convert char array to string
+ *
+ * @param buff : Array of chars
+ *
+ * @param size : Length of array
+ *
+ */
 char *uint_arr2str(uint8_t *buff, uint8_t size);
 
 #endif

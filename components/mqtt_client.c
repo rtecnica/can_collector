@@ -731,20 +731,20 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
     sprintf(tmp, "VIN=\"%s\" ", vin);
     strcat(msg->msg, tmp);
     strcat(msg->msgGPS, tmp);
-    if ((FUEL_FIELD & pxRxedMessage.fields) != 0){
-        aux1 = (float)pxRxedMessage.fuel/2.55;
+     if ((FUEL_FIELD & pxRxedMessage.fields) != 0){
+        aux1 = atoi((char *)&pxRxedMessage.fuel)/2.55;
         sprintf(tmp, "combustible=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((SPEED_FIELD & pxRxedMessage.fields) != 0){
-        aux1 = (float)pxRxedMessage.speed;
+        aux1 = atoi((char *)&pxRxedMessage.speed);
         sprintf(tmp, "velocidad=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
     }
     if ((TEMP_FIELD & pxRxedMessage.fields) != 0){
-        aux1 = (float)pxRxedMessage.temp - 40;
+        aux1 = atoi((char *)&pxRxedMessage.temp) - 40;
         sprintf(tmp, "temperatura=%f,", aux1);
         strcat(msg->msg, tmp);
         strcat(msg->msgGPS, tmp);
@@ -847,9 +847,8 @@ static message_MQTT* msgMQTT(message_MQTT* msg, elm327_data_t pxRxedMessage, int
         fecha = mktime(&tiempo);        
         epoch_l = (unsigned long long int)fecha;
         
-        sprintf(tmp,"tiempo=%Li", epoch_l);
+        strftime(tmp,32,"tiempo=\"%H:%M:%S %d-%m-%Y\"", &tiempo);
         strcat(msg->msgGPS,tmp);
-        strcat(msg->msgGPS,"000000000,");
     } else {
         msg->GPS = false;
     }

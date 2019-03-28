@@ -4,7 +4,7 @@
 /**
  * @file
  * @uthor Ignacio Maldonado Aylwin
- * @brief
+ * @brief GPS Utilities
  *
  */
 
