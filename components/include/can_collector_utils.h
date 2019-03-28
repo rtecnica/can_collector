@@ -21,7 +21,7 @@
 
 /**
 * @brief Container for VIN string.
-*/
+**/
 uint8_t VIN[17];
 volatile bool is_vin;
 
@@ -38,28 +38,28 @@ struct param {
  * @brief Task for requesting data from ELM327 chip.
  *
  * @param queueStruct : Pointer to intertask messaging handle struct
- */
+ **/
 void collector_query_task(void *queueStruct);
 
 /**
  * @brief Task for recieving data from ELM327 chip.
  *
  * @param queueStruct : Pointer to intertask messaging handle struct
- */
+ **/
 void collector_elm_rx_task(void *queueStruct);
 
 /**
  * @brief Task for recieving data from GPS.
  *
  * @param queueStruct : Pointer to intertask messaging handle struct
- */
+ **/
 void collector_gps_rx_task(void *queueStruct);
 
 /**
  * @brief Task for parsing and assembling data struct from sensor and GPS data.
  *
  * @param queueStruct : Pointer to intertask messaging handle struct.
- */
+ **/
 void collector_parse_task(void *queueStruct);
 
 /**
@@ -67,7 +67,7 @@ void collector_parse_task(void *queueStruct);
  * is re-established
  *
  * @param queueStruct : Pointer to intertask messaging handle struct.
- */
+ **/
 void collector_card_task(void *queueStruct);
 
 /**
@@ -75,13 +75,13 @@ void collector_card_task(void *queueStruct);
  * remote database.
  *
  * @param queueStruct : Pointer to intertask messaging handle struct.
- */
+ **/
 void collector_SIM_task(void *queueStruct);
 
 /**
  * @brief Task for initializing all tasks and associated queues.
  *
- */
+ **/
 void collector_init(void);
 
 #endif

@@ -17,7 +17,7 @@
 #include "elm327.h"
 
 /**
-* @brief Char to hexadecimal correspondence
+* @brief Char to hexadecimal table
 */
 typedef enum {
     HEX_CHAR_0      = 0x30,

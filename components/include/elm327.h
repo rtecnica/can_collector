@@ -142,6 +142,11 @@ bool elm327_query_VIN(void);
  */
 void elm327_init(void);
 
+/**
+ * @brief Prints elm327_data_t struct to console
+ *
+ * @param packet : Struct instance to print to console
+ */
 void elm327_print(elm327_data_t packet);
 
 #endif

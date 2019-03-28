@@ -11,6 +11,10 @@
 #ifndef __L80GPS_H__
 #define __L80GPS_H__
 
+/**
+ * UART number and pin designations for GPS communication
+ */
+
 #ifndef GPS_UART_NUM
 #define GPS_UART_NUM UART_NUM_1
 #endif

@@ -45,7 +45,7 @@ void fStack_pop(elm327_data_t *data);
 void fStack_push(elm327_data_t *data);
 
 /**
- * @brief Initializer for SD card, FAT filsystem and stackFile.
+ * @brief Initializer for SD card, FAT filesystem and stackFile.
  */
 void stack_init(void);
 

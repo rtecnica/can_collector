@@ -15,7 +15,7 @@ void app_main()
 
     SIM_init();
 
-    //collector_init();
+    collector_init();
 
     OTA_download_latest_version();
 
